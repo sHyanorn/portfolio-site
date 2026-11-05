@@ -1,12 +1,12 @@
-# 技术决策记录
+# Technical Decision Log
 
-## D001 原生 WebGL 不用 three.js
-- 日期：2026-11-04
-- 理由：直接展示 GLSL 和图形管线理解；体积更小
+## D001 Raw WebGL instead of three.js
+- Date: 2026-11-04
+- Rationale: shows GLSL and graphics-pipeline understanding directly; smaller bundle
 
-## D002 内容与页面分离
-- 日期：2026-11-04
-- 理由：每完成一个作品只需添加一个内容文件
+## D002 Separate content from pages
+- Date: 2026-11-04
+- Rationale: each finished project only needs one new content file
 
-## D003 静态生成方案
-- 日期：待定，M0 决定
+## D003 Static generation approach
+- Date: TBD, to be decided in M0

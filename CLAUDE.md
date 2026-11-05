@@ -1,20 +1,21 @@
 # CLAUDE.md
 
-本仓库是 Aaron 的个人作品集网站。它本身也是一个作品，用来证明前端能力、审美和 GLSL。
+This repository is Aaron's personal portfolio website. It is also a portfolio piece in its own right, demonstrating front-end skill, design sense and GLSL.
 
-## 开工前必读
+## Read before starting
 
 1. `docs/SPEC.md`
 2. `docs/TASKS.md`
 3. `docs/DECISIONS.md`
 
-## 工作方式
+## Working practices
 
-- 每个里程碑先出计划，等 Aaron 确认；视觉改动先给截图
-- 一个任务一次提交，Conventional Commits 英文格式
-- 项目内容全部放在 `src/content/projects/*.json`（或 MDX），页面只负责渲染
+- For each milestone, write a plan first and wait for Aaron to confirm it; for visual changes, provide screenshots first
+- One commit per task, using Conventional Commits in English
+- All project content lives in `src/content/projects/*.json` (or MDX); pages only render it
+- Everything committed to GitHub (code, comments, docs, commit messages) is in English and concise: say what changed and why, not the step-by-step process. Commit messages use Conventional Commits with a short subject and at most a brief body. Talk to Aaron in Chinese.
 
-## 常用命令
+## Common commands
 
 ```bash
 npm run dev
@@ -23,11 +24,11 @@ npm test
 npm run lint && npm run typecheck
 ```
 
-## 硬性规则
+## Hard rules
 
-- 首屏加载 JS 不超过 150 KB（gzip 后），Lighthouse 四项都在 95 分以上
-- GLSL 动效必须尊重 `prefers-reduced-motion`；不支持 WebGL 时显示静态渐变
-- 页面不可见时暂停渲染循环，避免耗电
-- 无障碍：语义化标签、键盘可操作、颜色对比度达标
-- 不引入大型 UI 组件库；样式用 CSS Modules 或原生 CSS 变量
-- 不放任何真实联系方式以外的个人信息
+- Initial-load JS is at most 150 KB (gzipped), and all four Lighthouse scores are 95 or higher
+- GLSL effects must respect `prefers-reduced-motion`; show a static gradient when WebGL is not supported
+- Pause the render loop when the page is not visible, to save power
+- Accessibility: semantic markup, keyboard operability, sufficient color contrast
+- No large UI component libraries; style with CSS Modules or native CSS variables
+- No personal information other than real contact details

@@ -1,58 +1,58 @@
-# portfolio-site 项目规格
+# portfolio-site Specification
 
-## 1. 一句话介绍
+## 1. One-line summary
 
-Aaron 的个人作品集网站，苹果风格，带原生 WebGL 和 GLSL 写的背景动效，每个项目有独立页面讲清楚做了什么、为什么这样做、效果如何。
+Aaron's personal portfolio website: Apple-style design, an animated background written in raw WebGL and GLSL, and a dedicated page for each project explaining what was built, why it was built that way, and how well it works.
 
-## 2. 要证明的能力
+## 2. Skills to demonstrate
 
-- 前端工程：React + TypeScript、性能优化、无障碍、双语
-- 审美：排版、留白、动效节奏
-- 图形编程：原生 WebGL 和 GLSL，不依赖 three.js
+- Front-end engineering: React + TypeScript, performance optimization, accessibility, bilingual support
+- Design sense: typography, whitespace, motion rhythm
+- Graphics programming: raw WebGL and GLSL, without three.js
 
-## 3. 页面
+## 3. Pages
 
-### 首页
-- 一句话自我介绍和三个方向标签：后端、安全、算法
-- GLSL 背景：低调的流动渐变或噪声场，随鼠标轻微响应
-- 精选项目卡片，点击进入详情
-- 技能概览
-- 联系方式和简历 PDF 下载
+### Home
+- One-line self-introduction and three focus tags: backend, security, algorithms
+- GLSL background: a subtle flowing gradient or noise field that responds slightly to the mouse
+- Featured project cards that link to detail pages
+- Skills overview
+- Contact details and résumé PDF download
 
-### 项目详情页（每个项目一页）
-固定结构：
+### Project detail page (one per project)
+Fixed structure:
 
-1. 一句话介绍与标签
-2. 演示：在线链接、GIF 或视频
-3. 核心指标（例如撮合吞吐量、测试覆盖率）
-4. 问题与目标
-5. 架构图
-6. 三到五个关键技术决定（来自各仓库的 DECISIONS.md）
-7. 遇到的难点与解决方式
-8. GitHub 链接
+1. One-line summary and tags
+2. Demo: live link, GIF or video
+3. Key metrics (e.g. matching throughput, test coverage)
+4. Problem and goals
+5. Architecture diagram
+6. Three to five key technical decisions (from each repository's DECISIONS.md)
+7. Challenges and how they were solved
+8. GitHub link
 
-### 关于页
-- 教育背景（墨尔本大学）
-- 经济学、金融与技术结合的特点
-- 使用 AI 编程工具的工作方式
+### About page
+- Education (University of Melbourne)
+- The combination of economics, finance and technology
+- How I work with AI coding tools
 
-## 4. 技术方案
+## 4. Technical approach
 
-- Vite + React + TypeScript，静态生成（vite-plugin-ssg 或 Astro 二选一，M0 决定）
-- 原生 WebGL2，着色器放在 `src/gl/shaders/*.glsl`
-- 中英双语，默认根据浏览器语言
-- 部署到 GitHub Pages 或 Vercel，绑定自定义域名（可选）
+- Vite + React + TypeScript with static generation (vite-plugin-ssg or Astro, to be decided in M0)
+- Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
+- Chinese and English, defaulting to the browser language
+- Deploy to GitHub Pages or Vercel, with a custom domain (optional)
 
-## 5. 设计规范
+## 5. Design guidelines
 
-- 字体：系统字体栈（SF Pro、PingFang SC 优先）
-- 颜色：中性灰为主，一个强调色；支持深色模式
-- 间距：8 的倍数
-- 动效：进入视口时轻微淡入上移，时长 300 到 500 毫秒
-- 图片：AVIF 或 WebP，懒加载
+- Fonts: system font stack (SF Pro and PingFang SC first)
+- Color: mostly neutral grays with one accent color; dark mode supported
+- Spacing: multiples of 8
+- Motion: subtle fade-in and upward shift on entering the viewport, 300 to 500 ms
+- Images: AVIF or WebP, lazy-loaded
 
-## 6. 交付物
+## 6. Deliverables
 
-- 上线的网站
-- Lighthouse 报告截图放在 README
-- 简历上加入网站链接
+- The live website
+- Lighthouse report screenshots in the README
+- Website link added to the résumé

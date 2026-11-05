@@ -21,7 +21,7 @@
 - [ ] Home page
 - [ ] Project detail page template
 - [ ] About page
-- [ ] Chinese and English bilingual support
+- [ ] English and Chinese versions: English by default, with a language toggle button
 
 ## M4 Polish and launch
 - [ ] Performance and accessibility optimization, Lighthouse 95 or higher

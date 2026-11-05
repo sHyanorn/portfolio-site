@@ -40,7 +40,7 @@ Fixed structure:
 
 - Vite + React + TypeScript with static generation (vite-plugin-ssg or Astro, to be decided in M0)
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
-- Chinese and English, defaulting to the browser language
+- English and Chinese: English by default, with a button that switches the whole site to Chinese and back
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)
 
 ## 5. Design guidelines

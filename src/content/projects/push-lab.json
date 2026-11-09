@@ -2,8 +2,8 @@
   "title": "push-lab",
   "order": 5,
   "summary": {
-    "en": "An offline lab for push notification recommendation on public data, from recall and ranking to send volume, timing and copy, with every result labeled by how far it can be trusted without live traffic.",
-    "zh": "一个推送通知推荐的离线实验室，基于公开数据，覆盖召回、排序、发送量、发送时段和文案选择；没有线上流量，所以每个结果都标明它可信到什么程度。"
+    "en": "An offline lab for push notification recommendation on public data, from recall and ranking to send volume and timing, with every result labeled by how far it can be trusted without live traffic. Copy selection is tested only in a simulator that does not read the text.",
+    "zh": "一个推送通知推荐的离线实验室，基于公开数据，覆盖召回、排序、发送量和发送时段；没有线上流量，所以每个结果都标明它可信到什么程度。文案选择只在一个不读取文案内容的模拟器里测试过。"
   },
   "tags": [
     { "en": "Python", "zh": "Python" },

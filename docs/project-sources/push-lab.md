@@ -6,7 +6,8 @@ All paths are in github.com/sHyanorn/push-lab at commit 5dfcc47.
 
 | Number or claim | Source |
 |---|---|
-| Offline lab for push notification recommendation on public data; recall, ranking, volume, timing, copy; every result labeled by how far it can be trusted | README.md:3; docs/SPEC.md:5 |
+| Offline lab for push notification recommendation on public data; recall, ranking, volume, timing; every result labeled by how far it can be trusted | README.md:3; docs/SPEC.md:5 |
+| Copy selection tested only in the simulator, which does not read the text | README.md:70; docs/SPEC.md:138 |
 | Demo: two charts and the top of the report at shyanorn.github.io/push-lab/, light theme, captured from the published report | README.md:5-7; docs/DECISIONS.md:490-492 (D049) |
 | Demo, first chart: DR bias against simulator truth along annoyance from 0 to 0.1; overrates two pushes a day, underrates fewer | README.md:28-32 |
 | Demo, second chart: truth from −0.0065 to +0.0315, DR between −0.0049 and −0.0036; post hoc | README.md:30 |

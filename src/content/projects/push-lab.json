@@ -1,0 +1,235 @@
+{
+  "title": "push-lab",
+  "order": 5,
+  "summary": {
+    "en": "An offline lab for push notification recommendation on public data, from recall and ranking to send volume, timing and copy, with every result labeled by how far it can be trusted without live traffic.",
+    "zh": "一个推送通知推荐的离线实验室，基于公开数据，覆盖召回、排序、发送量、发送时段和文案选择；没有线上流量，所以每个结果都标明它可信到什么程度。"
+  },
+  "tags": [
+    { "en": "Python", "zh": "Python" },
+    { "en": "Recommender systems", "zh": "推荐系统" },
+    { "en": "Causal inference", "zh": "因果推断" },
+    { "en": "Off-policy evaluation", "zh": "离策略评估" },
+    { "en": "Simulation", "zh": "仿真" }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./push-lab/carryover.png",
+        "alt": {
+          "en": "Line chart from the report, \"Carryover sweep (D048): DR bias against simulator truth, active-day share\", with annoyance from 0 to 0.1 on the horizontal axis. All three lines start near zero; two pushes a day rises to about +0.035, while half volume falls to about −0.018 and no pushes to about −0.036.",
+          "zh": "报告中的折线图，标题为“Carryover sweep (D048): DR bias against simulator truth, active-day share”，横轴是从 0 到 0.1 的厌烦程度。三条线都从 0 附近出发：每天两条推送升到约 +0.035，减半发送降到约 −0.018，不发送降到约 −0.036。"
+        },
+        "caption": {
+          "en": "Per-day DR against the simulator's truth: the more sending annoys users, the more it overrates two pushes a day and underrates fewer. Tier C, a sweep of one parameter.",
+          "zh": "按天计算的 DR 与模拟器真值之差：发送越让用户厌烦，它就越高估每天两条推送、越低估更少的推送。C 级证据，只扫描一个参数。"
+        }
+      },
+      {
+        "src": "./push-lab/no-push.png",
+        "alt": {
+          "en": "Line chart from the report marked post hoc, \"No pushes minus one a day, active-day share\". The truth rises from about −0.007 at annoyance 0 to about +0.031 at 0.1, crossing zero between 0 and 0.025, while the per-day DR estimate stays flat just below zero, between −0.005 and −0.004.",
+          "zh": "报告中标为事后分析的折线图，标题为“No pushes minus one a day, active-day share”。真值从厌烦程度为 0 时的约 −0.007 升到 0.1 时的约 +0.031，在 0 到 0.025 之间穿过零点；按天计算的 DR 估计值则一直平在零下方，介于 −0.005 和 −0.004 之间。"
+        },
+        "caption": {
+          "en": "Not pushing against one push a day: above a small amount of annoyance the truth favors not pushing, while the estimate keeps favoring the push.",
+          "zh": "不发送与每天一条推送的对比：厌烦程度稍高一点，真值就倾向于不发送，而估计值始终倾向于发送。"
+        }
+      },
+      {
+        "src": "./push-lab/report-top.png",
+        "alt": {
+          "en": "The top of the push-lab report: the one-line summary, a highlighted note that the project has no Tier B result because no estimator passed the check on the full Men's campaign of the Open Bandit Dataset, a line on brackets and tiers, and links to its six sections.",
+          "zh": "push-lab 报告的开头：一句话简介；一条醒目的说明，指出项目没有 B 级结果，因为在 Open Bandit 数据集的完整男装活动上没有一个估计器通过检验；一行关于括号和证据等级的说明；以及报告六个部分的链接。"
+        },
+        "caption": {
+          "en": "The report opens with what the project could not show. It is generated from the committed results, with no scripts.",
+          "zh": "报告开头先说项目没能证明什么。它由提交的结果文件生成，不含脚本。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": { "en": "0.891", "zh": "0.891" },
+        "label": {
+          "en": "of the known click rate, as estimated by IPS on the full Open Bandit campaign, with an interval of 0.810 to 0.969 that excludes it: no estimator passed",
+          "zh": "IPS 在 Open Bandit 完整活动上估出的点击率与已知真值之比，区间为 0.810 到 0.969，不含真值：没有一个估计器通过检验"
+        }
+      },
+      {
+        "value": { "en": "−2.3%", "zh": "−2.3%" },
+        "label": {
+          "en": "daily active share from one push a day against none, at the simulator's reference setting (−2.4% to −2.2%)",
+          "zh": "在模拟器的基准设定下，每天一条推送相对于不发送，日活跃用户占比的变化（−2.4% 到 −2.2%）"
+        }
+      },
+      {
+        "value": { "en": "23 of 24", "zh": "24 个中的 23 个" },
+        "label": {
+          "en": "sweep settings at which per-day DR reverses the true order of no pushes and one push a day (post hoc)",
+          "zh": "扫描设定中，按天计算的 DR 把“不发送”和“每天一条”的真实优劣颠倒过来的设定数（事后分析）"
+        }
+      },
+      {
+        "value": { "en": "43 of 64", "zh": "64 个中的 43 个" },
+        "label": {
+          "en": "settings in which a gate at half the volume beats a daily push; it loses in 19, and wins in none once annoyance is removed",
+          "zh": "在这些设定中，只发一半推送的门控策略胜过每天推送；它在 19 个设定中落败，去掉厌烦效应后一个也赢不了"
+        }
+      }
+    ],
+    "note": {
+      "en": "The first figure is Tier A, a measure of the estimators on randomized real data. The other three are Tier C and hold only in the simulator, read across a sweep of its assumptions. Brackets give 95% intervals, and per-setting verdicts rest on one model fit.",
+      "zh": "第一个数是 A 级证据，是在随机化的真实数据上对估计器本身的度量。其余三个是 C 级证据，只在模拟器里成立，要结合对模拟器假设的参数扫描来读。括号里是 95% 区间；逐个设定的结论只基于一次模型拟合。"
+    },
+    "source": {
+      "label": { "en": "Results summary", "zh": "结果摘要" },
+      "url": "https://github.com/sHyanorn/push-lab/blob/5dfcc476a483ac5dd3dbd9c980e52b53984186d5/README.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "push-lab builds the whole pipeline of a push notification recommender on public data and four CPU cores: two-tower recall with an approximate nearest-neighbour index, a coarse and a fine ranking stage, uplift models, and a delivery policy that decides whether to send, in which slot of the day and with which copy. A static report and a notebook present the results.",
+      "zh": "push-lab 用公开数据和四个 CPU 核心搭起一套完整的推送通知推荐流程：带近似最近邻索引的双塔召回，粗排和精排两级排序，增益模型，以及决定发不发、几点发、用哪条文案的投放策略。结果以一份静态报告和一个 notebook 呈现。"
+    },
+    {
+      "en": "Its story was registered as a hypothesis before the simulations ran: sending the top item to everyone every day wins on clicks in week one but loses users to fatigue and opt-outs by week four, while a policy that sends only when the predicted uplift is high enough, under a volume budget, keeps more users active. Every comparison was fixed in advance and reported as it came out, including the parts of the story that did not hold.",
+      "zh": "项目的核心叙事在模拟开始前就作为假设登记下来：每天给所有人推送排第一的内容，第一周点击最多，到第四周却会因厌烦和退订流失用户；只在预测增益够高时才发送、并受发送量预算约束的策略，能留住更多活跃用户。所有比较都预先定好，结果如实报告，叙事中没有成立的部分也照样报告。"
+    },
+    {
+      "en": "No public dataset links push sends to what users then do in an app, so the end-to-end story is a simulation built on video feed data, and the uplift trials are e-mail and ads. Each result is therefore labeled Tier A when it rests on randomized real data, Tier B when it is an off-policy estimate from an estimator validated against a known answer, and Tier C when it comes from the simulator with a sensitivity sweep.",
+      "zh": "没有任何公开数据集把推送和用户随后在应用里的行为连起来，所以端到端的叙事只能是基于短视频推荐数据的仿真，增益实验用的也是邮件和广告数据。因此每个结果都标了证据等级：基于随机化真实数据的为 A 级；由先经已知答案验证过的估计器给出的离策略估计为 B 级；来自模拟器并附有敏感性扫描的为 C 级。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "data": { "en": "public data", "zh": "公开数据" },
+      "dataSub": { "en": "download, Parquet", "zh": "下载、转成 Parquet" },
+      "recall": { "en": "recall", "zh": "召回" },
+      "recallSub": { "en": "two-tower, faiss", "zh": "双塔、faiss" },
+      "rank": { "en": "ranking", "zh": "排序" },
+      "rankSub": { "en": "top N, then top-1", "zh": "粗排前 N，精排第一" },
+      "uplift": { "en": "uplift methods", "zh": "增益模型" },
+      "upliftSub": { "en": "Hillstrom, Criteo", "zh": "Hillstrom、Criteo" },
+      "sim": { "en": "push simulator", "zh": "推送模拟器" },
+      "simSub": { "en": "swept assumptions", "zh": "假设参数扫描" },
+      "policy": { "en": "delivery policy", "zh": "投放策略" },
+      "policySub": {
+        "en": "gate, budget, slot, copy",
+        "zh": "门控、预算、时段、文案"
+      },
+      "ope": { "en": "off-policy estimators", "zh": "离策略评估" },
+      "opeSub": { "en": "IPS, SNIPS, DR", "zh": "IPS、SNIPS、DR" },
+      "report": { "en": "report", "zh": "报告" },
+      "reportSub": {
+        "en": "every number with its tier",
+        "zh": "每个数字都标明证据等级"
+      },
+      "topEdge": { "en": "top-1 item", "zh": "排第一的内容" },
+      "sendsEdge": { "en": "sends", "zh": "发送决策" },
+      "logsEdge": { "en": "logs", "zh": "日志" },
+      "tierAEdge": { "en": "Tier A", "zh": "A 级" },
+      "estimatesEdge": { "en": "estimates", "zh": "估计值" },
+      "sweepsEdge": { "en": "sweeps", "zh": "扫描结果" }
+    },
+    "description": {
+      "en": "Public datasets are downloaded with pinned checksums and converted to Parquet; raw data is never committed. Two-tower recall with a faiss index builds the candidate pool on KuaiRand, the two-tower score keeps the top N, and a LightGBM ranker picks the one item a push would carry. The delivery policy decides whether to send it, in which slot of the day and with which copy, under a volume budget, and it is run in a push simulator whose response model is fitted on KuaiRand's random exposures and whose assumptions are swept. The simulator's exploration logs fit the policy's uplift gate and feed the off-policy estimators, which are also checked on the Open Bandit Dataset. Uplift methods are tested on the randomized Hillstrom and Criteo trials. Every stage writes its results to JSON, and the report, which reads only those files, labels every number with its tier.",
+      "zh": "公开数据集按固定的校验和下载并转成 Parquet，原始数据从不提交。双塔召回配合 faiss 索引在 KuaiRand 上生成候选池，双塔分数保留前 N 个，再由 LightGBM 精排选出一条推送要带的内容。投放策略在发送量预算之下决定发不发、几点发、用哪条文案；它在一个推送模拟器里运行，模拟器的响应模型用 KuaiRand 的随机曝光数据拟合，各项假设都做参数扫描。模拟器的探索日志一方面用来拟合策略的增益门控，一方面交给离策略估计器，这些估计器另外在 Open Bandit 数据集上做过检验。增益模型在 Hillstrom 和 Criteo 两个随机化实验上检验。每个环节都把结果写成 JSON，报告只读取这些文件，并给每个数字标上证据等级。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D002",
+        "title": {
+          "en": "Offline only, with evidence tiers",
+          "zh": "只做离线评估，并划分证据等级"
+        },
+        "body": {
+          "en": "There is no live traffic, so every result carries one of three tiers: A for randomized real data, B for an off-policy estimate from an estimator first checked against a known answer, C for simulator runs shown with their sensitivity sweep. Published notification systems report small online effects, about 0.1% to 0.5% of daily active users, and their offline estimates agree least with online results on the longest-horizon metric, so no simulated effect size is presented as a real one.",
+          "zh": "没有线上流量，所以每个结果都属于三个证据等级之一：A 级来自随机化的真实数据；B 级是离策略估计，所用估计器先经过已知答案的检验；C 级是附带敏感性扫描的模拟器结果。已发表的通知系统报告的线上效果都很小，约为日活跃用户的 0.1% 到 0.5%，而它们的离线估计与线上结果在最长周期的指标上最不一致，所以模拟出的效果大小从不被当成真实效果来呈现。"
+        }
+      },
+      {
+        "id": "D009",
+        "title": {
+          "en": "Volume control is separate from ranking",
+          "zh": "发送量控制与排序分开"
+        },
+        "body": {
+          "en": "Following Zhao et al. (2018), the ranker picks what to send and the policy decides whether to send it, so changing one does not confound the evaluation of the other. The uplift gate's threshold and the budget's Lagrange multiplier are the same dual variable. A single multiplier is optimal only when each extra send gains less than the one before, which fatigue can break, so a test compares the allocation with brute force on small instances and documents a case where the condition fails.",
+          "zh": "参照 Zhao 等人（2018）的做法，排序模型决定发什么，策略决定发不发，改动其中一个不会干扰对另一个的评估。增益门控的阈值和预算约束的拉格朗日乘子是同一个对偶变量。只有当每多发一条的收益都比上一条少时，单个乘子才是最优的，而用户厌烦可能打破这个条件；因此有一个测试在小规模实例上把分配结果和穷举比对，并记录了一个条件不成立的例子。"
+        }
+      },
+      {
+        "id": "D013",
+        "title": {
+          "en": "The uplift gate is learned inside the simulator",
+          "zh": "增益门控在模拟器内部学习"
+        },
+        "body": {
+          "en": "Models trained on Hillstrom or Criteo cannot score KuaiRand users, whose features and treatments differ. The simulator therefore runs an epsilon-greedy exploration policy over sending or skipping, the slot and the template, and the gate is fitted on those logs, which also give the off-policy estimators overlap with every target policy. The uplift results on the real trials validate the methods and are Tier A; the gate's results are Tier C.",
+          "zh": "在 Hillstrom 或 Criteo 上训练的模型无法给 KuaiRand 的用户打分，两边的特征和干预都不一样。所以模拟器先运行一个 ε-贪心探索策略，在发或不发、发送时段和模板之间随机探索，门控就在这些日志上拟合；同样的日志也让离策略估计器对每个目标策略都有足够的覆盖。增益模型在真实实验上的结果用来验证方法本身，属于 A 级；门控的结果属于 C 级。"
+        }
+      },
+      {
+        "id": "D014",
+        "title": {
+          "en": "The send-time policy does not read the simulator's profile",
+          "zh": "发送时段策略不读取模拟器的活跃画像"
+        },
+        "body": {
+          "en": "If one activity profile drove both the send-time policy and the simulator, the policy would win by construction. The simulator uses each user's activity from 22 April to 8 May, the policy estimates its own profile from 9 to 21 April, and the sweep adds a shift and noise on top.",
+          "zh": "如果发送时段策略和模拟器用的是同一份活跃画像，策略就会凭构造本身胜出。模拟器用的是每个用户 4 月 22 日到 5 月 8 日的活跃情况，策略则根据 4 月 9 日到 21 日的数据自行估计画像，参数扫描还会在此之上加入偏移和噪声。"
+        }
+      },
+      {
+        "id": "D049",
+        "title": {
+          "en": "Report and README are generated from the results",
+          "zh": "报告和 README 由结果文件生成"
+        },
+        "body": {
+          "en": "The report build reads only `results/*.json` and writes the static report and the numbers in the README, which sit between generated markers. Every number goes through one lookup by file and key path and one formatter, and a test checks that the prose templates hold no digits; CI fails when the README differs from what the results give. The report uses the standard library only, with inline SVG charts and no scripts, and is published only after CI passes on the same commit.",
+          "zh": "报告构建只读取 `results/*.json`，生成静态报告和 README 里的数字，这些数字放在自动生成的标记之间。每个数字都经过同一个按文件和键路径的查找、同一个格式化函数，并有测试检查文字模板里不含任何数字；README 与结果文件对不上时，CI 就会失败。报告只用标准库，图表是内联 SVG，不含脚本，并且只有在同一个提交的 CI 通过后才发布。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/push-lab/blob/5dfcc476a483ac5dd3dbd9c980e52b53984186d5/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "A fine ranker that ranked worse",
+        "zh": "精排反而排得更差"
+      },
+      "body": {
+        "en": "The pre-registered check expected the LightGBM fine ranker to beat the two-tower score it refines; on KuaiRand's random exposures its click GAUC was 0.545 against 0.598. Training and evaluation used the same columns, types and feature order, and the ranker did win on its own validation rows, so the reversal comes with the move from the production recommender's impressions to random exposures. The smoothed click rates it leans on were learned on impressions with a 53% click rate, against 17.7% on random exposures, and carry little signal there, while plain exposure counts carry more. The hyperparameters stay as registered, and any change to the ranker is reported as a separate variant.",
+        "zh": "预先登记的检验预期 LightGBM 精排会胜过它所细化的双塔分数；结果在 KuaiRand 的随机曝光数据上，它的点击 GAUC 是 0.545，双塔分数是 0.598。训练和评估用的列、类型和特征顺序都一致，精排在它自己的验证集上也确实胜出，所以反转出现在从线上推荐系统的曝光数据换到随机曝光数据的时候。精排倚重的平滑点击率是在点击率 53% 的曝光数据上学到的，而随机曝光的点击率只有 17.7%，这些特征在那里几乎没有信号，简单的曝光计数反而更有用。超参数保持登记时的设定，对精排的任何改动都作为单独的变体报告。"
+      }
+    },
+    {
+      "title": {
+        "en": "A check that passed on too little data",
+        "zh": "数据太少时通过的检验"
+      },
+      "body": {
+        "en": "Tier B needed an estimator that recovers a known policy value on real logs. On the small Open Bandit sample, with 46 clicks in the random logs, IPS and DR passed the registered rule. The full Men's campaign has 50 times the clicks, and there no estimator passes: IPS estimates 0.891 of the known click rate and DR 0.896, with intervals that exclude it, so the project has no Tier B result. Part of the gap is a target mismatch: the deployed policy was not the fixed prior the target assumes, and re-weighting to its logged frequencies moves IPS to 0.917, still short. Along the way the bootstrap was moved from rows to impressions, since each impression fills three rows.",
+        "zh": "要得到 B 级结果，需要一个估计器能在真实日志上还原已知的策略价值。在 Open Bandit 的小样本上，随机日志里只有 46 次点击，IPS 和 DR 通过了登记的判定规则。完整的男装活动有 50 倍的点击，在那里没有一个估计器通过：IPS 估出已知点击率的 0.891，DR 估出 0.896，区间都不含真值，所以项目没有 B 级结果。差距的一部分来自目标不匹配：实际部署的策略并不是目标所假定的固定先验，按日志中的实际频率重新加权后，IPS 升到 0.917，仍然不够。在这个过程中，bootstrap 的重抽样单位也从行改成了曝光，因为每次曝光占三行。"
+      }
+    },
+    {
+      "title": {
+        "en": "Random streams that coincided",
+        "zh": "意外重合的随机数流"
+      },
+      "body": {
+        "en": "NumPy's seed sequence ignores trailing zeros, so `default_rng([s, 0, 0])` gives the same numbers as `default_rng(s)`. The exploration policy keyed its coins by seed, day and slot, so on the first slot of the first day they were the simulator's own open draws whenever the two seeds matched, which raised that slot's open rate from 0.13 to 0.38 in a synthetic run. Every keyed stream now starts with its purpose and ends with a 1, a test checks that the streams of one seed are uncorrelated, and rerunning the simulator build reproduced its committed inputs bit for bit.",
+        "zh": "NumPy 的种子序列会忽略末尾的零，所以 `default_rng([s, 0, 0])` 和 `default_rng(s)` 生成的随机数完全相同。探索策略用种子、日期和时段作为随机数的键，于是只要两个种子相同，第一天第一个时段的随机数就正好是模拟器自己的打开抽样；在一次合成数据的运行中，这让该时段的打开率从 0.13 升到了 0.38。现在每个带键的随机数流都以用途开头、以 1 结尾，有测试检查同一种子下的各个流互不相关，重新运行模拟器构建也逐位复现了已提交的输入。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/push-lab"
+}

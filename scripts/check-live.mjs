@@ -16,6 +16,7 @@ const routes = [
   'projects/backtest-lab/',
   'projects/local-ledger/',
   'projects/matching-engine/',
+  'projects/push-lab/',
   'projects/vault-share/',
 ]
 const pages = routes.flatMap((r) => [r, `zh/${r}`])

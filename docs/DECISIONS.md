@@ -2,7 +2,7 @@
 
 ## D001 Raw WebGL instead of three.js
 - Date: 2026-11-04
-- Rationale: shows GLSL and graphics-pipeline understanding directly; smaller bundle
+- Rationale: full control over the shaders and render loop; no 3D library in the bundle
 
 ## D002 Separate content from pages
 - Date: 2026-11-04

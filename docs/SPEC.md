@@ -2,22 +2,15 @@
 
 ## 1. One-line summary
 
-Aaron's personal portfolio website: Apple-style design, an animated background written in raw WebGL and GLSL, and a dedicated page for each project explaining what was built, why it was built that way, and how well it works.
+Aaron's personal website: a restrained design, an animated background written in raw WebGL and GLSL, and a dedicated page for each project explaining what was built, why it was built that way, and how well it works.
 
-## 2. Skills to demonstrate
-
-- Front-end engineering: React + TypeScript, performance optimization, accessibility, bilingual support
-- Design sense: typography, whitespace, motion rhythm
-- Graphics programming: raw WebGL and GLSL, without three.js
-
-## 3. Pages
+## 2. Pages
 
 ### Home
 - One-line self-introduction and three focus tags: backend, security, algorithms
 - GLSL background: a subtle flowing gradient or noise field that responds slightly to the mouse
 - Featured project cards that link to detail pages
-- Skills overview
-- Contact details and résumé PDF download
+- Contact details: email and GitHub
 
 ### Project detail page (one per project)
 Fixed structure:
@@ -36,14 +29,14 @@ Fixed structure:
 - The combination of economics, finance and technology
 - How I work with AI coding tools
 
-## 4. Technical approach
+## 3. Technical approach
 
 - Vite + React + TypeScript with static generation (vite-plugin-ssg or Astro, to be decided in M0)
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
 - English and Chinese: English by default, with a button that switches the whole site to Chinese and back
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)
 
-## 5. Design guidelines
+## 4. Design guidelines
 
 - Fonts: system font stack (SF Pro and PingFang SC first)
 - Color: mostly neutral grays with one accent color; dark mode supported
@@ -51,8 +44,7 @@ Fixed structure:
 - Motion: subtle fade-in and upward shift on entering the viewport, 300 to 500 ms
 - Images: AVIF or WebP, lazy-loaded
 
-## 6. Deliverables
+## 5. Deliverables
 
 - The live website
 - Lighthouse report screenshots in the README
-- Website link added to the résumé

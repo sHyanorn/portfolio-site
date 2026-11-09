@@ -1,6 +1,6 @@
 # portfolio-site
 
-Personal portfolio of Aaron Yang. Built with React and TypeScript, with a hand-written WebGL2 and GLSL background.
+Personal website of Aaron Yang. Built with React and TypeScript, with a hand-written WebGL2 and GLSL background.
 
 > Status: in development. See [docs/TASKS.md](docs/TASKS.md).
 

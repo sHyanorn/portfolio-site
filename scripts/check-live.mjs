@@ -3,6 +3,8 @@
 // 1200×630 PNG, a missing path serves the 404 page, paths without a trailing
 // slash redirect, the sitemap lists every page, and the feed's links all
 // start with the site address. Usage: node scripts/check-live.mjs <site URL>
+import { pngSize } from './png-size.mjs'
+
 const site = new URL(process.argv[2].replace(/\/?$/, '/'))
 const base = site.pathname
 
@@ -69,13 +71,10 @@ for (const [path, from] of refs) {
 
 for (const image of images) {
   const res = await get(image)
-  const png = Buffer.from(await res.arrayBuffer())
-  const size = [png.readUInt32BE(16), png.readUInt32BE(20)].join('x')
+  const size = pngSize(Buffer.from(await res.arrayBuffer()))
   report(
-    res.status === 200 &&
-      png.subarray(1, 4).toString() === 'PNG' &&
-      size === '1200x630',
-    `${res.status} ${image} is a ${size} PNG`,
+    res.status === 200 && size === '1200x630',
+    `${res.status} ${image} is ${size ? `a ${size} PNG` : 'not a PNG'}`,
   )
 }
 

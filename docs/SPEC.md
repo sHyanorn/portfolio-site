@@ -43,7 +43,7 @@ Fixed structure:
 - Articles in MDX, rendered at build time (D005): Shiki highlighting with light and dark themes through CSS variables; math through remark-math and rehype-katex, only in articles marked `math: true`, which alone load the KaTeX stylesheet; reading time counted at 230 words per minute. Articles add no client JS
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
 - Diagrams are SVG, rendered at build time or drawn by hand; Mermaid never runs in the browser, since its runtime alone exceeds the JS budget
-- English and Chinese: English by default, with a button that switches the whole site to Chinese and back. Project content files hold both languages for every field a page shows
+- English and Chinese: English by default, with a button that switches the interface and project content to Chinese and back; article bodies stay in English (see Articles). Project content files hold both languages for every field a page shows
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)
 
 ## 4. Design guidelines

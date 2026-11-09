@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
+import { byOrder } from '../lib/projects'
 import ProjectCard from './ProjectCard.astro'
 
 const lang = toLang(Astro.currentLocale)
-const projects = await getCollection('projects')
+const projects = byOrder(await getCollection('projects'))
 ---
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>

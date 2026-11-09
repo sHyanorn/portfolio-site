@@ -70,6 +70,7 @@
 - Rationale: a new project needs one content file and no page code (D002), and the two languages of each paragraph sit side by side for review
 - Alternatives: one file per language (translations drift apart unnoticed); MDX (a free-form body the schema cannot hold to the eight sections)
 - Borrowed: content collections with the `glob()` loader and the `image()` schema helper from Astro's content collections guide
+- Amendment 2026-11-09: each project has an `order`, a positive integer that places it in project lists; `byOrder` in `src/lib/projects.ts` sorts by it and fails the build when two projects share one
 
 ## D013 Project page template
 - Date: 2026-11-09

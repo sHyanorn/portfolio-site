@@ -15,6 +15,8 @@ const projects = defineCollection({
     z.strictObject({
       /** The repository name, the title in both languages. */
       title: z.string(),
+      /** Place in project lists, from 1; no two projects share one. */
+      order: z.number().int().positive(),
       // 1. Summary and tags
       summary: text,
       tags: z.array(text).min(1),

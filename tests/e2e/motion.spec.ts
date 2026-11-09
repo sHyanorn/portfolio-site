@@ -20,6 +20,7 @@ for (const viewport of viewports) {
           const el = animated.nth(i)
           // Still below the fold: a scroll-driven entrance has not started.
           const waiting = await el.evaluate((node) =>
+            node.classList.contains('reveal') &&
             node.getBoundingClientRect().top > innerHeight
               ? getComputedStyle(node).opacity
               : '0',

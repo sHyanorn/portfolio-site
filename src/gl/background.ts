@@ -3,7 +3,9 @@
 // until the first frame, and stay when WebGL2 is missing, the shaders fail
 // to link or the context is lost; none of these throws or logs an error.
 // Reduced motion, and a renderer that shades on the CPU, get the first frame
-// only; a fine pointer moves the glows a little.
+// only; a fine pointer moves the glows a little. The loop runs at up to 30
+// frames a second while the page and the canvas are in view, and stops at the
+// current frame if the device keeps missing that pace.
 import vertexSource from './shaders/background.vert.glsl?raw'
 import fragmentSource from './shaders/background.frag.glsl?raw'
 
@@ -14,6 +16,15 @@ const MIN_SCALE = 0.5
 
 /** Renderers that shade on the CPU, where one frame takes tens of milliseconds. */
 const SOFTWARE = /SwiftShader|llvmpipe|Software/i
+
+/** Shortest time between frames: 30 a second, less 2 ms for timer jitter. */
+const FRAME_TIME = 1000 / 30 - 2
+/** Longest step of animation per frame, in seconds, so a stall never jumps the glows. */
+const MAX_STEP = 0.1
+/** A frame later than this many milliseconds is slow... */
+const SLOW_FRAME = 50
+/** ...and this many slow frames in a row stop the loop for good. */
+const SLOW_FRAMES = 10
 
 /** How far the pointer moves the glows, as a fraction of the canvas from its centre to an edge. */
 const POINTER_REACH = 0.08
@@ -63,10 +74,13 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
   const software = isSoftware(gl)
   let program: WebGLProgram | null = null
   let ready = false
+  let inView = true
+  /** Slow frames in a row; at SLOW_FRAMES the loop stops. */
+  let slow = 0
   let loc: Record<string, WebGLUniformLocation | null> = {}
   /** Seconds of animation drawn so far; 0 is also the still frame. */
   let time = 0
-  /** Timestamp of the last frame, 0 when the loop has just started. */
+  /** Timestamp of the last frame drawn, 0 when the loop has just started. */
   let last = 0
   let frame = 0
   /** Pointer position and the glows' lagging copy of it, from the centre. */
@@ -125,9 +139,15 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     update()
   }
 
-  /** Runs the loop only while motion is allowed and cheap. */
+  /** Runs the loop only while motion is allowed, cheap and in view. */
   function update() {
-    const play = ready && !software && !reduce.matches
+    const play =
+      ready &&
+      !software &&
+      !reduce.matches &&
+      slow < SLOW_FRAMES &&
+      inView &&
+      document.visibilityState === 'visible'
     if (play && !frame) {
       last = 0
       frame = requestAnimationFrame(tick)
@@ -139,15 +159,22 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
 
   function tick(now: number) {
     frame = requestAnimationFrame(tick)
-    if (last) {
-      const dt = (now - last) / 1000
-      time += dt
-      const follow = 1 - Math.exp(-dt / POINTER_LAG)
-      offset.x += (pointer.x - offset.x) * follow
-      offset.y += (pointer.y - offset.y) * follow
-      draw()
+    if (!last) {
+      last = now
+      return
     }
+    const elapsed = now - last
+    if (elapsed < FRAME_TIME) return
     last = now
+    slow = elapsed > SLOW_FRAME ? slow + 1 : 0
+    // Too slow to animate smoothly: keep the frame on screen and stop.
+    if (slow === SLOW_FRAMES) return update()
+    const dt = Math.min(elapsed / 1000, MAX_STEP)
+    time += dt
+    const follow = 1 - Math.exp(-dt / POINTER_LAG)
+    offset.x += (pointer.x - offset.x) * follow
+    offset.y += (pointer.y - offset.y) * follow
+    draw()
   }
 
   // light-dark() resolves only in a computed value, so each token passes
@@ -199,6 +226,12 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     readColors()
     draw()
   })
+
+  new IntersectionObserver(([entry]) => {
+    inView = entry.isIntersecting
+    update()
+  }).observe(canvas)
+  document.addEventListener('visibilitychange', update)
 
   // Reduced motion shows the first frame, still, without the pointer.
   reduce.addEventListener('change', () => {

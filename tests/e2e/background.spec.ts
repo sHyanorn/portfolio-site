@@ -200,3 +200,78 @@ test.describe('touch screen', () => {
     expect(await uniform(page, 'u_offset')).toEqual([0, 0])
   })
 })
+
+test('draws about 30 frames a second', async ({ page }) => {
+  await openPaused(page, BASE)
+  await page.clock.runFor(100)
+  const before = await draws(page)
+  await page.clock.runFor(1000)
+  const perSecond = (await draws(page)) - before
+  expect(perSecond).toBeGreaterThanOrEqual(28)
+  expect(perSecond).toBeLessThanOrEqual(32)
+})
+
+test('a hidden page draws nothing and resumes where it stopped', async ({
+  page,
+}) => {
+  const hide = (hidden: boolean) =>
+    page.evaluate((h) => {
+      Object.defineProperty(document, 'visibilityState', {
+        value: h ? 'hidden' : 'visible',
+        configurable: true,
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+    }, hidden)
+  await openPaused(page, BASE)
+  await page.clock.runFor(1000)
+  await hide(true)
+  const before = await draws(page)
+  const [time] = await uniform(page, 'u_time')
+  await page.clock.runFor(10_000)
+  expect(await draws(page)).toBe(before)
+
+  await hide(false)
+  await page.clock.runFor(200)
+  expect(await draws(page)).toBeGreaterThan(before)
+  const [after] = await uniform(page, 'u_time')
+  expect(after - time).toBeLessThan(0.3)
+})
+
+test('a canvas scrolled out of view draws nothing', async ({ page }) => {
+  /** Draws while the clock runs for 300 ms. */
+  const drawsOver300ms = async () => {
+    const before = await draws(page)
+    await page.clock.runFor(300)
+    return (await draws(page)) - before
+  }
+  await openPaused(page, BASE)
+  await page.evaluate(() => {
+    const spacer = document.createElement('div')
+    spacer.style.height = '300vh'
+    document.body.append(spacer)
+    scrollTo(0, 2 * innerHeight)
+  })
+  await expect.poll(drawsOver300ms).toBe(0)
+  await page.evaluate(() => scrollTo(0, 0))
+  await expect.poll(drawsOver300ms).toBeGreaterThan(0)
+})
+
+test('frames that keep coming late stop the loop on the current frame', async ({
+  page,
+}) => {
+  await openPaused(page, BASE)
+  // From here on, every frame arrives 60 ms after the one before.
+  await page.evaluate(() => {
+    window.requestAnimationFrame = (callback) =>
+      window.setTimeout(() => callback(performance.now()), 60)
+    window.cancelAnimationFrame = (id) => window.clearTimeout(id)
+  })
+  const before = await draws(page)
+  await page.clock.runFor(2000)
+  const stopped = await draws(page)
+  expect(stopped - before).toBeGreaterThan(5)
+  expect(stopped - before).toBeLessThan(12)
+  await page.clock.runFor(2000)
+  expect(await draws(page)).toBe(stopped)
+  await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+})

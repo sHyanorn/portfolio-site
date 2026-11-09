@@ -256,16 +256,35 @@ test('a canvas scrolled out of view draws nothing', async ({ page }) => {
   await expect.poll(drawsOver300ms).toBeGreaterThan(0)
 })
 
+/** From here on, every frame arrives `window.frameGap` ms after the one before. */
+async function spaceFrames(page: Page, gap: number) {
+  await page.evaluate((g) => {
+    window.frameGap = g
+    window.requestAnimationFrame = (callback) =>
+      window.setTimeout(() => callback(performance.now()), window.frameGap)
+    window.cancelAnimationFrame = (id) => window.clearTimeout(id)
+  }, gap)
+}
+
+test('a steady 20 fps keeps animating, a little over 50 ms a frame', async ({
+  page,
+}) => {
+  await openPaused(page, BASE)
+  // Three intervals of a 59.94 Hz screen are 50.05 ms; 53 ms leaves margin.
+  await spaceFrames(page, 53)
+  const before = await draws(page)
+  await page.clock.runFor(2000)
+  const after = await draws(page)
+  await page.clock.runFor(1000)
+  expect(after - before).toBeGreaterThan(30)
+  expect(await draws(page)).toBeGreaterThan(after + 15)
+})
+
 test('frames that keep coming late stop the loop on the current frame', async ({
   page,
 }) => {
   await openPaused(page, BASE)
-  // From here on, every frame arrives 60 ms after the one before.
-  await page.evaluate(() => {
-    window.requestAnimationFrame = (callback) =>
-      window.setTimeout(() => callback(performance.now()), 60)
-    window.cancelAnimationFrame = (id) => window.clearTimeout(id)
-  })
+  await spaceFrames(page, 60)
   const before = await draws(page)
   await page.clock.runFor(2000)
   const stopped = await draws(page)

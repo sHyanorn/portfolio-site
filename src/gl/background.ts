@@ -21,8 +21,13 @@ const SOFTWARE = /SwiftShader|llvmpipe|Software/i
 const FRAME_TIME = 1000 / 30 - 2
 /** Longest step of animation per frame, in seconds, so a stall never jumps the glows. */
 const MAX_STEP = 0.1
-/** A frame later than this many milliseconds is slow... */
-const SLOW_FRAME = 50
+/**
+ * A frame later than this many milliseconds is slow: under 20 a second. It
+ * sits between three and four 60 Hz intervals (50 and 66.7 ms) and between
+ * six and seven 120 Hz ones (50 and 58.3 ms), so a steady 20 fps never
+ * straddles it...
+ */
+const SLOW_FRAME = 54
 /** ...and this many slow frames in a row stop the loop for good. */
 const SLOW_FRAMES = 10
 

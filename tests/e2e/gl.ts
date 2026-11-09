@@ -9,6 +9,8 @@ declare global {
     uniforms: Record<string, number[]>
     gl?: WebGL2RenderingContext
     lose?: WEBGL_lose_context
+    /** Milliseconds between frames once a test spaces them out. */
+    frameGap?: number
   }
 }
 

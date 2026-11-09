@@ -93,3 +93,10 @@ code {
   font-family: var(--font-mono);
   font-size: 0.9em;
 }
+
+/* Shiki writes both themes as variables (D005); the colour scheme picks one. */
+.astro-code,
+.astro-code span {
+  color: light-dark(var(--shiki-light), var(--shiki-dark));
+  background-color: light-dark(var(--shiki-light-bg), var(--shiki-dark-bg));
+}

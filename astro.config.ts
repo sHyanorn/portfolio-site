@@ -1,4 +1,9 @@
+import mdx from '@astrojs/mdx'
+import { unified } from '@astrojs/markdown-remark'
 import { defineConfig } from 'astro/config'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
+import { remarkReadingTime } from './src/lib/reading-time'
 
 // Deploys take both from the GitHub Pages configuration (D007); local builds serve from the root.
 const site = process.env.SITE_URL || 'http://localhost:4321'
@@ -15,5 +20,19 @@ export default defineConfig({
     defaultLocale: 'en',
     locales: ['en', 'zh'],
     routing: { prefixDefaultLocale: false },
+  },
+  // Articles (D005): MDX through the unified pipeline, with math, reading
+  // time and highlighting at build time, so they add no client JS.
+  integrations: [mdx()],
+  markdown: {
+    processor: unified({
+      remarkPlugins: [remarkMath, remarkReadingTime],
+      rehypePlugins: [rehypeKatex],
+    }),
+    // Both themes as CSS variables; base.css picks one by colour scheme.
+    shikiConfig: {
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
+    },
   },
 })

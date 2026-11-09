@@ -4,6 +4,7 @@ project: backtest-lab
 date: 2026-11-09
 summary: "A PBO of 0.05 came almost entirely from the long-only versus long/short choice; within the long-only half it is 0.42, in a post hoc, exploratory analysis."
 math: true
+draft: true
 ---
 
 The moving-average search in backtest-lab passed its overfitting check easily, with a probability of backtest overfitting (PBO) of 0.05, well inside the green band. Almost all of that came from one yes-or-no question in the parameter grid: whether the strategy may go short. Every in-sample winner was a long-only setting. Restricted to the long-only half of the grid, the PBO is 0.42, and for the momentum search it rises from 0.12 to 0.72. So which long-only setting wins in-sample says little about which one does well out of sample.

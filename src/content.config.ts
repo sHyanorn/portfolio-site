@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { defineCollection } from 'astro:content'
 import { glob } from 'astro/loaders'
 import { z } from 'astro/zod'
@@ -57,4 +58,34 @@ const projects = defineCollection({
     }),
 })
 
-export const collections = { projects }
+/** Project ids, as the glob loader names them: the file name without `.json`. */
+const projectIds = new Set(
+  readdirSync('./src/content/projects')
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.slice(0, -'.json'.length)),
+)
+
+/**
+ * One MDX file per article (D005), naming its project. A draft waits for its
+ * project page: no page, list entry or feed item shows it.
+ */
+const articles = defineCollection({
+  loader: glob({ pattern: '*.mdx', base: './src/content/articles' }),
+  schema: z
+    .strictObject({
+      title: z.string().min(1),
+      /** The project's id, its file name in src/content/projects. */
+      project: z.string(),
+      date: z.coerce.date(),
+      summary: z.string().min(1),
+      math: z.boolean(),
+      draft: z.boolean().default(false),
+    })
+    // Unlike reference(), which only logs a missing entry, this fails the build (D012).
+    .refine((a) => a.draft || projectIds.has(a.project), {
+      message: 'names no project in src/content/projects',
+      path: ['project'],
+    }),
+})
+
+export const collections = { projects, articles }

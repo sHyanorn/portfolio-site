@@ -71,6 +71,7 @@
 - Alternatives: one file per language (translations drift apart unnoticed); MDX (a free-form body the schema cannot hold to the eight sections)
 - Borrowed: content collections with the `glob()` loader and the `image()` schema helper from Astro's content collections guide
 - Amendment 2026-11-09: each project has an `order`, a positive integer that places it in project lists; `byOrder` in `src/lib/projects.ts` sorts by it and fails the build when two projects share one
+- Amendment 2026-11-09: an article names its project by id, checked in the schema against the files in `src/content/projects/`, so a missing project fails the build without a separate check; `reference('projects')` would also log an error for each draft, whose project page has not arrived yet
 
 ## D013 Project page template
 - Date: 2026-11-09

@@ -7,9 +7,12 @@
 - [x] Deployment pipeline (D009)
 
 ## M1 Skeleton and design system
-- [ ] CSS variables: colors, fonts, spacing, dark mode
-- [ ] Layout, navigation, footer
-- [ ] Project content data structure and content for the first project (matching-engine)
+- [x] CSS variables: colors, fonts, spacing, dark mode (D010)
+- [x] Layout, navigation, footer
+- [x] Project content data structure and content for the first project (matching-engine) (D012)
+- [x] Project detail page template (D013)
+- [x] English and Chinese versions: English by default, with a language toggle button (D011)
+- [x] Entrance motion, off under reduced motion (D014)
 
 ## M2 GLSL background
 - [ ] WebGL2 initialization and full-screen quad
@@ -19,11 +22,9 @@
 
 ## M3 Pages
 - [ ] Home page
-- [ ] Project detail page template
 - [ ] About page
-- [ ] Articles list page and article page template (D005)
+- [ ] Articles list page and article page template (D005), with a build check for article references to projects (D012)
 - [ ] RSS feed
-- [ ] English and Chinese versions: English by default, with a language toggle button
 
 ## M4 Polish and launch
 - [ ] Performance and accessibility optimization, Lighthouse 95 or higher

@@ -1,7 +1,8 @@
 // Checks a deployed site: every page answers 200, every same-site link and
-// asset keeps the base and answers 200, a missing path serves the 404 page,
-// paths without a trailing slash redirect, and the feed's links all start
-// with the site address. Usage: node scripts/check-live.mjs <site URL>
+// asset keeps the base and answers 200, each page's share image is a
+// 1200×630 PNG, a missing path serves the 404 page, paths without a trailing
+// slash redirect, the sitemap lists every page, and the feed's links all
+// start with the site address. Usage: node scripts/check-live.mjs <site URL>
 const site = new URL(process.argv[2].replace(/\/?$/, '/'))
 const base = site.pathname
 
@@ -30,11 +31,15 @@ const report = (ok, msg) => {
 const get = (url) => fetch(url, { redirect: 'manual' })
 
 const refs = new Map()
+const images = new Set()
 for (const p of pages) {
   const url = new URL(p, site)
   const res = await get(url)
   report(res.status === 200, `${res.status} ${url.pathname}`)
   const html = await res.text()
+  const image = html.match(/property="og:image" content="([^"]*)"/)?.[1]
+  report(!!image?.startsWith(site.href), `${url.pathname} og:image ${image}`)
+  if (image) images.add(image)
   for (const [, name, value] of html.matchAll(
     /\s(href|src|srcset|poster|content)="([^"]*)"/g,
   )) {
@@ -61,6 +66,36 @@ for (const [path, from] of refs) {
   const res = await get(new URL(path, site.origin))
   report(res.status === 200, `${res.status} ${path} (linked from ${from})`)
 }
+
+for (const image of images) {
+  const res = await get(image)
+  const png = Buffer.from(await res.arrayBuffer())
+  const size = [png.readUInt32BE(16), png.readUInt32BE(20)].join('x')
+  report(
+    res.status === 200 &&
+      png.subarray(1, 4).toString() === 'PNG' &&
+      size === '1200x630',
+    `${res.status} ${image} is a ${size} PNG`,
+  )
+}
+
+// The sitemap: every page, each with its other language.
+const index = await (await get(new URL('sitemap-index.xml', site))).text()
+const locs = []
+for (const [, map] of index.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+  const xml = await (await get(map)).text()
+  for (const [, body] of xml.matchAll(/<url>(.*?)<\/url>/g))
+    locs.push([
+      body.match(/<loc>([^<]+)<\/loc>/)[1],
+      body.match(/hreflang=/g)?.length ?? 0,
+    ])
+}
+report(
+  locs.length === pages.length &&
+    pages.every((p) => locs.some(([loc]) => loc === new URL(p, site).href)) &&
+    locs.every(([, alternates]) => alternates === 2),
+  `sitemap lists ${locs.length} of ${pages.length} pages, each with both languages`,
+)
 
 // The feed: well formed at the level of its elements, one link and one guid
 // per item, and every link and guid under the site address.

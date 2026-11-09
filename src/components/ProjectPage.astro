@@ -38,7 +38,11 @@ const labels = Object.fromEntries(
 )
 ---
 
-<Base title={`${p.title} · Aaron Yang`} description={p.summary[lang]}>
+<Base
+  title={`${p.title} · Aaron Yang`}
+  description={p.summary[lang]}
+  image={`og/${Astro.props.project.id}.png`}
+>
   <DemoPreload slot="head" demo={p.demo} />
   <article class="project">
     <header class="intro">

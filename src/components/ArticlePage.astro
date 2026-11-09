@@ -18,7 +18,12 @@ const project = await projectOf(article)
 const { Content, remarkPluginFrontmatter } = await render(article)
 ---
 
-<Base title={`${a.title} · Aaron Yang`} description={a.summary}>
+<Base
+  title={`${a.title} · Aaron Yang`}
+  description={a.summary}
+  published={a.date}
+  image={`og/${project.id}.png`}
+>
   {
     // Only articles with math load KaTeX's stylesheet and fonts (D005).
     a.math && <link slot="head" rel="stylesheet" href={katexStyles} />

@@ -40,7 +40,7 @@ npm run build && npm run e2e
 
 ## Deploy
 
-The Deploy workflow runs by hand ([D009](docs/DECISIONS.md)). Afterwards, `node scripts/check-live.mjs <site URL>` checks the live site: pages, links and assets under the base, the 404 page, trailing-slash redirects and the feed's links. New pages go in its `routes` list.
+The Deploy workflow runs by hand ([D009](docs/DECISIONS.md)). Afterwards, `node scripts/check-live.mjs <site URL>` checks the live site: pages, links and assets under the base, share images, the sitemap, the 404 page, trailing-slash redirects and the feed's links. New pages go in its `routes` list.
 
 ## License
 

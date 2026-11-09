@@ -1,8 +1,10 @@
 import mdx from '@astrojs/mdx'
+import sitemap from '@astrojs/sitemap'
 import { unified } from '@astrojs/markdown-remark'
 import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import { LANG_TAG } from './src/lib/i18n'
 import { remarkReadingTime } from './src/lib/reading-time'
 
 // Deploys take both from the GitHub Pages configuration (D007); local builds serve from the root.
@@ -22,8 +24,12 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   // Articles (D005): MDX through the unified pipeline, with math, reading
-  // time and highlighting at build time, so they add no client JS.
-  integrations: [mdx()],
+  // time and highlighting at build time, so they add no client JS. The
+  // sitemap pairs each page with its other language, as the page heads do.
+  integrations: [
+    mdx(),
+    sitemap({ i18n: { defaultLocale: 'en', locales: LANG_TAG } }),
+  ],
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath, remarkReadingTime],

@@ -12,16 +12,20 @@ interface Props {
   description: string
   /** False on a page with no counterpart in the other language, such as the 404 page. */
   alternates?: boolean
+  /** The share image, a path under the base (BaseHead). */
+  image?: string
+  /** An article's date (BaseHead). */
+  published?: Date
 }
 
-const { title, description, alternates = true } = Astro.props
+const { title, description, alternates = true, image, published } = Astro.props
 const lang = toLang(Astro.currentLocale)
 ---
 
 <!doctype html>
 <html lang={LANG_TAG[lang]}>
   <head>
-    <BaseHead {title} {description} {lang} {alternates} />
+    <BaseHead {title} {description} {lang} {alternates} {image} {published} />
     <slot name="head" />
   </head>
   <body>

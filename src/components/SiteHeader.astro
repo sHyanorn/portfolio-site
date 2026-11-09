@@ -1,0 +1,81 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import { LANG_TAG, otherLang, pagePath, t, type Lang } from '../lib/i18n'
+
+interface Props {
+  lang: Lang
+  /** False on a page with no counterpart in the other language. */
+  alternates: boolean
+}
+
+const { lang, alternates } = Astro.props
+const other = otherLang(lang)
+const path = pagePath(Astro.url.pathname)
+const home = getRelativeLocaleUrl(lang)
+---
+
+<header class="header">
+  <nav class="nav wrap">
+    <a
+      class="name"
+      href={home}
+      aria-current={path === '' && alternates ? 'page' : undefined}
+    >
+      Aaron Yang
+    </a>
+    <ul class="links">
+      <li>
+        <a
+          href={`${home}#projects`}
+          aria-current={path.startsWith('projects/') ? 'true' : undefined}
+        >
+          {t(lang, 'projects')}
+        </a>
+      </li>
+      {alternates && (
+        <li>
+          <a
+            href={getRelativeLocaleUrl(other, path)}
+            hreflang={LANG_TAG[other]}
+            lang={LANG_TAG[other]}
+          >
+            {t(lang, 'language')}
+          </a>
+        </li>
+      )}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--space-6);
+  }
+
+  .name {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .links {
+    display: flex;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+  }
+
+  .links a:hover,
+  .links a[aria-current] {
+    color: var(--color-text);
+  }
+</style>

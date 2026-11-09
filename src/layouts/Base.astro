@@ -1,9 +1,10 @@
 ---
 import '../styles/tokens.css'
 import '../styles/base.css'
-import { getRelativeLocaleUrl } from 'astro:i18n'
 import BaseHead from '../components/BaseHead.astro'
-import { LANG_TAG, otherLang, pagePath, t, toLang } from '../lib/i18n'
+import SiteFooter from '../components/SiteFooter.astro'
+import SiteHeader from '../components/SiteHeader.astro'
+import { LANG_TAG, t, toLang } from '../lib/i18n'
 
 interface Props {
   title: string
@@ -14,7 +15,6 @@ interface Props {
 
 const { title, description, alternates = true } = Astro.props
 const lang = toLang(Astro.currentLocale)
-const other = otherLang(lang)
 ---
 
 <!doctype html>
@@ -23,41 +23,44 @@ const other = otherLang(lang)
     <BaseHead {title} {description} {lang} {alternates} />
   </head>
   <body>
-    <header>
-      <nav>
-        <a href={getRelativeLocaleUrl(lang)}>Aaron Yang</a>
-        {alternates && (
-          <a
-            href={getRelativeLocaleUrl(other, pagePath(Astro.url.pathname))}
-            hreflang={LANG_TAG[other]}
-            lang={LANG_TAG[other]}
-          >
-            {t(lang, 'language')}
-          </a>
-        )}
-      </nav>
-    </header>
-    <slot />
+    <a class="skip" href="#main">
+      {t(lang, 'skip')}
+    </a>
+    <SiteHeader {lang} {alternates} />
+    <main id="main" class="wrap">
+      <slot />
+    </main>
+    <SiteFooter />
   </body>
 </html>
 
-<style is:global>
-  main {
-    max-width: var(--width-page);
-    margin: 0 auto;
-    padding: var(--space-7) var(--gutter);
-  }
-
-  main h1 {
-    margin-bottom: var(--space-3);
-    font-size: var(--step-4);
-  }
-
-  main ul {
+<style>
+  body {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-3);
-    padding: 0;
-    list-style: none;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  main {
+    flex: 1;
+    padding-top: var(--space-5);
+  }
+
+  .skip {
+    position: absolute;
+    top: var(--space-1);
+    left: var(--space-1);
+    z-index: 1;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-2);
+    background: var(--color-accent-solid);
+    color: #fff;
+    font-weight: 500;
+    text-decoration: none;
+    translate: 0 calc(-100% - var(--space-2));
+  }
+
+  .skip:focus-visible {
+    translate: none;
   }
 </style>

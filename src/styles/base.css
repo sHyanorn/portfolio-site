@@ -83,6 +83,12 @@ video {
   height: auto;
 }
 
+/* The page column, with a gutter on narrow screens. */
+.wrap {
+  width: min(var(--width-page), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
 code {
   font-family: var(--font-mono);
   font-size: 0.9em;

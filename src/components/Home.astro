@@ -6,9 +6,9 @@ const lang = toLang(Astro.currentLocale)
 ---
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>
-  <main>
+  <section class="intro">
     <h1>Aaron Yang</h1>
-    <ul>
+    <ul class="contact">
       <li>
         <a href="mailto:yang341133@gmail.com">yang341133@gmail.com</a>
       </li>
@@ -16,5 +16,38 @@ const lang = toLang(Astro.currentLocale)
         <a href="https://github.com/sHyanorn">GitHub</a>
       </li>
     </ul>
-  </main>
+  </section>
 </Base>
+
+<style>
+  .intro {
+    padding-block: var(--space-6) var(--space-5);
+  }
+
+  h1 {
+    font-size: var(--step-5);
+    line-height: 1.1;
+  }
+
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    margin-top: var(--space-3);
+    padding: 0;
+    color: var(--color-text-muted);
+    list-style: none;
+  }
+
+  .contact a {
+    text-decoration-color: var(--color-border-strong);
+    transition:
+      color var(--duration-fast),
+      text-decoration-color var(--duration-fast);
+  }
+
+  .contact a:hover {
+    color: var(--color-text);
+    text-decoration-color: currentColor;
+  }
+</style>

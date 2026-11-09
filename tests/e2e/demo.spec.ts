@@ -1,7 +1,8 @@
 // A project's demo video, or its first screenshot, keeps its aspect ratio,
 // sits in the middle of the column and ends on the first screen, so a
 // video's controls show without scrolling. Screenshots number two to four,
-// each with alt text and a caption; later ones fit one screen each.
+// each with alt text, a caption and a link that wraps it; later ones fit
+// one screen each.
 import { expect, test } from '@playwright/test'
 import { pages } from './site'
 
@@ -34,6 +35,22 @@ for (const viewport of viewports) {
             .locator('.demo figcaption')
             .allTextContents())
             expect(caption.trim()).toBeTruthy()
+          // Each screenshot's link is one box round it, so its focus ring
+          // goes round the screenshot; an inline link around a block image
+          // splits into empty boxes that the ring is drawn on instead.
+          for (const shot of await shots.all()) {
+            const [boxes, link, img] = await shot.evaluate((el) => {
+              const a = el.closest('a')!
+              const box = (r: DOMRect) => [r.width, r.height]
+              return [
+                a.getClientRects().length,
+                box(a.getBoundingClientRect()),
+                box(el.getBoundingClientRect()),
+              ]
+            })
+            expect(boxes, 'screenshot link boxes').toBe(1)
+            expect(link).toEqual(img)
+          }
           for (const later of (await shots.all()).slice(1)) {
             const { height } = (await later.boundingBox())!
             expect(height, 'later screenshot height').toBeLessThanOrEqual(

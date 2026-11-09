@@ -32,3 +32,9 @@
 - Date: 2026-11-09
 - Decision: `compressHTML: true`, the behaviour before Astro 7, instead of Astro 7's default `'jsx'`
 - Rationale: under `'jsx'`, whitespace that contains a line break is removed, so inline elements on separate lines render with no space between them. Prettier formats `.astro` files by HTML whitespace rules and moves inline elements onto separate lines, so the two together would drop spaces from the text
+
+## D007 Site URL and base path from the environment
+- Date: 2026-11-09
+- Decision: `astro.config.ts` reads `site` from `SITE_URL` and `base` from `BASE_PATH`, falling back to the local root. The deploy workflow takes both from `actions/configure-pages`, which reports the origin and path GitHub Pages serves the site from. Internal links go through `withBase()` or Astro's locale helpers, and no page writes the base itself
+- Rationale: renaming the repository to `sHyanorn.github.io` or adding a custom domain changes only the repository settings. CI builds under a non-root base, so a link that ignores the base fails the link check
+- Borrowed: `site` and `base` from Astro's GitHub Pages guide, which writes both into the config; here they come from the Pages configuration instead

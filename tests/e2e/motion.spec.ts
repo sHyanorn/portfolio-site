@@ -19,12 +19,16 @@ for (const viewport of viewports) {
         for (let i = 0; i < (await animated.count()); i++) {
           const el = animated.nth(i)
           // Still below the fold: a scroll-driven entrance has not started.
-          const waiting = await el.evaluate((node) =>
-            node.classList.contains('reveal') &&
-            node.getBoundingClientRect().top > innerHeight
-              ? getComputedStyle(node).opacity
-              : '0',
-          )
+          // The view timeline follows the layout box, so the entrance's own
+          // downward shift does not count.
+          const waiting = await el.evaluate((node) => {
+            const { opacity, translate } = getComputedStyle(node)
+            const shift = parseFloat(translate.split(' ')[1] ?? '0')
+            return node.classList.contains('reveal') &&
+              node.getBoundingClientRect().top - shift > innerHeight
+              ? opacity
+              : '0'
+          })
           expect(waiting, 'hidden until scrolled to').toBe('0')
           await el.evaluate((node) => node.scrollIntoView({ block: 'center' }))
           await expect

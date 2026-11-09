@@ -4,7 +4,7 @@ project: backtest-lab
 date: 2026-11-09
 summary: "A PBO of 0.05 came almost entirely from the long-only versus long/short choice; within the long-only half it is 0.42, in a post hoc, exploratory analysis."
 math: true
-draft: true
+draft: false
 ---
 
 The moving-average search in backtest-lab passed its overfitting check easily, with a probability of backtest overfitting (PBO) of 0.05, well inside the green band. Almost all of that came from one yes-or-no question in the parameter grid: whether the strategy may go short. Every in-sample winner was a long-only setting. Restricted to the long-only half of the grid, the PBO is 0.42, and for the momentum search it rises from 0.12 to 0.72. So which long-only setting wins in-sample says little about which one does well out of sample.
@@ -32,7 +32,7 @@ In the registered results, PBO was 0.05 for the moving average and 0.12 for mome
 
 A PBO of 0.05 means the in-sample winner nearly always lands in the top half out of sample. What those winners share shows up in this table:
 
-| | Moving average | Momentum |
+| Measure | Moving average | Momentum |
 |---|---|---|
 | Sharpe range, long-only settings | 0.49 to 0.80 | 0.54 to 0.79 |
 | Sharpe range, long/short settings | 0.02 to 0.51 | 0.01 to 0.53 |
@@ -42,7 +42,7 @@ On SPY over these samples, which start in 1994, going short has been costly, so 
 
 Running CSCV again on the long-only half alone:
 
-| | Moving average | Momentum |
+| Measure | Moving average | Momentum |
 |---|---|---|
 | PBO, whole grid (registered) | 0.05 | 0.12 |
 | PBO, long-only half | 0.42 (64 settings) | 0.72 (17 settings) |

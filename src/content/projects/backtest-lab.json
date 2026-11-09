@@ -1,0 +1,313 @@
+{
+  "title": "backtest-lab",
+  "order": 3,
+  "summary": {
+    "en": "A backtesting platform that tests whether a strategy is probably overfit: it runs a parameter search, then judges the winner with walk-forward analysis, purged cross-validation, the probability of backtest overfitting and the deflated Sharpe ratio.",
+    "zh": "一个回测平台，用来判断一个策略是否很可能过拟合：先做参数搜索，再用滚动前推分析、清洗交叉验证、回测过拟合概率和紧缩夏普比率来评判搜出的最优参数。"
+  },
+  "tags": [
+    {
+      "en": "Python",
+      "zh": "Python"
+    },
+    {
+      "en": "Quantitative research",
+      "zh": "量化研究"
+    },
+    {
+      "en": "Backtest overfitting",
+      "zh": "回测过拟合"
+    },
+    {
+      "en": "FastAPI",
+      "zh": "FastAPI"
+    },
+    {
+      "en": "React",
+      "zh": "React"
+    }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./backtest-lab/random-control.png",
+        "alt": {
+          "en": "Eight check cards for the random-signal control: holdout split, walk-forward analysis, purged cross-validation, deflated Sharpe ratio, minimum backtest length and parameter sensitivity fail; the probability of backtest overfitting, 0.299, and the probabilistic Sharpe ratio are borderline.",
+          "zh": "随机信号对照组的八张检验卡片：样本外留出、滚动前推分析、清洗交叉验证、紧缩夏普比率、最短回测长度和参数敏感性均不通过；回测过拟合概率 0.299 和概率夏普比率为临界。"
+        },
+        "caption": {
+          "en": "The random-signal control: the best of 100 settings with no skill fails six of the eight checks.",
+          "zh": "随机信号对照组：100 组毫无预测能力的参数中，最好的一组在八项检验中有六项不通过。"
+        }
+      },
+      {
+        "src": "./backtest-lab/dashboard.png",
+        "alt": {
+          "en": "The dashboard's report on the moving-average search: a borderline verdict with one borderline check out of eight, a table against SPY buy and hold, and equity on a log scale with drawdown below it from 1994 to 2026.",
+          "zh": "仪表盘上均线交叉搜索的报告：总体结论为临界，八项检验中一项临界；旁边是与 SPY 买入持有的对比表，下方是 1994 到 2026 年对数坐标的净值曲线及其回撤。"
+        },
+        "caption": {
+          "en": "The moving-average search: borderline overall, because its deflated Sharpe ratio of 0.945 is just under 0.95.",
+          "zh": "均线交叉搜索：总体结论为临界，因为紧缩夏普比率 0.945，略低于 0.95。"
+        }
+      },
+      {
+        "src": "./backtest-lab/post-hoc.png",
+        "alt": {
+          "en": "The post hoc panel, marked not pre-registered: Sharpe ranges of 0.49 to 0.80 for long-only settings and 0.02 to 0.51 for long/short ones, a PBO of 0.05 for the whole grid against 0.42 within the long-only half, and the three deepest SPY drawdowns.",
+          "zh": "标注为“未预注册”的事后分析面板：只做多的参数夏普比率在 0.49 到 0.80 之间，多空参数在 0.02 到 0.51 之间；整个网格的回测过拟合概率为 0.05，只看做多的一半则为 0.42；另列出 SPY 最深的三次回撤。"
+        },
+        "caption": {
+          "en": "Post hoc, not pre-registered: every in-sample winner is long only, and within the long-only half the PBO rises from 0.05 to 0.42.",
+          "zh": "事后分析，未预注册：样本内的最优参数全部只做多；只在做多的一半里比较，回测过拟合概率从 0.05 升到 0.42。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": {
+          "en": "6 of 8",
+          "zh": "6 / 8"
+        },
+        "label": {
+          "en": "checks failed by the best of 100 random-signal settings, whose Sharpe ratio is still positive at 0.23",
+          "zh": "100 组随机信号参数中最好的一组未通过的检验项；它的夏普比率仍为正，是 0.23"
+        }
+      },
+      {
+        "value": {
+          "en": "0.05 → 0.42",
+          "zh": "0.05 → 0.42"
+        },
+        "label": {
+          "en": "probability of backtest overfitting of the moving-average search, over the whole grid and within its long-only half (post hoc)",
+          "zh": "均线交叉搜索的回测过拟合概率，分别对应整个网格和只做多的一半（事后分析）"
+        }
+      },
+      {
+        "value": {
+          "en": "89.5%",
+          "zh": "89.5%"
+        },
+        "label": {
+          "en": "of 200 simulated searches with no skill above the PBO red line of 0.30, set before any real data was used",
+          "zh": "200 次模拟的无预测能力搜索中，回测过拟合概率超过红线 0.30 的比例；红线在使用任何真实数据之前就已定下"
+        }
+      },
+      {
+        "value": {
+          "en": "0.80 / 0.64",
+          "zh": "0.80 / 0.64"
+        },
+        "label": {
+          "en": "Sharpe ratio of the selected moving-average setting against SPY buy and hold, owed to lower volatility: 12.5% against 18.7%",
+          "zh": "选中的均线参数与 SPY 买入持有各自的夏普比率；优势来自更低的波动率，12.5% 对 18.7%"
+        }
+      }
+    ],
+    "note": {
+      "en": "Three searches on SPY from January 1993 to October 2026, fixed before any strategy was run on real data, with returns net of 1 bp fees and 5 bps slippage per side. Post hoc figures are labelled as such and carry no confirmatory weight.",
+      "zh": "三次搜索都在 SPY 1993 年 1 月到 2026 年 10 月的数据上进行，配置在任何策略接触真实数据之前就已固定，收益已扣除单边 1 个基点的费用和 5 个基点的滑点。事后分析的数字都单独标明，不作为确证依据。"
+    },
+    "source": {
+      "label": {
+        "en": "Demo results",
+        "zh": "演示结果"
+      },
+      "url": "https://github.com/sHyanorn/backtest-lab/blob/024e74384aee8b2bd661252ae2242400e93fbead/docs/DEMO.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "A parameter search always finds a winner, even among settings with no skill. backtest-lab runs the search, records every trial, and then asks whether the winner is probably overfit, with walk-forward analysis, purged cross-validation, the probability of backtest overfitting (PBO) and the deflated Sharpe ratio, among eight checks. Each check gets a red, yellow or green verdict and one plain sentence, in a credibility report the dashboard renders.",
+      "zh": "参数搜索总能找出一个最优解，哪怕所有参数都毫无预测能力。backtest-lab 跑完搜索、记下每一次试验，然后判断这个最优解是否很可能过拟合，用到的方法有滚动前推分析、清洗交叉验证、回测过拟合概率（PBO）和紧缩夏普比率，共八项检验。每项检验给出红、黄、绿三档结论和一句通俗的解释，汇总成一份可信度报告，由仪表盘展示。"
+    },
+    {
+      "en": "The specification asked for daily prices from yfinance and macro data from FRED, stored as Parquet and queried with DuckDB, with quality checks and a weekly update in GitHub Actions; a daily, multi-asset engine with long and short positions, trading costs and slippage; a grid search that keeps every trial, which multiple-testing corrections need; and a React dashboard. The formulas went into a methods document before any of them was implemented.",
+      "zh": "规格定下的要求有：日线价格取自 yfinance，宏观数据取自 FRED，存为 Parquet、用 DuckDB 查询，配有数据质量检查，并由 GitHub Actions 每周更新；回测引擎按日频运行，支持多资产和多空，计入交易成本和滑点；网格搜索保留每一次试验，多重检验校正需要这些记录；另有一个 React 仪表盘。所有公式都先写进方法文档，然后才开始实现。"
+    },
+    {
+      "en": "The demo trades SPY only; the individual stocks in the data were chosen because they exist today, which is survivorship bias. Cash earns nothing and shorts pay no borrow fee, and macro data is the latest revised vintage. Passing the checks says a result is unlikely to come from the search alone; whether it beats the market is a separate question, which each report answers apart.",
+      "zh": "演示只交易 SPY；数据里的个股是因为今天仍然存在才被选中的，带有幸存者偏差。现金没有利息，做空不付借券费，宏观数据用的是最新修订版。通过这些检验，只说明结果不太可能仅仅来自参数搜索；能否跑赢市场是另一个问题，每份报告都把两者分开回答。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "workflow": {
+        "en": "weekly workflow",
+        "zh": "每周工作流"
+      },
+      "actions": {
+        "en": "GitHub Actions",
+        "zh": "GitHub Actions"
+      },
+      "update": {
+        "en": "data update",
+        "zh": "数据更新"
+      },
+      "fetch": {
+        "en": "yfinance, FRED, checks",
+        "zh": "yfinance、FRED，质量检查"
+      },
+      "store": {
+        "en": "Parquet + DuckDB",
+        "zh": "Parquet + DuckDB"
+      },
+      "engine": {
+        "en": "engine",
+        "zh": "回测引擎"
+      },
+      "fills": {
+        "en": "next-open fills, costs",
+        "zh": "次日开盘成交，计入成本"
+      },
+      "validation": {
+        "en": "validation",
+        "zh": "过拟合检验"
+      },
+      "checks": {
+        "en": "grid search, 8 checks",
+        "zh": "网格搜索，8 项检验"
+      },
+      "results": {
+        "en": "registered results",
+        "zh": "预注册结果"
+      },
+      "frozen": {
+        "en": "frozen JSON",
+        "zh": "冻结的 JSON"
+      },
+      "dashboard": {
+        "en": "React dashboard",
+        "zh": "React 仪表盘"
+      },
+      "pages": {
+        "en": "GitHub Pages",
+        "zh": "GitHub Pages"
+      },
+      "api": {
+        "en": "FastAPI",
+        "zh": "FastAPI"
+      },
+      "local": {
+        "en": "local only",
+        "zh": "仅限本机"
+      },
+      "returns": {
+        "en": "returns",
+        "zh": "收益"
+      },
+      "reports": {
+        "en": "reports",
+        "zh": "报告"
+      },
+      "reads": {
+        "en": "reads",
+        "zh": "读取"
+      },
+      "sweep": {
+        "en": "custom sweep",
+        "zh": "自定义搜索"
+      }
+    },
+    "description": {
+      "en": "A weekly GitHub Actions workflow fetches prices from yfinance and macro series from FRED, runs the quality checks and keeps the data as Parquet, queried with DuckDB; raw data is never committed. The engine turns each setting of a grid into daily returns, filled at the next open and net of costs, and the validation package runs the grid search and the eight checks on the stored trials and writes a credibility report. The three registered reports were produced once and are frozen, checked against their SHA-256 sums in CI. The React dashboard on GitHub Pages reads only the committed reports. Run locally, it can also send a custom sweep to a FastAPI service bound to 127.0.0.1, which runs the same engine and validation and returns a report in the same format.",
+      "zh": "每周一次的 GitHub Actions 工作流从 yfinance 抓取价格、从 FRED 抓取宏观序列，跑完质量检查后把数据存为 Parquet，用 DuckDB 查询；原始数据从不提交进仓库。回测引擎把网格里的每组参数变成每日收益，按次日开盘成交并扣除成本；检验模块在存下的试验上做网格搜索和八项检验，写出可信度报告。三份预注册报告只生成一次，之后冻结，CI 会核对它们的 SHA-256 校验和。GitHub Pages 上的 React 仪表盘只读取仓库里提交的报告。在本机运行时，仪表盘还能把自定义搜索发给只监听 127.0.0.1 的 FastAPI 服务，由它调用同一套引擎和检验，返回同样格式的报告。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D021",
+        "title": {
+          "en": "A demo registered in advance",
+          "zh": "事先登记的演示"
+        },
+        "body": {
+          "en": "The three demo searches were fixed before any strategy ran on real data: SPY from January 1993 to October 2026 at default costs, a moving-average crossover over 128 settings, time-series momentum over 34, and a random-signal control over 100 seeds, with every check's settings fixed as well. SPY buy and hold is reported beside each winner but takes no part in any verdict: with a zero risk-free rate and the equity premium, a long-biased strategy can look significant just by holding the market. The configuration was not changed after the results were seen.",
+          "zh": "三组演示搜索在任何策略接触真实数据之前就已固定：SPY 1993 年 1 月到 2026 年 10 月，默认交易成本；均线交叉 128 组参数，时间序列动量 34 组，随机信号对照组 100 个随机种子；每项检验的设置也同时定下。每个最优参数旁边都列出 SPY 买入持有作为参照，但它不参与任何结论：无风险利率取零，又有股权溢价，偏多头的策略光靠持有市场就可能显得显著。看到结果之后，配置没有再改。"
+        }
+      },
+      {
+        "id": "D022",
+        "title": {
+          "en": "Thresholds set from the null",
+          "zh": "由零假设定下的阈值"
+        },
+        "body": {
+          "en": "The verdict thresholds were fixed before any real-data run, so they could not be fitted to the demo. The red line for PBO came from searches with no skill: over 200 simulated ones, PBO averaged 0.488 and 89.5% were above 0.30, so such a search is red about nine times in ten. Green, up to 0.10, follows the paper's remark on investors sensitive to a PBO below 1/10. The overall verdict is the worst of the eight.",
+          "zh": "结论阈值在用真实数据跑任何东西之前就已定下，没法反过来迁就演示结果。PBO 的红线取自毫无预测能力的搜索：200 次模拟中，PBO 平均为 0.488，89.5% 高于 0.30，所以这样的搜索大约十次里有九次判红。绿档上限 0.10，依据是原论文提到有些投资者只接受低于 1/10 的 PBO。总体结论取八项中最差的一项。"
+        }
+      },
+      {
+        "id": "D013",
+        "title": {
+          "en": "Fills at the next open",
+          "zh": "次日开盘成交"
+        },
+        "body": {
+          "en": "Target weights are decided at the close of day t and traded at the open of t+1. The day's return compounds the overnight gap, earned by the previous positions, with the open-to-close return of the new ones, and costs are taken at the open between the two. A signal never fills before t+1, which matches the one-day information interval the purged cross-validation assumes. Opens take the same day's dividend adjustment as the close, and since back-adjustment rescales all earlier prices by one constant, signals must be scale-invariant functions of prices to stay free of look-ahead.",
+          "zh": "目标仓位在第 t 日收盘时决定，第 t+1 日开盘时成交。当天的收益由两段复合而成：旧仓位赚取的隔夜跳空，加上新仓位从开盘到收盘的收益，交易成本在两段之间的开盘时扣除。信号最早在 t+1 成交，与清洗交叉验证假定的一天信息区间一致。开盘价和当天收盘价用同一个复权因子调整；回溯复权会把此前所有价格乘上同一个常数，所以信号必须是价格的尺度不变函数，才不会引入前视偏差。"
+        }
+      },
+      {
+        "id": "D029",
+        "title": {
+          "en": "Post hoc analyses kept apart",
+          "zh": "事后分析单独存放"
+        },
+        "body": {
+          "en": "The demo's conclusions come from the registered results alone. Analyses chosen after seeing them, such as the long-only half of each grid, the in-sample winners of the cross-validation splits and the comparison with buy and hold in its deepest drawdowns, live in their own module and results directory and are labelled post hoc wherever they appear. Choosing which subset to show after seeing the results is itself a selection, the effect the project measures.",
+          "zh": "演示的结论只来自预注册结果。看到结果之后才决定做的分析，比如每个网格里只做多的一半、交叉验证各次切分中的样本内最优参数、与买入持有在最深几次回撤中的对比，都放在单独的模块和结果目录里，出现在任何地方都标注为事后分析。看过结果再挑选展示哪一部分，本身就是一种选择，而这正是这个项目要度量的效应。"
+        }
+      },
+      {
+        "id": "D030",
+        "title": {
+          "en": "Charts on d3-scale and d3-shape",
+          "zh": "用 d3-scale 和 d3-shape 画图"
+        },
+        "body": {
+          "en": "The dashboard's four chart forms are small React components that draw SVG with d3-scale and d3-shape, coloured with CSS variables so both themes come from one stylesheet. Measured as the gzipped size of a minimal line chart: ECharts 6 with tree-shaken imports 176 kB, Recharts 3 71 kB, visx 45 kB, uPlot 23 kB with no heat map, and d3-scale with d3-shape 16 kB. Every chart can be focused from the keyboard, gives a spoken readout and has a data table beside it.",
+          "zh": "仪表盘的四类图表都是小型 React 组件，用 d3-scale 和 d3-shape 画 SVG，颜色取自 CSS 变量，明暗两套主题共用一份样式表。以一张最简折线图打包后 gzip 的体积来比较：按需引入的 ECharts 6 为 176 kB，Recharts 3 为 71 kB，visx 为 45 kB，uPlot 为 23 kB 但没有热力图，d3-scale 加 d3-shape 只有 16 kB。每张图都能用键盘聚焦，有可朗读的数值说明，旁边还配有数据表。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/backtest-lab/blob/024e74384aee8b2bd661252ae2242400e93fbead/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "A sweep that sat flat without an error",
+        "zh": "悄无声息空仓的参数搜索"
+      },
+      "body": {
+        "en": "Sweeps through the API kept the benchmark's dates as well as the traded ticker's. A bar missing from the traded ticker then became a row of NaN, and each rolling indicator stayed NaN for a full window after it, so the strategy sat flat for up to `slow` or `lookback` days without an error, and the sweep disagreed with a single backtest of the same parameters. A sweep now runs on the dates where a traded ticker has a price; the benchmark is a column on those dates, and one missing a bar there fails the sweep with the engine's message. The registered demo trades and benchmarks SPY only, so it was unaffected.",
+        "zh": "通过 API 发起的参数搜索，除了交易标的的日期，还保留了基准的日期。交易标的一旦缺一根 K 线，那一行就成了 NaN，之后每个滚动指标都会在整整一个窗口内保持 NaN，策略于是空仓长达 `slow` 或 `lookback` 天，却不报任何错误，搜索结果也和同样参数的单次回测对不上。现在搜索只用交易标的有价格的日期，基准只是这些日期上的一列；基准在其中某天缺数据时，搜索直接失败，并给出引擎的报错信息。预注册演示的交易标的和基准都是 SPY，不受影响。"
+      }
+    },
+    {
+      "title": {
+        "en": "Stale opens in the price data",
+        "zh": "价格数据里的陈旧开盘价"
+      },
+      "body": {
+        "en": "Of 8,497 SPY bars from 1993 to October 2026, 159 have an open equal to the previous close. In 2016 and 2017, 21.7% of these also equal the day's high or low, against 0.4% of other days, which points to stale data; a stale open turns a fill at the next open into a fill at the close that formed the signal. The data checks now warn about such bars without changing them. Replacing the 159 opens with draws from each year's overnight volatility over 30 seeds, or with the day's low or high, left every moving-average and momentum verdict unchanged, and the control stayed red overall in every variant.",
+        "zh": "1993 年到 2026 年 10 月的 8,497 根 SPY 日线中，有 159 根的开盘价等于前一天的收盘价。在 2016 和 2017 年，这类开盘价有 21.7% 同时等于当天的最高价或最低价，其他交易日只有 0.4%，说明数据很可能是陈旧的；开盘价一旦陈旧，按次日开盘成交实际上就变成了按产生信号的那个收盘价成交。数据检查现在会对这类 K 线发出警告，但不改动数据。把这 159 个开盘价换成按当年隔夜波动率随机抽取的值（30 个随机种子），或换成当天的最低价、最高价，均线和动量的所有结论都没有变化，对照组的总体结论在每种替换下都仍是红色。"
+      }
+    },
+    {
+      "title": {
+        "en": "Two definitions of PBO",
+        "zh": "PBO 的两种定义"
+      },
+      "body": {
+        "en": "The code counts a split as overfit when its logit is at most 0, the estimator of Bailey et al. (2017, Section 3.1), while their Definition 2.2 counts only ranks below N/2. For an even number of settings N the two also differ at rank N/2, which the estimator counts; the methods document had said they differ only at a logit of 0, which holds for an odd number only. Under Definition 2.2 the registered searches give 585, 1,393 and 3,748 overfit splits of 12,870 instead of 607, 1,590 and 3,853, a PBO of 0.045, 0.108 and 0.291, with every verdict the same, so the registered reports keep the estimator.",
+        "zh": "代码在一次切分的 logit 不大于 0 时就算作过拟合，这是 Bailey 等人（2017）第 3.1 节的估计量；而他们的定义 2.2 只计入低于 N/2 的排名。参数组数 N 为偶数时，两者在排名 N/2 上也有差别，估计量会把它算进去；方法文档原先说两者只在 logit 等于 0 时不同，这只对奇数组成立。按定义 2.2，三组预注册搜索在 12,870 次切分中分别有 585、1,393 和 3,748 次过拟合，而不是 607、1,590 和 3,853，对应 PBO 为 0.045、0.108 和 0.291，所有结论都不变，所以预注册报告保留原来的估计量。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/backtest-lab"
+}

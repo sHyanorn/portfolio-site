@@ -10,7 +10,9 @@ const routes = [
   '',
   'articles/',
   'articles/cryptography-held/',
+  'articles/low-pbo-easy-question/',
   'articles/order-book-cpu/',
+  'projects/backtest-lab/',
   'projects/matching-engine/',
   'projects/vault-share/',
 ]

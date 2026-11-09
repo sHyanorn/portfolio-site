@@ -1,7 +1,7 @@
 # Task List
 
 ## M0 Setup
-- [ ] Choose the static generation approach (vite-plugin-ssg or Astro) and record it in DECISIONS.md
+- [x] Choose the static generation approach: Astro (D003)
 - [ ] Configure oxlint, Prettier, Vitest
 - [ ] CI: build, tests, Lighthouse CI
 - [ ] Deployment pipeline

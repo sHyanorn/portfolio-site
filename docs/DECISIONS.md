@@ -8,8 +8,11 @@
 - Date: 2026-11-04
 - Rationale: each finished project only needs one new content file
 
-## D003 Static generation approach
-- Date: TBD, to be decided in M0
+## D003 Astro for static generation
+- Date: 2026-11-09
+- Decision: Astro with static output. React is used only for two islands: the GLSL background and the language toggle
+- Rationale: content collections, MDX, RSS and Shiki highlighting are built in or official integrations; pages ship no JS unless they contain an island, which keeps the 150 KB budget easy to hold
+- Alternatives: vite-plugin-ssg (every page hydrates React; MDX, RSS and highlighting are assembled by hand)
 
 ## D004 oxlint instead of ESLint
 - Date: 2026-11-06

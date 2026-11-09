@@ -30,7 +30,7 @@ Fixed structure:
 
 ## 3. Technical approach
 
-- Vite + React + TypeScript with static generation (vite-plugin-ssg or Astro, to be decided in M0)
+- Astro + TypeScript with static output (D003); React only for two islands, the GLSL background and the language toggle
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
 - English and Chinese: English by default, with a button that switches the whole site to Chinese and back
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)

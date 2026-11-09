@@ -62,17 +62,26 @@ const home = getRelativeLocaleUrl(lang)
 </header>
 
 <style>
+  /* Where the name and the links do not fit on one line, the links move to
+     a second line instead of breaking inside a name or a label. */
   .nav {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-3);
+    gap: var(--space-1) var(--space-3);
     min-height: var(--space-6);
+    padding-block: var(--space-2);
   }
 
   .name {
     font-weight: 600;
     text-decoration: none;
+  }
+
+  .name,
+  .links a {
+    white-space: nowrap;
   }
 
   .links {

@@ -1,10 +1,13 @@
 ---
 import { getImage } from 'astro:assets'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import type { CollectionEntry } from 'astro:content'
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
 import Base from '../layouts/Base.astro'
+import { publishedArticles } from '../lib/articles'
 import { t, toLang } from '../lib/i18n'
 import { withBase } from '../lib/paths'
+import RepoLink from './RepoLink.astro'
 import Tags from './Tags.astro'
 import Text from './Text.astro'
 
@@ -14,6 +17,9 @@ interface Props {
 
 const p = Astro.props.project.data
 const lang = toLang(Astro.currentLocale)
+const article = (await publishedArticles()).find(
+  (a) => a.data.project === Astro.props.project.id,
+)
 const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 
 // Each project's diagram is drawn by hand in architecture/<slug>.astro (D013).
@@ -136,9 +142,18 @@ const labels = Object.fromEntries(
     </section>
 
     <footer class="links reveal">
-      <a class="repo" href={p.repo}>
-        {t(lang, 'repo')}
-      </a>
+      {article && (
+        <p class="article">
+          <span>{t(lang, 'article')}</span>
+          <a
+            href={getRelativeLocaleUrl(lang, `articles/${article.id}/`)}
+            lang="en"
+          >
+            {article.data.title}
+          </a>
+        </p>
+      )}
+      <RepoLink href={p.repo} {lang} />
     </footer>
   </article>
 </Base>
@@ -282,23 +297,24 @@ const labels = Object.fromEntries(
     font-weight: 400;
   }
 
-  .repo {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--space-5);
-    padding: 0 var(--space-3);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-2);
-    font-weight: 500;
-    text-decoration: none;
-    transition:
-      border-color var(--duration-fast) var(--ease-out),
-      background-color var(--duration-fast) var(--ease-out);
+  .article {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: var(--width-prose);
+    margin-bottom: var(--space-4);
   }
 
-  .repo:hover {
-    border-color: var(--color-border-strong);
-    background: var(--color-bg-subtle);
+  .article span {
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+
+  .article a {
+    color: var(--color-accent);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.4;
   }
 
   @media (max-width: 30rem) {

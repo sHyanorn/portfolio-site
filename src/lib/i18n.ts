@@ -41,10 +41,29 @@ const ui = {
   decisionLog: { en: 'Decision log', zh: '决策记录' },
   challenges: { en: 'Challenges', zh: '难点与解法' },
   repo: { en: 'Source on GitHub', zh: 'GitHub 源码' },
+  project: { en: 'Project', zh: '项目' },
+  article: { en: 'Article', zh: '文章（英文）' },
 } satisfies Record<string, Record<Lang, string>>
 
 export type UiKey = keyof typeof ui
 
 export function t(lang: Lang, key: UiKey): string {
   return ui[key][lang]
+}
+
+const LOCALE: Record<Lang, string> = { en: 'en-GB', zh: 'zh-CN' }
+
+/** A content date, written as the calendar day it names: `9 Nov 2026`, `2026年11月9日`. */
+export function formatDate(lang: Lang, date: Date): string {
+  return date.toLocaleDateString(LOCALE[lang], {
+    year: 'numeric',
+    month: lang === 'en' ? 'short' : 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  })
+}
+
+/** Reading time: `6 min read`, `阅读约 6 分钟`. */
+export function formatMinutes(lang: Lang, minutes: number): string {
+  return lang === 'en' ? `${minutes} min read` : `阅读约 ${minutes} 分钟`
 }

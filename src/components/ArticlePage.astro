@@ -1,0 +1,166 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import { render, type CollectionEntry } from 'astro:content'
+import katexStyles from 'katex/dist/katex.min.css?url'
+import Base from '../layouts/Base.astro'
+import { projectOf } from '../lib/articles'
+import { formatDate, formatMinutes, t, toLang } from '../lib/i18n'
+import RepoLink from './RepoLink.astro'
+
+interface Props {
+  article: CollectionEntry<'articles'>
+}
+
+const { article } = Astro.props
+const a = article.data
+const lang = toLang(Astro.currentLocale)
+const project = await projectOf(article)
+const { Content, remarkPluginFrontmatter } = await render(article)
+---
+
+<Base title={`${a.title} · Aaron Yang`} description={a.summary}>
+  {
+    // Only articles with math load KaTeX's stylesheet and fonts (D005).
+    a.math && <link slot="head" rel="stylesheet" href={katexStyles} />
+  }
+  <article class="article">
+    <header class="intro">
+      <p class="project rise">
+        <span>{t(lang, 'project')}</span>
+        <a href={getRelativeLocaleUrl(lang, `projects/${project.id}/`)}>
+          {project.data.title}
+        </a>
+      </p>
+      <h1 class="rise" style="--rise: 1" lang="en">
+        {a.title}
+      </h1>
+      <p class="meta rise" style="--rise: 2">
+        <time datetime={a.date.toISOString().slice(0, 10)}>
+          {formatDate(lang, a.date)}
+        </time>
+        <span aria-hidden="true">·</span>
+        {formatMinutes(lang, remarkPluginFrontmatter.minutes)}
+      </p>
+    </header>
+
+    <div class="prose rise" style="--rise: 3" lang="en">
+      <Content />
+    </div>
+
+    <footer class="links">
+      <RepoLink href={project.data.repo} {lang} />
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .article {
+    padding-bottom: var(--space-4);
+  }
+
+  .intro {
+    padding-top: var(--space-4);
+  }
+
+  .project {
+    display: flex;
+    gap: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+
+  .project a {
+    color: var(--color-accent);
+  }
+
+  h1 {
+    max-width: var(--width-prose);
+    margin-top: var(--space-2);
+    font-size: var(--step-4);
+    line-height: 1.15;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+
+  .prose {
+    max-width: var(--width-prose);
+    margin-top: var(--space-5);
+  }
+
+  /* The body is MDX, so its elements carry no scoped class. */
+  .prose > :global(* + *) {
+    margin-top: var(--space-2);
+  }
+
+  .prose :global(h2) {
+    margin-top: var(--space-5);
+    font-size: var(--step-2);
+  }
+
+  .prose :global(h2 + *) {
+    margin-top: var(--space-2);
+  }
+
+  .prose :global(:is(ul, ol)) {
+    padding-left: var(--space-3);
+  }
+
+  .prose :global(li + li) {
+    margin-top: var(--space-1);
+  }
+
+  .prose :global(a) {
+    color: var(--color-accent);
+  }
+
+  .prose :global(:not(pre) > code) {
+    padding: 0.1em 0.3em;
+    border-radius: 4px;
+    background: var(--color-surface);
+  }
+
+  .prose :global(pre) {
+    padding: var(--space-2);
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-2);
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .prose :global(:is(th, td)) {
+    padding: var(--space-1) var(--space-1) var(--space-1) 0;
+    border-bottom: 1px solid var(--color-line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose :global(th) {
+    font-weight: 600;
+  }
+
+  .prose :global(.katex-display) {
+    margin: var(--space-3) 0;
+    padding: var(--space-1) 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .links {
+    margin-top: var(--space-6);
+  }
+</style>

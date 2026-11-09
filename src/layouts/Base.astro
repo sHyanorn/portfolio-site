@@ -22,6 +22,7 @@ const lang = toLang(Astro.currentLocale)
 <html lang={LANG_TAG[lang]}>
   <head>
     <BaseHead {title} {description} {lang} {alternates} />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">

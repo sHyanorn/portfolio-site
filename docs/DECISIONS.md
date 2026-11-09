@@ -13,6 +13,7 @@
 - Decision: Astro with static output. React is used only for two islands: the GLSL background and the language toggle
 - Rationale: content collections, MDX, RSS and Shiki highlighting are built in or official integrations; pages ship no JS unless they contain an island, which keeps the 150 KB budget easy to hold
 - Alternatives: vite-plugin-ssg (every page hydrates React; MDX, RSS and highlighting are assembled by hand)
+- Amendment 2026-11-09: React is dropped. The GLSL background is a TypeScript module loaded by an Astro `<script>`, and the language toggle is a link to the same page in the other language, with English at the site root and Chinese under `/zh/`. Neither needs a component model, and a minimal React 19.3 mount measured 223 KB minified and 67 KB gzipped, 45% of the 150 KB budget
 
 ## D004 oxlint instead of ESLint
 - Date: 2026-11-06

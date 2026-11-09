@@ -34,15 +34,14 @@ jobs:
       - run: npm run budget
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
+      # Lighthouse uses the runner's Google Chrome.
       - name: Lighthouse, mobile (must pass)
-        run: |
-          export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
-          npx --yes @lhci/cli@0.16.0 autorun
+        run: npx --yes @lhci/cli@0.16.0 autorun
       - name: Lighthouse, desktop (reference)
+        if: ${{ !cancelled() }}
         env:
           LHCI_PRESET: desktop
         run: |
-          export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
           npx --yes @lhci/cli@0.16.0 collect
           npx --yes @lhci/cli@0.16.0 upload
       - if: ${{ !cancelled() }}

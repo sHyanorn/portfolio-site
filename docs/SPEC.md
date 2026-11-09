@@ -1,6 +1,6 @@
 # portfolio-site Specification
 
-## 1. One-line summary
+## 1. Summary
 
 Aaron's personal website: a restrained design, an animated background written in raw WebGL and GLSL, and a dedicated page for each project explaining what was built, why it was built that way, and how well it works.
 
@@ -15,7 +15,7 @@ Aaron's personal website: a restrained design, an animated background written in
 ### Project detail page (one per project)
 Fixed structure:
 
-1. One-line summary and tags
+1. Summary and tags
 2. Demo: live link, GIF or video; a GIF or screenshots when the project has no public demo
 3. Key metrics (e.g. matching throughput, test coverage)
 4. Problem and goals

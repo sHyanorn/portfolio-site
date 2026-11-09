@@ -1,0 +1,203 @@
+{
+  "title": "vault-share",
+  "order": 2,
+  "summary": {
+    "en": "End-to-end encrypted file sharing with a Go server and a React client: the browser encrypts each file, the key travels only in the part of the link that browsers never send, and the server stores ciphertext it cannot read.",
+    "zh": "端到端加密的文件分享服务，服务端用 Go，前端用 React：文件在浏览器里加密，密钥只放在链接中浏览器不会发出的那一部分，服务器只保存它读不了的密文。"
+  },
+  "tags": [
+    { "en": "Go", "zh": "Go" },
+    { "en": "React", "zh": "React" },
+    { "en": "End-to-end encryption", "zh": "端到端加密" },
+    { "en": "Web Crypto", "zh": "Web Crypto" },
+    { "en": "Security testing", "zh": "安全测试" }
+  ],
+  "demo": {
+    "video": "projects/vault-share/demo.mp4",
+    "poster": "./vault-share/demo-poster.png",
+    "caption": {
+      "en": "A file shared for one download: the sender gets the link and a delete link, the recipient downloads the file, and the link stops working.",
+      "zh": "分享一个只能下载一次的文件：发送方拿到分享链接和删除链接，接收方下载之后，链接随即失效。"
+    }
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": { "en": "0 of 16", "zh": "0 / 16" },
+        "label": {
+          "en": "requests carrying the link secret, a decryption key, the file name or plaintext in one share and download",
+          "zh": "一次分享和下载中，带有链接密钥、解密密钥、文件名或明文的请求"
+        }
+      },
+      {
+        "value": { "en": "46", "zh": "46" },
+        "label": {
+          "en": "security findings logged during development, 4 of them High; all fixed but 2 accepted",
+          "zh": "开发过程中记录的安全问题，其中 4 个高危；2 个评估后接受，其余均已修复"
+        }
+      },
+      {
+        "value": { "en": "170", "zh": "170" },
+        "label": {
+          "en": "black-box checks passing against the Docker Compose stack, and 30 browser checks",
+          "zh": "在 Docker Compose 部署上通过的黑盒检查；另有 30 项浏览器检查通过"
+        }
+      },
+      {
+        "value": { "en": "143", "zh": "143" },
+        "label": {
+          "en": "Go tests passing under the race detector, and 107 Vitest tests",
+          "zh": "开启竞态检测后通过的 Go 测试；另有 107 个 Vitest 测试通过"
+        }
+      }
+    ],
+    "note": {
+      "en": "A self-assessment against the OWASP Top 10:2025, on instances the tester ran: nine of the ten categories pass, and logging is partial because nothing alerts.",
+      "zh": "对照 OWASP Top 10:2025 的自评，测试对象是测试者自己运行的实例：十个类别中九个通过，日志与告警一项只算部分通过，因为没有任何告警。"
+    },
+    "source": {
+      "label": { "en": "Security test report", "zh": "安全测试报告" },
+      "url": "https://github.com/sHyanorn/vault-share/blob/96159bbc83595650ac4fc8d396c868d785de3e4b/docs/security/TEST_REPORT.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "vault-share shares files so that the server holding them cannot read them. The browser encrypts the file and its name before upload, and the key travels only in the part of the link after the `#`, which browsers never send. A link can expire after an hour, a day or seven days, allow 1 to 100 downloads, and burn after reading.",
+      "zh": "vault-share 是一个文件分享服务，存放文件的服务器读不到文件内容。文件和文件名在上传前就在浏览器里加密，密钥只放在链接中 `#` 之后的部分，浏览器不会发送这一部分。链接可以设为 1 小时、1 天或 7 天后过期，允许下载 1 到 100 次，也可以阅后即焚。"
+    },
+    {
+      "en": "The specification asked for files up to 1 GB, encrypted in streamed chunks instead of loaded into memory at once; an optional password the server never sees; an optional account that lists the files you shared without the server reading them; and a threat model and a self-assessment against the OWASP Top 10, written up as a report.",
+      "zh": "规格定下的要求有：支持最大 1 GB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
+    },
+    {
+      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. A compromised server could still send JavaScript that steals keys, as with every web-based encryption tool, and the server sees each file's size and when it is uploaded and downloaded.",
+      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，所有网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "sender": { "en": "sender's browser", "zh": "发送方浏览器" },
+      "encrypts": { "en": "encrypts file and name", "zh": "加密文件和文件名" },
+      "recipient": { "en": "recipient's browser", "zh": "接收方浏览器" },
+      "decrypts": { "en": "signs, decrypts to disk", "zh": "签名，解密后存盘" },
+      "link": { "en": "share link", "zh": "分享链接" },
+      "fragment": {
+        "en": "browsers never send the part after #",
+        "zh": "浏览器不发送 # 之后的部分"
+      },
+      "upload": { "en": "ciphertext, auth key", "zh": "密文、认证密钥" },
+      "created": { "en": "file id, delete token", "zh": "文件 ID、删除令牌" },
+      "signature": { "en": "signature", "zh": "签名" },
+      "download": { "en": "challenge, ciphertext", "zh": "挑战值、密文" },
+      "server": { "en": "server", "zh": "服务器" },
+      "caddy": { "en": "Caddy", "zh": "Caddy" },
+      "proxy": { "en": "TLS, proxies to vaultd", "zh": "TLS，转发给 vaultd" },
+      "vaultd": { "en": "vaultd (Go, chi)", "zh": "vaultd（Go、chi）" },
+      "checks": {
+        "en": "checks signatures, counts downloads",
+        "zh": "校验签名，扣减下载次数"
+      },
+      "metadata": { "en": "metadata", "zh": "元数据" },
+      "ciphertext": { "en": "ciphertext", "zh": "密文" },
+      "sqlite": { "en": "SQLite", "zh": "SQLite" },
+      "blobs": { "en": "disk or S3", "zh": "磁盘或 S3" }
+    },
+    "description": {
+      "en": "The sender's browser encrypts the file and its name and uploads the ciphertext with an auth key derived from the link's secret, getting back the file id and a delete token. The sender passes the share link, `/f/id#secret`, to the recipient, and browsers never send the part after the #. On the server, Caddy terminates TLS and passes every request to vaultd, a Go service on chi, which keeps the encrypted names, token hashes and auth keys in SQLite and the ciphertext on local disk or in an S3 bucket. The recipient's browser derives the same keys from the link and signs the server's challenge with the auth key; vaultd checks the signature, counts one download and issues a one-time token, and the browser fetches the ciphertext and decrypts it to disk.",
+      "zh": "发送方浏览器加密文件和文件名，把密文连同由链接密钥派生出的认证密钥一起上传，拿回文件 ID 和删除令牌。发送方把分享链接 `/f/id#secret` 交给接收方，浏览器不会发送 # 之后的部分。服务器上，Caddy 负责 TLS，把所有请求转发给 vaultd；vaultd 是基于 chi 的 Go 服务，把加密的文件名、令牌哈希和认证密钥存在 SQLite 里，密文存在本地磁盘或 S3 存储桶中。接收方浏览器从链接派生出同样的密钥，用认证密钥签名服务器给出的挑战值；vaultd 校验签名、扣减一次下载次数并发放一次性令牌，浏览器随后取回密文，解密后写入磁盘。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D012",
+        "title": {
+          "en": "A published record format",
+          "zh": "沿用公开的记录格式"
+        },
+        "body": {
+          "en": "Files are encrypted in the record format of RFC 8188, the `aes128gcm` content encoding that Firefox Send used, with a 256-bit key: 64 KiB records, each sealed with AES-256-GCM, and a marked last record, so a changed, reordered or cut file fails to decrypt. Keeping the layout lets the RFC's section 3.1 test vector, with its 128-bit key, run unchanged. Where vault-share differs from Firefox Send it is stricter: it rejects a header with another record size or a key id, and an empty file still ends with a last record.",
+          "zh": "文件按 RFC 8188 的记录格式加密，也就是 Firefox Send 用过的 `aes128gcm` 内容编码，只是密钥为 256 位：每条记录 64 KiB，各自用 AES-256-GCM 加密，最后一条带结束标记，文件被改动、调换顺序或截断都会解密失败。沿用这种布局，RFC 第 3.1 节的测试向量（128 位密钥）可以原样跑通。和 Firefox Send 不同的地方都更严格：头部的记录大小不对或带了密钥 ID 都直接拒绝，空文件也照样以一条结束记录收尾。"
+        }
+      },
+      {
+        "id": "D014",
+        "title": {
+          "en": "A download counts when its token is issued",
+          "zh": "发放令牌时就扣下载次数"
+        },
+        "body": {
+          "en": "A download is counted when a signed challenge is accepted and a one-time token issued, in a single conditional UPDATE; the token is valid for 5 minutes and one use. Firefox Send counted a download when the stream finished and without atomicity, so parallel requests could exceed the limit and an aborted download cost nothing. In exchange, a download cut off by the network still uses a count. Challenges are stateless, 32 bytes with an HMAC tag under a key drawn at startup, so a flood of metadata requests has nothing to evict.",
+          "zh": "服务器接受签名、发放一次性令牌时扣减下载次数，用一条带条件的 UPDATE 完成；令牌 5 分钟内有效，只能用一次。Firefox Send 在下载流结束时才计数，也不保证原子性，并发请求可以超出次数上限，中途放弃的下载也不扣次数。相应的代价是，被网络打断的下载同样会用掉一次。挑战值不在服务器上保存状态，是 32 字节的数据，带有用启动时生成的密钥算出的 HMAC 标签，所以大量元数据请求也挤不掉别人待用的挑战值。"
+        }
+      },
+      {
+        "id": "D019",
+        "title": {
+          "en": "The password wraps the secret in the link",
+          "zh": "密码包装链接里的密钥"
+        },
+        "body": {
+          "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and does not know whether a password exists. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
+          "zh": "设了密码时，链接里放的是包装过的 16 字节密钥：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密原来的密钥。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
+        }
+      },
+      {
+        "id": "D026",
+        "title": {
+          "en": "Account keys the server cannot open",
+          "zh": "服务器打不开的账号密钥"
+        },
+        "body": {
+          "en": "The account password never leaves the browser. Argon2id turns it into a master key, from which HKDF derives the secret sent at sign-in, which the server hashes again with Argon2id, and a key that seals a random 256-bit account key. Each file shared while signed in gets an entry under the account key, bound to the file id, holding its secret, link key and delete token, so the server lists the files but only the browser opens their names. The split follows Bitwarden. A forgotten password loses the account, while the links it shared keep working.",
+          "zh": "账号密码不出浏览器。Argon2id 把它变成主密钥，再由 HKDF 派生出登录时发送的认证值和一把包装密钥：认证值到了服务器会再用 Argon2id 哈希一次才保存，包装密钥用来加密随机生成的 256 位账号密钥。登录后分享的每个文件都有一条用账号密钥加密、绑定文件 ID 的记录，里面是分享密钥、链接密钥和删除令牌，所以服务器能列出这些文件，文件名却只有浏览器能解开。这种拆分参照了 Bitwarden。忘了密码就会失去账号，已经分享出去的链接仍然有效。"
+        }
+      },
+      {
+        "id": "D024",
+        "title": {
+          "en": "No public demo site",
+          "zh": "不提供公开演示站点"
+        },
+        "body": {
+          "en": "The project runs no public instance; a recorded demo and one command that starts the full stack stand in for it. An anonymous, end-to-end encrypted file host attracts malware and phishing, which the operator cannot inspect and can only answer by deleting links, and Firefox Send was shut down in 2020 for that reason. A public instance would also face the threat model's residual risks, quota filling and CPU saturation from many addresses, without protection upstream.",
+          "zh": "项目不运行公开实例，用录制的演示和一条启动完整服务的命令代替。匿名的端到端加密文件托管会招来恶意软件和钓鱼，运营者看不到内容，只能靠删除链接应对；Firefox Send 在 2020 年就是因此关停的。公开实例还要直面威胁模型里的剩余风险：来自大量地址的请求可以占满存储配额、耗尽 CPU，而前面没有任何上游防护。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/vault-share/blob/96159bbc83595650ac4fc8d396c868d785de3e4b/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "The High findings were in the upload path",
+        "zh": "高危问题都出在上传流程"
+      },
+      "body": {
+        "en": "All four High findings were about uploads (F1, F2, F3, F26). The server's 60-second write timeout cut long uploads off before the reply reached the client (F3), which retried, and a second upload with the same owner token could overwrite the stored file, or delete it with a bad body (F2). Now stored content is never replaced, each transfer gets deadlines from its size, and a file takes one upload at a time. Before that rule, 40 uploads to one file took the server from 18 to 341 MiB on S3; with S3 uploads streamed instead of buffered, ten uploads to ten files moved it from 19 to 20 MiB (F26).",
+        "zh": "四个高危问题全都和上传有关（F1、F2、F3、F26）。服务器 60 秒的写超时会在回复送达客户端之前切断较长的上传（F3），客户端于是重试；用同一个所有者令牌发起的第二次上传可能覆盖已经存好的文件，请求体出错时还会把它删掉（F2）。现在已存储的内容不会被替换，每次传输按文件大小设定时限，一个文件同一时间只接受一次上传。有这条规则之前，在 S3 上向同一个文件并发上传 40 次，服务器内存从 18 MiB 涨到 341 MiB；S3 上传改为流式、不再缓冲之后，向 10 个文件各上传一次，内存只从 19 MiB 升到 20 MiB（F26）。"
+      }
+    },
+    {
+      "title": {
+        "en": "Limits checked before they were counted",
+        "zh": "先检查、后计数的限额"
+      },
+      "body": {
+        "en": "Lockouts were asked before an attempt was checked and told after it, so attempts sent at once all got through. In tests, 40 wrong second-step codes on one ticket had 7 to 20 checked where the ticket allows 5, and 20 bad download signatures at once had 11 to 14 checked where 5 lock the client out (F38, F39). Now a ticket gives up an attempt in the statement that checks its count, and a lockout admits an attempt before checking it, refusing one while the failures counted and the attempts in flight could reach the limit; afterwards at most 5 codes are checked, and exactly 5 signatures. That fix first answered an attempt refused only because others were in flight with a 15-minute lockout; such an attempt now gets 503 `busy` with `Retry-After: 5` (F42).",
+        "zh": "锁定机制原先在检查之前询问、检查之后才记账，同时到达的尝试会全部放行。测试中，在一张登录票据上同时提交 40 个错误的二次验证码，有 7 到 20 个被检查，而票据只允许 5 次；同时发出 20 个错误的下载签名，有 11 到 14 个被检查，而 5 次就该锁定该客户端（F38、F39）。现在票据在核对剩余次数的同一条语句里扣掉一次尝试，锁定机制也先登记尝试再检查，已记录的失败加上进行中的尝试可能达到上限时就直接拒绝；修复后验证码最多检查 5 个，签名正好 5 个。这次修复起初把只因有其他尝试在进行而被拒的请求答复成 15 分钟锁定，现在这类请求收到的是 503 `busy` 和 `Retry-After: 5`（F42）。"
+      }
+    },
+    {
+      "title": {
+        "en": "Showing that keys stay in the browser",
+        "zh": "验证密钥只留在浏览器里"
+      },
+      "body": {
+        "en": "A browser check records every request Chromium sends while a plain share is uploaded, downloaded and reopened, and searches each one, bodies included, for the fragment, the secret, the file and metadata keys, the file name and a slice of the plaintext: raw, as hex, as base64 at every alignment, percent-encoded and form-encoded. None appeared in the 16 requests; the auth key appears once, in the create request, by design. The assessment also found that the specification claimed the server keeps only a verifier of that key, while it keeps the key itself, as Firefox Send did, so a copy of the database can spend download counts, though not decrypt. The documents now say so (F20).",
+        "zh": "一项浏览器检查会记录 Chromium 在上传、下载和重新打开一个普通分享时发出的每个请求，连同请求体一起，搜索其中有没有链接片段、链接密钥、文件密钥、元数据密钥、文件名和一段明文，形式包括原文、十六进制、各种对齐位置的 base64、百分号编码和表单编码。16 个请求里一样都没有出现；认证密钥按设计在创建请求里出现一次。评估还发现，规格声称服务器只保存这把密钥的验证值，实际保存的是密钥本身，Firefox Send 也是这样，因此拿到数据库副本的人可以消耗下载次数，但解不开文件。文档现在已如实写明（F20）。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/vault-share"
+}

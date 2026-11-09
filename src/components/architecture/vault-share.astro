@@ -1,0 +1,328 @@
+---
+// Architecture of vault-share, drawn by hand in two variants: a wide one drawn
+// at 720 px, the page column, for containers that wide, and a narrow one drawn
+// at 358 px for narrower ones, both shown at their drawn size.
+interface Props {
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+}
+
+const KEYS = [
+  'sender',
+  'encrypts',
+  'recipient',
+  'decrypts',
+  'link',
+  'fragment',
+  'upload',
+  'created',
+  'signature',
+  'download',
+  'server',
+  'caddy',
+  'proxy',
+  'vaultd',
+  'checks',
+  'metadata',
+  'ciphertext',
+  'sqlite',
+  'blobs',
+] as const
+
+const { labels, id } = Astro.props
+const missing = KEYS.filter((key) => !labels[key])
+if (missing.length > 0)
+  throw new Error(
+    `VaultShare: missing label${missing.length > 1 ? 's' : ''} ${missing.join(', ')}`,
+  )
+const t = labels as Record<(typeof KEYS)[number], string>
+
+// A box over whole pixels x..x+w, y..y+h, with its 1 px stroke inside.
+const box = (x: number, y: number, w: number, h: number) => ({
+  x: x + 0.5,
+  y: y + 0.5,
+  width: w - 1,
+  height: h - 1,
+})
+
+// A cylinder over x..x+w, y..y+h: the body, then the top face drawn over it.
+const cylinder = (x: number, y: number, w: number, h: number, ry = 6) => {
+  const l = x + 0.5
+  const r = x + w - 0.5
+  const top = y + 0.5 + ry
+  const bottom = y + h - 0.5 - ry
+  const rx = (r - l) / 2
+  return {
+    body: `M${l} ${top}A${rx} ${ry} 0 0 0 ${r} ${top}V${bottom}A${rx} ${ry} 0 0 1 ${l} ${bottom}Z`,
+    face: { cx: l + rx, cy: top, rx, ry },
+  }
+}
+
+// Marker ids are per instance and per variant: a hidden SVG's markers do not render.
+const head = { h: `${id}-head-h`, v: `${id}-head-v` }
+const dbH = cylinder(152, 424, 193, 64)
+const blobsH = cylinder(376, 424, 193, 64)
+const dbV = cylinder(16, 496, 155, 64)
+const blobsV = cylinder(188, 496, 155, 64)
+// Text goes in through set:text, so formatting adds no spaces that would
+// shift centred labels. Each browser sends on its left arrow and receives on
+// its right one; their labels sit between the two.
+---
+
+<div class="diagram">
+  <svg
+    class="wide"
+    width="720"
+    height="504"
+    viewBox="0 0 720 504"
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.h}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    <rect {...box(0, 0, 232, 80)} rx="7.5" class="box core"></rect>
+    <text x="116" y="26" class="label" set:text={t.sender} />
+    <text x="116" y="45" class="edge middle" set:text={t.encrypts} />
+    <text x="116" y="63" class="path" set:text="web/src/crypto" />
+
+    <path class="link" d="M232 40.5H488" marker-end={`url(#${head.h})`}></path>
+    <text x="360" y="32" class="edge middle" set:text={t.link} />
+    <text x="360" y="58" class="path" set:text="/f/id#secret" />
+    <text x="360" y="74" class="edge middle" set:text={t.fragment} />
+
+    <rect {...box(488, 0, 232, 80)} rx="7.5" class="box core"></rect>
+    <text x="604" y="26" class="label" set:text={t.recipient} />
+    <text x="604" y="45" class="edge middle" set:text={t.decrypts} />
+    <text x="604" y="63" class="path" set:text="web/src/crypto" />
+
+    <rect x="0" y="160" width="720" height="344" rx="12" class="region"></rect>
+    <text x="360" y="184" class="region-label middle" set:text={t.server} />
+
+    <path class="line" d="M16.5 80V200" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M215.5 200V80" marker-end={`url(#${head.h})`}></path>
+    <text x="24" y="116" class="edge" set:text={t.upload} />
+    <text x="208" y="140" class="edge end" set:text={t.created} />
+
+    <path class="line" d="M504.5 80V200" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M703.5 200V80" marker-end={`url(#${head.h})`}></path>
+    <text x="512" y="116" class="edge" set:text={t.signature} />
+    <text x="696" y="140" class="edge end" set:text={t.download} />
+
+    <rect {...box(8, 200, 704, 56)} rx="7.5" class="box"></rect>
+    <text x="360" y="223" class="label" set:text={t.caddy} />
+    <text x="360" y="241" class="edge middle" set:text={t.proxy} />
+
+    <path class="line" d="M360.5 256V296" marker-end={`url(#${head.h})`}></path>
+
+    <rect {...box(224, 296, 272, 80)} rx="7.5" class="box"></rect>
+    <text x="360" y="322" class="label" set:text={t.vaultd} />
+    <text x="360" y="341" class="edge middle" set:text={t.checks} />
+    <text x="360" y="359" class="path" set:text="internal/api" />
+
+    <path class="line" d="M248.5 376V424" marker-end={`url(#${head.h})`}></path>
+    <text x="240" y="405" class="edge end" set:text={t.metadata} />
+    <path class="line" d="M472.5 376V424" marker-end={`url(#${head.h})`}></path>
+    <text x="480" y="405" class="edge" set:text={t.ciphertext} />
+
+    <path d={dbH.body} class="box"></path>
+    <ellipse {...dbH.face} class="box"></ellipse>
+    <text x="248.5" y="458" class="label" set:text={t.sqlite} />
+    <text x="248.5" y="476" class="path" set:text="internal/store" />
+
+    <path d={blobsH.body} class="box"></path>
+    <ellipse {...blobsH.face} class="box"></ellipse>
+    <text x="472.5" y="458" class="label" set:text={t.blobs} />
+    <text x="472.5" y="476" class="path" set:text="internal/blob" />
+  </svg>
+
+  <svg
+    class="narrow"
+    width="358"
+    height="576"
+    viewBox="0 0 358 576"
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.v}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    <text x="179" y="12" class="edge middle" set:text={t.link} />
+    <text x="179" y="29" class="path" set:text="/f/id#secret" />
+    <text x="179" y="46" class="edge middle" set:text={t.fragment} />
+    <path
+      class="link"
+      d="M83.5 88V60.5H274.5V88"
+      marker-end={`url(#${head.v})`}
+    ></path>
+
+    <rect {...box(0, 88, 167, 80)} rx="7.5" class="box core"></rect>
+    <text x="83.5" y="114" class="label" set:text={t.sender} />
+    <text x="83.5" y="133" class="edge middle" set:text={t.encrypts} />
+    <text x="83.5" y="151" class="path" set:text="web/src/crypto" />
+
+    <rect {...box(191, 88, 167, 80)} rx="7.5" class="box core"></rect>
+    <text x="274.5" y="114" class="label" set:text={t.recipient} />
+    <text x="274.5" y="133" class="edge middle" set:text={t.decrypts} />
+    <text x="274.5" y="151" class="path" set:text="web/src/crypto" />
+
+    <rect x="0" y="232" width="358" height="344" rx="12" class="region"></rect>
+    <text x="179" y="256" class="region-label middle" set:text={t.server} />
+
+    <path class="line" d="M12.5 168V272" marker-end={`url(#${head.v})`}></path>
+    <path class="line" d="M150.5 272V168" marker-end={`url(#${head.v})`}></path>
+    <text x="20" y="196" class="edge" set:text={t.upload} />
+    <text x="143" y="220" class="edge end" set:text={t.created} />
+
+    <path class="line" d="M207.5 168V272" marker-end={`url(#${head.v})`}></path>
+    <path class="line" d="M345.5 272V168" marker-end={`url(#${head.v})`}></path>
+    <text x="215" y="196" class="edge" set:text={t.signature} />
+    <text x="338" y="220" class="edge end" set:text={t.download} />
+
+    <rect {...box(4, 272, 350, 56)} rx="7.5" class="box"></rect>
+    <text x="179" y="295" class="label" set:text={t.caddy} />
+    <text x="179" y="313" class="edge middle" set:text={t.proxy} />
+
+    <path class="line" d="M179.5 328V368" marker-end={`url(#${head.v})`}></path>
+
+    <rect {...box(40, 368, 278, 80)} rx="7.5" class="box"></rect>
+    <text x="179" y="394" class="label" set:text={t.vaultd} />
+    <text x="179" y="413" class="edge middle" set:text={t.checks} />
+    <text x="179" y="431" class="path" set:text="internal/api" />
+
+    <path class="line" d="M93.5 448V496" marker-end={`url(#${head.v})`}></path>
+    <text x="86" y="477" class="edge end" set:text={t.metadata} />
+    <path class="line" d="M265.5 448V496" marker-end={`url(#${head.v})`}></path>
+    <text x="273" y="477" class="edge" set:text={t.ciphertext} />
+
+    <path d={dbV.body} class="box"></path>
+    <ellipse {...dbV.face} class="box"></ellipse>
+    <text x="93.5" y="530" class="label" set:text={t.sqlite} />
+    <text x="93.5" y="548" class="path" set:text="internal/store" />
+
+    <path d={blobsV.body} class="box"></path>
+    <ellipse {...blobsV.face} class="box"></ellipse>
+    <text x="265.5" y="530" class="label" set:text={t.blobs} />
+    <text x="265.5" y="548" class="path" set:text="internal/blob" />
+  </svg>
+</div>
+
+<style>
+  .diagram {
+    container-type: inline-size;
+  }
+
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+    font-family: inherit;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  @container (min-width: 720px) {
+    .wide {
+      display: block;
+      width: 100%;
+    }
+
+    .narrow {
+      display: none;
+    }
+  }
+
+  .region {
+    fill: var(--color-surface);
+  }
+
+  .box {
+    fill: var(--color-bg-subtle);
+    stroke: var(--color-border-strong);
+  }
+
+  /* The one use of the accent: the browsers, the only places that hold the
+     link's secret and the plaintext. */
+  .core {
+    fill: var(--color-accent-subtle);
+    stroke: var(--color-accent-line);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--color-border-strong);
+  }
+
+  /* The share link travels outside the server, by whatever channel the
+     sender chooses. */
+  .link {
+    fill: none;
+    stroke: var(--color-border-strong);
+    stroke-dasharray: 4 4;
+  }
+
+  .head {
+    fill: var(--color-text-muted);
+  }
+
+  /* Box labels and paths are centred on their x; edge labels start at it
+     unless marked .middle or .end. */
+  .label,
+  .path,
+  .middle {
+    text-anchor: middle;
+  }
+
+  .end {
+    text-anchor: end;
+  }
+
+  .label {
+    fill: var(--color-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .path {
+    fill: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .edge {
+    fill: var(--color-text-muted);
+    font-size: 12px;
+  }
+
+  .region-label {
+    fill: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+</style>

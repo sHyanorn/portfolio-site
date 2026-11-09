@@ -75,6 +75,7 @@ const ui = {
   challenges: { en: 'Challenges', zh: '难点与解法' },
   repo: { en: 'Source on GitHub', zh: 'GitHub 源码' },
   project: { en: 'Project', zh: '项目' },
+  contents: { en: 'Contents', zh: '目录' },
   article: { en: 'Article', zh: '文章（英文）' },
 } satisfies Record<string, Record<Lang, string>>
 

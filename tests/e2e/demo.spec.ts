@@ -1,9 +1,9 @@
 // A project's demo video, or its first screenshot, keeps its aspect ratio,
-// sits in the middle of the column and ends on the first screen with at
+// sits in the middle of its column and ends on the first screen with at
 // least a line of summary to spare, so a video's controls still show when a
 // font wraps the summary once more. Screenshots number two to four,
 // each with alt text, a caption and a link that wraps it; later ones fit
-// one screen each. A screenshot with a dark copy shows and links to the copy
+// one screen each, in a grid below the first screen. A screenshot with a dark copy shows and links to the copy
 // that matches the theme, and the hidden lazy copies never load.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
@@ -14,7 +14,10 @@ const viewports = [
   { width: 1536, height: 864 },
   { width: 1440, height: 900 },
   { width: 768, height: 1024 },
+  { width: 1920, height: 1080 },
 ]
+// The first screenshot, then the gallery of the later ones.
+const SHOTS = ':is(.demo, .gallery) figure img:visible'
 const projects = pages.filter((p) =>
   p.name.replace(/^zh-/, '').startsWith('projects-'),
 )
@@ -27,7 +30,7 @@ for (const viewport of viewports) {
       test(p.name, async ({ page }) => {
         await page.goto(p.path)
         await page.evaluate(() => document.fonts.ready)
-        const shots = page.locator('.demo figure img:visible')
+        const shots = page.locator(SHOTS)
         const isVideo = (await shots.count()) === 0
         if (!isVideo) {
           expect(await shots.count()).toBeGreaterThanOrEqual(2)
@@ -37,7 +40,7 @@ for (const viewport of viewports) {
           ))
             expect(alt?.trim()).toBeTruthy()
           for (const caption of await page
-            .locator('.demo figcaption')
+            .locator(':is(.demo, .gallery) figcaption')
             .allTextContents())
             expect(caption.trim()).toBeTruthy()
           // Each screenshot's link is one box round it, so its focus ring
@@ -65,7 +68,8 @@ for (const viewport of viewports) {
         }
         const first = isVideo ? page.locator('.demo video') : shots.first()
         const box = (await first.boundingBox())!
-        const column = (await page.locator('.project').boundingBox())!
+        // The page column, or the intro's neighbour on a wide screen.
+        const column = (await page.locator('.demo').boundingBox())!
         // The ratio inside the border, which is a larger share of a small demo.
         const [width, height, inner] = await first.evaluate((el) => [
           ...(el instanceof HTMLVideoElement
@@ -103,7 +107,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       if (r.resourceType() === 'image') fetched.push(r.url())
     })
     await page.goto(`${BASE}projects/local-ledger/`)
-    const shots = page.locator('.demo figure img:visible')
+    const shots = page.locator(SHOTS)
     expect(await shots.count()).toBe(3)
     for (const shot of await shots.all()) {
       await shot.scrollIntoViewIfNeeded()
@@ -141,7 +145,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     for (let i = 0; i < 20; i++) {
       await page.keyboard.press('Tab')
       const href = await page.evaluate(() =>
-        document.activeElement?.closest('.demo')
+        document.activeElement?.closest('.demo, .gallery')
           ? (document.activeElement as HTMLAnchorElement).href
           : null,
       )

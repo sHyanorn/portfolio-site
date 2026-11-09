@@ -83,10 +83,15 @@ video {
   height: auto;
 }
 
-/* The page column, with a gutter on narrow screens. */
+/* The page container, with a gutter on narrow screens. */
 .wrap {
   width: min(var(--width-page), 100% - 2 * var(--gutter));
   margin-inline: auto;
+}
+
+/* Full width, inset by the page margin: the header and the footer. */
+.bleed {
+  padding-inline: var(--margin);
 }
 
 code {

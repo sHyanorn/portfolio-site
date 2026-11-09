@@ -57,9 +57,13 @@
   --space-6: 4rem;
   --space-7: 6rem;
 
-  --width-page: 45rem;
-  --width-prose: 65ch;
+  /* The page container; the reading measure, about 70 Latin characters or
+     36 Chinese ones a line; and the page margin that the
+     header and footer sit on: 16 px on a phone, 48 px from 1600 px up. */
+  --width-page: 80rem;
+  --width-prose: 36em;
   --gutter: clamp(1rem, 4vw, 1.5rem);
+  --margin: clamp(1rem, 3vw, 3rem);
 
   --radius-2: 8px;
   --radius-3: 12px;

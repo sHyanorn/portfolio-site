@@ -9,9 +9,11 @@ import Text from './Text.astro'
 interface Props {
   demo: CollectionEntry<'projects'>['data']['demo']
   lang: Lang
+  /** The first-screen demo, or the screenshots after it. */
+  part: 'first' | 'rest'
 }
 
-const { demo, lang } = Astro.props
+const { demo, lang, part } = Astro.props
 // AVIF from the build (D013); screenshots also get a full-size copy to open.
 const poster =
   'video' in demo
@@ -20,72 +22,91 @@ const poster =
 const shots =
   'images' in demo
     ? await Promise.all(
-        demo.images.map(async (shot) => ({
-          ...shot,
-          variants: await Promise.all(
-            themeCopies(shot).map(async (v) => ({
-              ...v,
-              full: await getImage({ src: v.src, format: 'avif' }),
-            })),
-          ),
-        })),
+        (part === 'first' ? demo.images.slice(0, 1) : demo.images.slice(1)).map(
+          async (shot) => ({
+            ...shot,
+            variants: await Promise.all(
+              themeCopies(shot).map(async (v) => ({
+                ...v,
+                full: await getImage({ src: v.src, format: 'avif' }),
+              })),
+            ),
+          }),
+        ),
       )
     : []
 ---
 
-{'video' in demo ? (
-  <figure style={`--ratio: ${demo.poster.width} / ${demo.poster.height}`}>
-    <video
-      controls
-      muted
-      loop
-      playsinline
-      preload="none"
-      poster={poster!.src}
-      width={demo.poster.width}
-      height={demo.poster.height}
-    >
-      <source src={withBase(demo.video)} type="video/mp4" />
-    </video>
-    <figcaption>
-      <Text value={demo.caption[lang]} />
-    </figcaption>
-  </figure>
-) : (
-  <div class="shots">
-    {shots.map((shot, i) => (
-      <figure style={`--ratio: ${shot.src.width} / ${shot.src.height}`}>
-        {shot.variants.map((v) => (
-          <a href={v.full.src} class={v.theme}>
-            <Image
-              {...shotImage(v.src)}
-              alt={shot.alt[lang]}
-              loading={i === 0 && !shot.dark ? 'eager' : 'lazy'}
-            />
-          </a>
-        ))}
+{'video' in demo
+  ? part === 'first' && (
+      <figure
+        class="video"
+        style={`--ratio: ${demo.poster.width} / ${demo.poster.height}`}
+      >
+        <video
+          controls
+          muted
+          loop
+          playsinline
+          preload="none"
+          poster={poster!.src}
+          width={demo.poster.width}
+          height={demo.poster.height}
+        >
+          <source src={withBase(demo.video)} type="video/mp4" />
+        </video>
         <figcaption>
-          <Text value={shot.caption[lang]} />
+          <Text value={demo.caption[lang]} />
         </figcaption>
       </figure>
-    ))}
-  </div>
-)}
+    )
+  : shots.length > 0 && (
+      <div class={`shots ${part}`}>
+        {shots.map((shot, i) => (
+          <figure style={`--ratio: ${shot.src.width} / ${shot.src.height}`}>
+            {shot.variants.map((v) => (
+              <a href={v.full.src} class={v.theme}>
+                <Image
+                  {...shotImage(v.src, part)}
+                  alt={shot.alt[lang]}
+                  loading={
+                    part === 'first' && i === 0 && !shot.dark ? 'eager' : 'lazy'
+                  }
+                />
+              </a>
+            ))}
+            <figcaption>
+              <Text value={shot.caption[lang]} />
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
 
 <style>
-  /* A video or screenshot is no taller than the first screen leaves below
-     the header and the page intro (about 28rem with four lines of summary,
-     plus a line to spare), so the first ends on the first screen; the width
-     follows the aspect ratio. */
-  figure {
-    width: min(100%, max(16rem, 100svh - 30rem) * var(--ratio));
+  /* The first video or screenshot is no taller than the first screen leaves
+     below what sits above it, `--demo-reserve`: the header and a page intro
+     of up to four lines of summary, plus a line to spare, when it is stacked
+     under the intro. The width follows the aspect ratio. */
+  .first figure,
+  .video {
+    width: min(
+      100%,
+      max(16rem, 100svh - var(--demo-reserve, 30rem)) * var(--ratio)
+    );
     margin-inline: auto;
   }
 
-  /* Later screenshots are read after scrolling, so each only has to fit one
-     screen with its caption. */
-  figure + figure {
+  /* Later screenshots are read after scrolling: a grid on a wide screen, and
+     on a narrow one each fits one screen with its caption. */
+  .rest {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    align-items: start;
+  }
+
+  .rest figure {
     width: min(100%, max(16rem, 100svh - 8rem) * var(--ratio));
+    margin-inline: auto;
   }
 
   video,

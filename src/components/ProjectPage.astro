@@ -30,6 +30,7 @@ const Diagram =
   diagrams[`./architecture/${Astro.props.project.id}.astro`]?.default
 if (!Diagram)
   throw new Error(`No architecture diagram for ${Astro.props.project.id}`)
+const hasRest = 'images' in p.demo && p.demo.images.length > 1
 const labels = Object.fromEntries(
   Object.entries(p.architecture.labels).map(([key, label]) => [
     key,
@@ -45,19 +46,27 @@ const labels = Object.fromEntries(
 >
   <DemoPreload slot="head" demo={p.demo} />
   <article class="project">
-    <header class="intro">
-      <h1 class="rise">{p.title}</h1>
-      <p class="summary rise" style="--rise: 1">
-        <Text value={p.summary[lang]} />
-      </p>
-      <div class="tags rise" style="--rise: 2">
-        <Tags tags={p.tags.map((tag) => tag[lang])} />
-      </div>
-    </header>
+    <div class="hero">
+      <header class="intro">
+        <h1 class="rise">{p.title}</h1>
+        <p class="summary rise" style="--rise: 1">
+          <Text value={p.summary[lang]} />
+        </p>
+        <div class="tags rise" style="--rise: 2">
+          <Tags tags={p.tags.map((tag) => tag[lang])} />
+        </div>
+      </header>
 
-    <div class="demo rise" style="--rise: 3">
-      <Demo demo={p.demo} {lang} />
+      <div class="demo rise" style="--rise: 3">
+        <Demo demo={p.demo} {lang} part="first" />
+      </div>
     </div>
+
+    {hasRest && (
+      <div class="gallery reveal">
+        <Demo demo={p.demo} {lang} part="rest" />
+      </div>
+    )}
 
     <section class="reveal" aria-labelledby="metrics">
       <h2 id="metrics">{t(lang, 'metrics')}</h2>
@@ -77,70 +86,80 @@ const labels = Object.fromEntries(
       </p>
     </section>
 
-    <section class="reveal" aria-labelledby="problem">
+    <section class="row reveal" aria-labelledby="problem">
       <h2 id="problem">{t(lang, 'problem')}</h2>
-      {p.problem.map((para) => (
-        <p>
-          <Text value={para[lang]} />
-        </p>
-      ))}
+      <div class="body">
+        {p.problem.map((para) => (
+          <p>
+            <Text value={para[lang]} />
+          </p>
+        ))}
+      </div>
     </section>
 
-    <section class="reveal" aria-labelledby="architecture">
+    <section class="row reveal" aria-labelledby="architecture">
       <h2 id="architecture">{t(lang, 'architecture')}</h2>
-      <Diagram {labels} id="architecture-diagram" />
-      <p class="described">
-        <Text value={p.architecture.description[lang]} />
-      </p>
-    </section>
-
-    <section class="reveal" aria-labelledby="decisions">
-      <h2 id="decisions">{t(lang, 'decisions')}</h2>
-      <ul class="items">
-        {p.decisions.items.map((d) => (
-          <li>
-            <h3>
-              <span class="id">{d.id}</span>
-              {d.title[lang]}
-            </h3>
-            <p>
-              <Text value={d.body[lang]} />
-            </p>
-          </li>
-        ))}
-      </ul>
-      <p class="note">
-        <a href={p.decisions.source}>{t(lang, 'decisionLog')}</a>
-      </p>
-    </section>
-
-    <section class="reveal" aria-labelledby="challenges">
-      <h2 id="challenges">{t(lang, 'challenges')}</h2>
-      <ul class="items">
-        {p.challenges.map((c) => (
-          <li>
-            <h3>{c.title[lang]}</h3>
-            <p>
-              <Text value={c.body[lang]} />
-            </p>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <footer class="links reveal">
-      {article && (
-        <p class="article">
-          <span>{t(lang, 'article')}</span>
-          <a
-            href={getRelativeLocaleUrl(lang, `articles/${article.id}/`)}
-            lang="en"
-          >
-            {article.data.title}
-          </a>
+      <div class="body">
+        <Diagram {labels} id="architecture-diagram" />
+        <p class="described">
+          <Text value={p.architecture.description[lang]} />
         </p>
-      )}
-      <RepoLink href={p.repo} {lang} />
+      </div>
+    </section>
+
+    <section class="row reveal" aria-labelledby="decisions">
+      <h2 id="decisions">{t(lang, 'decisions')}</h2>
+      <div class="body">
+        <ul class="items">
+          {p.decisions.items.map((d) => (
+            <li>
+              <h3>
+                <span class="id">{d.id}</span>
+                {d.title[lang]}
+              </h3>
+              <p>
+                <Text value={d.body[lang]} />
+              </p>
+            </li>
+          ))}
+        </ul>
+        <p class="note">
+          <a href={p.decisions.source}>{t(lang, 'decisionLog')}</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="row reveal" aria-labelledby="challenges">
+      <h2 id="challenges">{t(lang, 'challenges')}</h2>
+      <div class="body">
+        <ul class="items">
+          {p.challenges.map((c) => (
+            <li>
+              <h3>{c.title[lang]}</h3>
+              <p>
+                <Text value={c.body[lang]} />
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <footer class="row links reveal">
+      <div class="body">
+        {article && (
+          <p class="article">
+            <span>{t(lang, 'article')}</span>
+            <a
+              href={getRelativeLocaleUrl(lang, `articles/${article.id}/`)}
+              lang="en"
+            >
+              {article.data.title}
+            </a>
+          </p>
+        )}
+        <RepoLink href={p.repo} {lang} />
+      </div>
     </footer>
   </article>
 </Base>
@@ -155,7 +174,11 @@ const labels = Object.fromEntries(
     margin-top: var(--section-gap);
   }
 
-  .project > .demo {
+  .demo {
+    margin-top: var(--space-5);
+  }
+
+  .gallery {
     margin-top: var(--space-5);
   }
 
@@ -181,6 +204,7 @@ const labels = Object.fromEntries(
   }
 
   .note {
+    max-width: var(--width-prose);
     margin-top: var(--space-2);
     color: var(--color-text-muted);
     font-size: var(--step--1);
@@ -197,11 +221,11 @@ const labels = Object.fromEntries(
     font-size: var(--step-2);
   }
 
-  section > p {
+  .body > p {
     max-width: var(--width-prose);
   }
 
-  section > p + p {
+  .body > p + p {
     margin-top: var(--space-2);
   }
 
@@ -295,6 +319,52 @@ const labels = Object.fromEntries(
   @media (max-width: 30rem) {
     .metrics {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* A wide screen puts the intro beside the first demo, the metrics in one
+     row, and each section's title in a column of its own beside it. The
+     first demo then sits below the header alone, so it may take all but
+     the header, the page padding and a line to spare. */
+  @media (min-width: 64rem) {
+    .hero {
+      --demo-reserve: 12rem;
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .hero .demo {
+      margin-top: var(--space-4);
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: var(--space-5);
+    }
+
+    /* Decisions and challenges sit two a row, so the column is filled. */
+    .items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5) var(--space-6);
+    }
+
+    .row h2 {
+      position: sticky;
+      top: var(--space-4);
+      align-self: start;
+      margin: 0;
+      font-size: var(--step-2);
+    }
+
+    .links .body {
+      grid-column: 2;
     }
   }
 </style>

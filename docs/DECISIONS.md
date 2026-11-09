@@ -17,6 +17,7 @@
 ## D004 oxlint instead of ESLint
 - Date: 2026-11-06
 - Rationale: the same linter as vault-share (its D006), so the frontends of these projects share one lint setup; oxlint is the default of the current `create-vite` template
+- Amendment 2026-11-09: still applies with Astro (D003); the React islands and any client TypeScript use the same oxlint setup as vault-share
 
 ## D005 Articles in MDX, rendered at build time
 - Date: 2026-11-09

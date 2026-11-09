@@ -4,8 +4,8 @@
 // and a narrow one drawn at 358 px for phones, shown at that size.
 interface Props {
   labels: Record<string, string>
-  /** Id of a visible paragraph that describes the diagram in words. */
-  labelledby: string
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
 }
 
 const KEYS = [
@@ -24,7 +24,7 @@ const KEYS = [
   'events',
 ] as const
 
-const { labels, labelledby } = Astro.props
+const { labels, id } = Astro.props
 const missing = KEYS.filter((key) => !labels[key])
 if (missing.length > 0)
   throw new Error(
@@ -54,7 +54,7 @@ const cylinder = (x: number, y: number, w: number, h: number, ry = 6) => {
 }
 
 // Marker ids are per instance and per variant: a hidden SVG's markers do not render.
-const head = { h: `${labelledby}-head-h`, v: `${labelledby}-head-v` }
+const head = { h: `${id}-head-h`, v: `${id}-head-v` }
 const logH = cylinder(268, 336, 136, 48)
 const logV = cylinder(63, 432, 136, 48)
 // Text goes in through set:text, so formatting adds no spaces that would
@@ -67,8 +67,7 @@ const logV = cylinder(63, 432, 136, 48)
     width="672"
     height="424"
     viewBox="0 0 672 424"
-    role="img"
-    aria-labelledby={labelledby}
+    aria-hidden="true"
   >
     <defs>
       <marker
@@ -140,8 +139,7 @@ const logV = cylinder(63, 432, 136, 48)
     width="358"
     height="608"
     viewBox="0 0 358 608"
-    role="img"
-    aria-labelledby={labelledby}
+    aria-hidden="true"
   >
     <defs>
       <marker

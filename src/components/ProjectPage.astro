@@ -1,11 +1,11 @@
 ---
 import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
 import { withBase } from '../lib/paths'
 import Tags from './Tags.astro'
-import MatchingEngine from './architecture/MatchingEngine.astro'
 import Text from './Text.astro'
 
 interface Props {
@@ -16,11 +16,13 @@ const p = Astro.props.project.data
 const lang = toLang(Astro.currentLocale)
 const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 
-// Each project's architecture diagram is drawn by hand (D013).
-const diagrams: Record<string, typeof MatchingEngine> = {
-  'matching-engine': MatchingEngine,
-}
-const Diagram = diagrams[Astro.props.project.id]
+// Each project's diagram is drawn by hand in architecture/<slug>.astro (D013).
+const diagrams = import.meta.glob<{ default: AstroComponentFactory }>(
+  './architecture/*.astro',
+  { eager: true },
+)
+const Diagram =
+  diagrams[`./architecture/${Astro.props.project.id}.astro`]?.default
 if (!Diagram)
   throw new Error(`No architecture diagram for ${Astro.props.project.id}`)
 const labels = Object.fromEntries(
@@ -90,8 +92,8 @@ const labels = Object.fromEntries(
 
     <section class="reveal" aria-labelledby="architecture">
       <h2 id="architecture">{t(lang, 'architecture')}</h2>
-      <Diagram {labels} labelledby="architecture-description" />
-      <p id="architecture-description" class="described">
+      <Diagram {labels} id="architecture-diagram" />
+      <p class="described">
         <Text value={p.architecture.description[lang]} />
       </p>
     </section>
@@ -188,9 +190,9 @@ const labels = Object.fromEntries(
   }
 
   .note a {
-    margin-left: 0.25em;
+    display: block;
+    width: fit-content;
     color: var(--color-accent);
-    white-space: nowrap;
   }
 
   h2 {
@@ -231,6 +233,7 @@ const labels = Object.fromEntries(
 
   .metrics dd {
     font-size: var(--step-3);
+    white-space: nowrap;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
@@ -241,6 +244,11 @@ const labels = Object.fromEntries(
     color: var(--color-text-muted);
     font-size: var(--step--1);
     line-height: 1.5;
+  }
+
+  .summary:lang(zh),
+  .metrics dt:lang(zh) {
+    line-height: 1.75;
   }
 
   .items {
@@ -287,12 +295,8 @@ const labels = Object.fromEntries(
   }
 
   @media (max-width: 30rem) {
-    .metrics div {
-      padding: var(--space-2);
-    }
-
-    .metrics dd {
-      font-size: var(--step-2);
+    .metrics {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

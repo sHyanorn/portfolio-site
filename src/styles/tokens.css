@@ -3,11 +3,10 @@
 :root {
   color-scheme: light dark;
 
-  /* Slate steps 1, 2, 3, 4, 6, 7, 8, 11 and 12. */
+  /* Slate steps 1, 2, 3, 6, 7, 8, 11 and 12. */
   --color-bg: light-dark(#fcfcfd, #111113);
   --color-bg-subtle: light-dark(#f9f9fb, #18191b);
   --color-surface: light-dark(#f0f0f3, #212225);
-  --color-surface-hover: light-dark(#e8e8ec, #272a2d);
   --color-line: light-dark(#d9d9e0, #363a3f);
   --color-border: light-dark(#cdced6, #43484e);
   --color-border-strong: light-dark(#b9bbc6, #5a6169);
@@ -47,13 +46,11 @@
   --space-5: 3rem;
   --space-6: 4rem;
   --space-7: 6rem;
-  --space-8: 8rem;
 
   --width-page: 45rem;
   --width-prose: 65ch;
   --gutter: clamp(1rem, 4vw, 1.5rem);
 
-  --radius-1: 4px;
   --radius-2: 8px;
   --radius-3: 12px;
 

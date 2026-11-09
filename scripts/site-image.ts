@@ -34,7 +34,20 @@ export function siteText(lang: Lang): SiteText {
   }
 }
 
+/** The base path a built page loads its assets from, such as `/` or
+ * `/ci-base/`, or null when it loads none. */
+export function builtBase(html: string): string | null {
+  return /(?:href|src)="([^"]*\/)_astro\//.exec(html)?.[1] ?? null
+}
+
 if (import.meta.main) {
+  // The preview serves dist/ from the root, so a build under a base path
+  // would load no styles and give unstyled images.
+  const base = builtBase(readFileSync('dist/index.html', 'utf8'))
+  if (base !== '/')
+    throw new Error(
+      `dist/ was built for the base ${base}: run \`npm run build\` without BASE_PATH first`,
+    )
   const { chromium } = await import('@playwright/test')
   const port = 4329
   const server = spawn(
@@ -47,22 +60,22 @@ if (import.meta.main) {
     },
   )
   const root = `http://localhost:${port}/`
-  for (let i = 0; i < 100; i++) {
-    if (
-      await fetch(root).then(
+  const text: Partial<Record<Lang, SiteText>> = {}
+  let browser
+  try {
+    let up = false
+    for (let i = 0; i < 100 && !up; i++) {
+      up = await fetch(root).then(
         (r) => r.ok,
         () => false,
       )
-    )
-      break
-    await new Promise((r) => setTimeout(r, 200))
-  }
-  // A software renderer draws the background's still frame (D015).
-  const browser = await chromium.launch({
-    args: ['--enable-unsafe-swiftshader'],
-  })
-  const text: Partial<Record<Lang, SiteText>> = {}
-  try {
+      if (!up) await new Promise((r) => setTimeout(r, 200))
+    }
+    if (!up) throw new Error(`the preview did not answer at ${root} in 20 s`)
+    // A software renderer draws the background's still frame (D015).
+    browser = await chromium.launch({
+      args: ['--enable-unsafe-swiftshader'],
+    })
     for (const lang of LANGS) {
       // 800×420 at 1.5× gives 1200×630 with type large enough for a thumbnail.
       const page = await browser.newPage({
@@ -94,7 +107,7 @@ if (import.meta.main) {
       await page.close()
     }
   } finally {
-    await browser.close()
+    await browser?.close()
     process.kill(-server.pid!)
   }
   writeFileSync(TEXT_FILE, `${JSON.stringify(text, null, 2)}\n`)

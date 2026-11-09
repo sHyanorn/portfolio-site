@@ -56,3 +56,9 @@
 - Rationale: each Radix step has a defined role and tested contrast: slate 11 on slate 1 is 5.8:1 in light mode and 9.1:1 in dark, indigo 11 is 5.9:1 and 9.2:1. `light-dark()` keeps both values of a colour on one line, with no script and no flash before the theme applies
 - Alternatives: a theme toggle (needs a script before the first paint)
 - Borrowed: the slate and indigo scales and their step roles from Radix Colors 3.0.0 (MIT); the `clamp()` type scale from Utopia's fluid type calculator (360 to 1280 px viewports, ratio 1.2 to 1.25); the monospace stack from GitHub Primer
+
+## D011 English at the root, Chinese under /zh/
+- Date: 2026-11-09
+- Decision: Astro's i18n routing with locales `en` and `zh`, English as the default and unprefixed. Each route has a thin page file in `src/pages/` and one in `src/pages/zh/`, both rendering one component that reads `Astro.currentLocale`. `lang` and `hreflang` use `en` and `zh-CN`; every page has a canonical URL and links both versions and `x-default`, the English one. The language toggle links to the same page in the other language: `pagePath()` strips the base and the `zh/` prefix, and `getRelativeLocaleUrl()` builds the other version's URL. Interface text sits in one dictionary in `src/lib/i18n.ts` where each key holds both languages, so a missing translation fails the type check. The 404 page, which GitHub Pages serves for every missing path, carries both languages and no alternates
+- Rationale: a reader who switches language stays on the same page, and search engines can pair the two versions
+- Borrowed: the `i18n` configuration and `astro:i18n` helpers from Astro's internationalization guide; the head tags (canonical URL from `Astro.url` and `site`, Open Graph) from Astro's blog example

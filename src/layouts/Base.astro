@@ -1,27 +1,42 @@
 ---
 import '../styles/tokens.css'
 import '../styles/base.css'
-import { withBase } from '../lib/paths'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import BaseHead from '../components/BaseHead.astro'
+import { LANG_TAG, otherLang, pagePath, t, toLang } from '../lib/i18n'
 
 interface Props {
   title: string
   description: string
+  /** False on a page with no counterpart in the other language, such as the 404 page. */
+  alternates?: boolean
 }
 
-const { title, description } = Astro.props
+const { title, description, alternates = true } = Astro.props
+const lang = toLang(Astro.currentLocale)
+const other = otherLang(lang)
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={LANG_TAG[lang]}>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <BaseHead {title} {description} {lang} {alternates} />
   </head>
   <body>
+    <header>
+      <nav>
+        <a href={getRelativeLocaleUrl(lang)}>Aaron Yang</a>
+        {alternates && (
+          <a
+            href={getRelativeLocaleUrl(other, pagePath(Astro.url.pathname))}
+            hreflang={LANG_TAG[other]}
+            lang={LANG_TAG[other]}
+          >
+            {t(lang, 'language')}
+          </a>
+        )}
+      </nav>
+    </header>
     <slot />
   </body>
 </html>

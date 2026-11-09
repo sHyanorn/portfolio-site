@@ -10,4 +10,10 @@ export default defineConfig({
   trailingSlash: 'always',
   // HTML whitespace rules, which Prettier assumes when it formats .astro files (D006).
   compressHTML: true,
+  // English at the root, Chinese under /zh/ (D011).
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh'],
+    routing: { prefixDefaultLocale: false },
+  },
 })

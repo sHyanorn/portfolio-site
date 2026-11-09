@@ -1,14 +1,26 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import Base from '../layouts/Base.astro'
-import { withBase } from '../lib/paths'
 ---
 
+<!-- GitHub Pages serves this one page for every missing path, so it speaks both languages. -->
 <Base
   title="Page not found · Aaron Yang"
   description="This page does not exist."
+  alternates={false}
 >
   <main>
     <h1>Page not found</h1>
-    <a href={withBase('/')}>Home</a>
+    <p lang="zh-CN">页面不存在</p>
+    <ul>
+      <li>
+        <a href={getRelativeLocaleUrl('en')}>Home</a>
+      </li>
+      <li>
+        <a href={getRelativeLocaleUrl('zh')} lang="zh-CN">
+          首页
+        </a>
+      </li>
+    </ul>
   </main>
 </Base>

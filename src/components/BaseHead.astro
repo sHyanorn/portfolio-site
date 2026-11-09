@@ -1,0 +1,47 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n'
+import { LANGS, LANG_TAG, pagePath, type Lang } from '../lib/i18n'
+import { withBase } from '../lib/paths'
+
+interface Props {
+  title: string
+  description: string
+  lang: Lang
+  /** False on a page with no counterpart in the other language, such as the 404 page. */
+  alternates: boolean
+}
+
+const { title, description, lang, alternates } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site)
+const path = pagePath(Astro.url.pathname)
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+{alternates && (
+  <>
+    <link rel="canonical" href={canonical} />
+    {LANGS.map((l) => (
+      <link
+        rel="alternate"
+        hreflang={LANG_TAG[l]}
+        href={getAbsoluteLocaleUrl(l, path)}
+      />
+    ))}
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={getAbsoluteLocaleUrl('en', path)}
+    />
+    <meta property="og:url" content={canonical} />
+  </>
+)}
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+<meta name="twitter:card" content="summary" />

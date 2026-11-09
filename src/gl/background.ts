@@ -14,8 +14,12 @@ const MAX_PIXELS = 200_000
 /** Smallest backbuffer scale: upscaled further, the dither smears and banding shows. */
 const MIN_SCALE = 0.5
 
-/** Renderers that shade on the CPU, where one frame takes tens of milliseconds. */
-const SOFTWARE = /SwiftShader|llvmpipe|Software/i
+/**
+ * Renderers that shade on the CPU, where one frame takes tens of
+ * milliseconds: Chrome's SwiftShader, Mesa's llvmpipe and softpipe, and
+ * Windows' Basic Render Driver (WARP).
+ */
+const SOFTWARE = /SwiftShader|llvmpipe|softpipe|Basic Render|Software/i
 
 /** Shortest time between frames: 30 a second, less 2 ms for timer jitter. */
 const FRAME_TIME = 1000 / 30 - 2

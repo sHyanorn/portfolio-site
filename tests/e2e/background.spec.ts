@@ -114,6 +114,11 @@ for (const [renderer, still] of [
     true,
   ],
   ['llvmpipe (LLVM 17.0.6, 256 bits)', true],
+  ['softpipe', true],
+  [
+    'ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)',
+    true,
+  ],
   ['Software Rasterizer', true],
   [GPU, false],
 ] as const)

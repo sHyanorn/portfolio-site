@@ -116,14 +116,16 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
       gl.deleteShader(shader)
     }
     gl.linkProgram(program)
+    const built = program
     requestAnimationFrame(function check() {
-      if (gl.isContextLost() || !program) return
+      // A lost context, or a restore that built a newer program, ends this check.
+      if (gl.isContextLost() || program !== built) return
       if (
         parallel &&
-        !gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)
+        !gl.getProgramParameter(built, parallel.COMPLETION_STATUS_KHR)
       )
         requestAnimationFrame(check)
-      else if (gl.getProgramParameter(program, gl.LINK_STATUS)) setup(program)
+      else if (gl.getProgramParameter(built, gl.LINK_STATUS)) setup(built)
       else canvas.remove()
     })
   }

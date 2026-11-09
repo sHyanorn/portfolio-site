@@ -9,6 +9,12 @@ declare global {
     uniforms: Record<string, number[]>
     gl?: WebGL2RenderingContext
     lose?: WEBGL_lose_context
+    /** createBuffer calls so far, where a test counts them. */
+    buffers?: number
+    /** linkProgram calls so far, where a test counts them. */
+    links?: number
+    /** Animation frame callbacks a test holds back. */
+    held?: FrameRequestCallback[]
     /** Milliseconds between frames once a test spaces them out. */
     frameGap?: number
   }

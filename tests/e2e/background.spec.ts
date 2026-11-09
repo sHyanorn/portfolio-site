@@ -116,6 +116,54 @@ test('a lost context hides the canvas until it is restored', async ({
   expect(errors).toEqual([])
 })
 
+test('a context lost and restored while the shaders link sets up once', async ({
+  page,
+}) => {
+  // Holds animation frames, as a hidden tab does, and counts buffers and links.
+  await page.addInitScript(() => {
+    window.buffers = 0
+    window.held = []
+    window.links = 0
+    const gl = WebGL2RenderingContext.prototype
+    const { createBuffer, linkProgram } = gl
+    gl.createBuffer = function () {
+      window.buffers!++
+      return createBuffer.call(this)
+    }
+    gl.linkProgram = function (program) {
+      window.links!++
+      return linkProgram.call(this, program)
+    }
+    const { requestAnimationFrame } = window
+    window.requestAnimationFrame = (callback) => {
+      if (!window.held) return requestAnimationFrame(callback)
+      window.held.push(callback)
+      return window.held.length
+    }
+  })
+  await page.goto(BASE)
+  // Poll on a timer: the default polls on animation frames, which are held.
+  const poll = { polling: 50 }
+  await page.waitForFunction(() => window.links === 1, null, poll)
+  await page.evaluate(() => {
+    window.lose = window.gl!.getExtension('WEBGL_lose_context')!
+    window.lose.loseContext()
+  })
+  await page.waitForFunction(() => window.gl!.isContextLost(), null, poll)
+  await page.evaluate(() => window.lose!.restoreContext())
+  await page.waitForFunction(() => window.links === 2, null, poll)
+
+  // The tab shows again: both checks run, the first against a stale build.
+  await page.evaluate(() => {
+    const held = window.held!
+    window.held = undefined
+    for (const callback of held) callback(performance.now())
+  })
+  await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+  await page.waitForTimeout(300)
+  expect(await page.evaluate(() => window.buffers)).toBe(1)
+})
+
 for (const [renderer, still] of [
   [
     'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)',

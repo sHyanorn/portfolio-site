@@ -43,7 +43,7 @@ for (const p of localized) {
 
 test('the 404 page has no alternates or toggle', async ({ page }) => {
   await page.goto(`${BASE}404.html`)
-  await expect(page.locator('link[rel=alternate]')).toHaveCount(0)
+  await expect(page.locator('link[rel=alternate][hreflang]')).toHaveCount(0)
   await expect(page.locator('link[rel=canonical]')).toHaveCount(0)
   await expect(page.locator('header a[hreflang]')).toHaveCount(0)
 })

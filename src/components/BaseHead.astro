@@ -22,6 +22,12 @@ const path = pagePath(Astro.url.pathname)
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="Aaron Yang"
+  href={new URL(withBase('rss.xml'), Astro.site)}
+/>
 {alternates && (
   <>
     <link rel="canonical" href={canonical} />

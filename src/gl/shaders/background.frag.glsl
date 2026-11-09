@@ -9,6 +9,8 @@ precision highp float;
 
 uniform vec2 u_resolution;
 uniform float u_time;
+// Where the pointer has moved the glows, in fractions of the canvas.
+uniform vec2 u_offset;
 uniform vec3 u_base;
 uniform vec3 u_tint;
 uniform vec3 u_strong;
@@ -38,10 +40,12 @@ float glow(
 
 void main() {
   vec2 uv = gl_FragCoord.xy / u_resolution;
+  // The glows follow the pointer; the fade into the page stays in place.
+  vec2 at = uv - u_offset;
   vec2 size = u_resolution / (0.5 * (u_resolution.x + u_resolution.y));
 
   float left = glow(
-    uv,
+    at,
     size,
     vec2(0.12, 1.12),
     vec2(0.12, 0.05),
@@ -49,7 +53,7 @@ void main() {
     vec2(0.42, 0.3)
   );
   float right = glow(
-    uv,
+    at,
     size,
     vec2(0.92, 1.06),
     vec2(-0.1, 0.05),
@@ -57,7 +61,7 @@ void main() {
     vec2(0.4, 0.3)
   );
   float core = glow(
-    uv,
+    at,
     size,
     vec2(0.8, 1.1),
     vec2(-0.16, -0.04),

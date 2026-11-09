@@ -1,8 +1,9 @@
 // The home page background (D015): WebGL2 shades one full-screen triangle
 // with soft, slowly drifting glows. The CSS gradients under the canvas show
 // until the first frame, and stay when WebGL2 is missing, the shaders fail
-// to link or the context is lost; none of these throws or logs an error. A
-// renderer that shades on the CPU draws the first frame only.
+// to link or the context is lost; none of these throws or logs an error.
+// Reduced motion, and a renderer that shades on the CPU, get the first frame
+// only; a fine pointer moves the glows a little.
 import vertexSource from './shaders/background.vert.glsl?raw'
 import fragmentSource from './shaders/background.frag.glsl?raw'
 
@@ -14,12 +15,20 @@ const MIN_SCALE = 0.5
 /** Renderers that shade on the CPU, where one frame takes tens of milliseconds. */
 const SOFTWARE = /SwiftShader|llvmpipe|Software/i
 
+/** How far the pointer moves the glows, as a fraction of the canvas from its centre to an edge. */
+const POINTER_REACH = 0.08
+/** Time constant of the glows following the pointer, in seconds. */
+const POINTER_LAG = 0.8
+
 /** Shader colours and the tokens in tokens.css they come from. */
 const COLORS = {
   u_base: '--color-backdrop',
   u_tint: '--color-backdrop-tint',
   u_strong: '--color-backdrop-strong',
 }
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)')
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)')
 
 /** Runs a startup step while the main thread is idle, so no step lengthens a task. */
 function idle(step: () => void): void {
@@ -51,16 +60,18 @@ export function mountBackground(canvas: HTMLCanvasElement): void {
 }
 
 function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
-  /** Draw the first frame and no more. */
-  const still = isSoftware(gl)
+  const software = isSoftware(gl)
   let program: WebGLProgram | null = null
   let ready = false
   let loc: Record<string, WebGLUniformLocation | null> = {}
-  /** Seconds of animation drawn so far. */
+  /** Seconds of animation drawn so far; 0 is also the still frame. */
   let time = 0
-  /** Timestamp of the last frame drawn. */
+  /** Timestamp of the last frame, 0 when the loop has just started. */
   let last = 0
   let frame = 0
+  /** Pointer position and the glows' lagging copy of it, from the centre. */
+  const pointer = { x: 0, y: 0 }
+  const offset = { x: 0, y: 0 }
 
   // Compiles and links without asking for the result, which would wait on the driver.
   function build() {
@@ -78,20 +89,19 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
       gl.deleteShader(shader)
     }
     gl.linkProgram(program)
-    requestAnimationFrame(function check(now) {
+    requestAnimationFrame(function check() {
       if (gl.isContextLost() || !program) return
       if (
         parallel &&
         !gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)
       )
         requestAnimationFrame(check)
-      else if (gl.getProgramParameter(program, gl.LINK_STATUS))
-        setup(program, now)
+      else if (gl.getProgramParameter(program, gl.LINK_STATUS)) setup(program)
       else canvas.remove()
     })
   }
 
-  function setup(linked: WebGLProgram, now: number) {
+  function setup(linked: WebGLProgram) {
     gl.useProgram(linked)
     // Corners at (-1, -1), (3, -1) and (-1, 3) put the clip square inside the triangle.
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
@@ -103,26 +113,41 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     gl.enableVertexAttribArray(0)
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
     loc = Object.fromEntries(
-      ['u_resolution', 'u_time', ...Object.keys(COLORS)].map((name) => [
-        name,
-        gl.getUniformLocation(linked, name),
-      ]),
+      ['u_resolution', 'u_time', 'u_offset', ...Object.keys(COLORS)].map(
+        (name) => [name, gl.getUniformLocation(linked, name)],
+      ),
     )
     readColors()
     resize()
     draw()
     ready = true
     canvas.classList.add('ready')
-    if (still) return
-    last = now
-    frame = requestAnimationFrame(tick)
+    update()
+  }
+
+  /** Runs the loop only while motion is allowed and cheap. */
+  function update() {
+    const play = ready && !software && !reduce.matches
+    if (play && !frame) {
+      last = 0
+      frame = requestAnimationFrame(tick)
+    } else if (!play && frame) {
+      cancelAnimationFrame(frame)
+      frame = 0
+    }
   }
 
   function tick(now: number) {
     frame = requestAnimationFrame(tick)
-    time += (now - last) / 1000
+    if (last) {
+      const dt = (now - last) / 1000
+      time += dt
+      const follow = 1 - Math.exp(-dt / POINTER_LAG)
+      offset.x += (pointer.x - offset.x) * follow
+      offset.y += (pointer.y - offset.y) * follow
+      draw()
+    }
     last = now
-    draw()
   }
 
   // light-dark() resolves only in a computed value, so each token passes
@@ -157,6 +182,11 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     gl.viewport(0, 0, canvas.width, canvas.height)
     gl.uniform2f(loc.u_resolution, canvas.width, canvas.height)
     gl.uniform1f(loc.u_time, time)
+    gl.uniform2f(
+      loc.u_offset,
+      offset.x * POINTER_REACH,
+      offset.y * POINTER_REACH,
+    )
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
@@ -170,11 +200,31 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     draw()
   })
 
+  // Reduced motion shows the first frame, still, without the pointer.
+  reduce.addEventListener('change', () => {
+    if (!ready) return
+    if (reduce.matches) {
+      time = offset.x = offset.y = 0
+      draw()
+    }
+    update()
+  })
+
+  addEventListener(
+    'pointermove',
+    (event) => {
+      if (!finePointer.matches) return
+      pointer.x = event.clientX / innerWidth - 0.5
+      pointer.y = 0.5 - event.clientY / innerHeight
+    },
+    { passive: true },
+  )
+
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault()
-    cancelAnimationFrame(frame)
     ready = false
     program = null
+    update()
     canvas.classList.remove('ready')
   })
   canvas.addEventListener('webglcontextrestored', () => idle(build))

@@ -2,15 +2,16 @@
 // at several points of the animation and over the CSS fallback (D015). Each
 // check hides the text, screenshots the first screen and compares every
 // pixel behind each text element with its colour: 4.5:1, or 3:1 for large
-// text. axe cannot see through a canvas or a gradient, so it must list this
-// text as needing review, never as passed.
+// text. The still frame under reduced motion is checked too. axe cannot see
+// through a canvas or a gradient, so it must list this text as needing
+// review, never as passed.
 //
 // SCREENSHOTS=1 also saves the first screen in each state to
 // artifacts/screens/. BACKGROUND_TIMES sets the points in seconds of
 // animation, 0 being the first frame: BACKGROUND_TIMES=0,30,90.
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
-import { fakeRenderer, GPU } from './gl'
+import { openPaused } from './gl'
 import { BASE } from './site'
 
 const screenshots = !!process.env.SCREENSHOTS
@@ -181,18 +182,7 @@ for (const viewport of viewports) {
       test('animation', async ({ page, browser }) => {
         test.slow()
         const decoder = await browser.newPage()
-        await page.addInitScript(fakeRenderer, GPU)
-        await page.clock.install({ time: 0 })
-        await page.clock.pauseAt(1000)
-        await page.goto(BASE)
-        const canvas = page.locator('.backdrop canvas')
-        // Run the startup steps up to the first frame, then the animation.
-        for (let i = 0; i < 100; i++) {
-          if (await canvas.evaluate((c) => c.classList.contains('ready'))) break
-          await page.clock.runFor(16)
-        }
-        await expect(canvas).toHaveClass('ready')
-
+        await openPaused(page, BASE)
         let at = 0
         for (const time of times) {
           await page.clock.runFor((time - at) * 1000)
@@ -202,6 +192,14 @@ for (const viewport of viewports) {
         // axe waits on timers, which run only while the clock does.
         await page.clock.resume()
         await checkAxe(page)
+      })
+
+      test('still frame', async ({ page, browser }) => {
+        const decoder = await browser.newPage()
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        await page.goto(BASE)
+        await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+        await check(page, decoder, 'still')
       })
 
       test('fallback', async ({ page, browser }) => {

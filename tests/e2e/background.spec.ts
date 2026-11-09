@@ -1,39 +1,13 @@
 // The home page background (D015): it draws once WebGL2 is ready, and falls
 // back to the CSS gradient, without errors, when WebGL2 is missing, the
-// shaders fail or the context is lost. A software renderer draws one still
-// frame.
+// shaders fail or the context is lost. Reduced motion and a software renderer
+// get one still frame; a fine pointer moves the glows a little. Tests run as
+// on a hardware renderer unless they name another.
 import { expect, test, type Page } from '@playwright/test'
-import { fakeRenderer, GPU } from './gl'
+import { draws, fakeRenderer, GPU, instrument, openPaused, uniform } from './gl'
 import { BASE } from './site'
 
 const homes = [BASE, `${BASE}zh/`]
-
-declare global {
-  interface Window {
-    draws: number
-    gl?: WebGL2RenderingContext
-    lose?: WEBGL_lose_context
-  }
-}
-
-/** Counts draw calls and keeps the context; runs in the page before its scripts. */
-function instrument() {
-  window.draws = 0
-  const draw = WebGL2RenderingContext.prototype.drawArrays
-  WebGL2RenderingContext.prototype.drawArrays = function (...args) {
-    window.draws++
-    return draw.apply(this, args)
-  }
-  const getContext = HTMLCanvasElement.prototype.getContext
-  HTMLCanvasElement.prototype.getContext = function (
-    this: HTMLCanvasElement,
-    ...args: Parameters<typeof getContext>
-  ) {
-    const context = getContext.apply(this, args)
-    if (context instanceof WebGL2RenderingContext) window.gl = context
-    return context
-  } as typeof getContext
-}
 
 /** Records console errors and uncaught exceptions. */
 function watchErrors(page: Page): string[] {
@@ -51,10 +25,13 @@ async function expectFallback(page: Page) {
     'background-image',
     /gradient/,
   )
-  expect(await page.evaluate(() => window.draws)).toBe(0)
+  expect(await draws(page)).toBe(0)
 }
 
-test.beforeEach(({ page }) => page.addInitScript(instrument))
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(instrument)
+  await page.addInitScript(fakeRenderer, GPU)
+})
 
 for (const path of homes) {
   test(`${path}: draws and fades the canvas in`, async ({ page }) => {
@@ -63,7 +40,7 @@ for (const path of homes) {
     const canvas = page.locator('.backdrop canvas')
     await expect(canvas).toHaveClass('ready')
     await expect(canvas).toHaveCSS('opacity', '1')
-    expect(await page.evaluate(() => window.draws)).toBeGreaterThan(0)
+    expect(await draws(page)).toBeGreaterThan(0)
 
     // At most one backbuffer pixel per CSS pixel, and no more than the
     // budget unless the scale is at its floor of 0.5.
@@ -123,11 +100,11 @@ test('a lost context hides the canvas until it is restored', async ({
     window.lose.loseContext()
   })
   await expect(canvas).not.toHaveClass('ready')
-  const before = await page.evaluate(() => window.draws)
+  const before = await draws(page)
 
   await page.evaluate(() => window.lose!.restoreContext())
   await expect(canvas).toHaveClass('ready')
-  expect(await page.evaluate(() => window.draws)).toBeGreaterThan(before)
+  expect(await draws(page)).toBeGreaterThan(before)
   expect(errors).toEqual([])
 })
 
@@ -148,10 +125,78 @@ for (const [renderer, still] of [
     await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
     if (still) {
       await page.waitForTimeout(500)
-      expect(await page.evaluate(() => window.draws)).toBe(1)
+      expect(await draws(page)).toBe(1)
     } else {
-      await expect
-        .poll(() => page.evaluate(() => window.draws))
-        .toBeGreaterThan(5)
+      await expect.poll(() => draws(page)).toBeGreaterThan(5)
     }
   })
+
+test.describe('reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' })
+
+  test('draws one still frame, then only on a theme change or a resize', async ({
+    page,
+  }) => {
+    await page.goto(BASE)
+    await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+    await page.waitForTimeout(500)
+    expect(await draws(page)).toBe(1)
+    expect(await uniform(page, 'u_time')).toEqual([0])
+
+    await page.emulateMedia({ colorScheme: 'dark' })
+    await expect.poll(() => draws(page)).toBe(2)
+    await page.setViewportSize({ width: 800, height: 600 })
+    await expect.poll(() => draws(page)).toBe(3)
+    await page.waitForTimeout(500)
+    expect(await draws(page)).toBe(3)
+  })
+})
+
+test('turning reduced motion on stops at the still frame', async ({ page }) => {
+  await openPaused(page, BASE)
+  await page.clock.runFor(1000)
+  const moving = await draws(page)
+  expect(moving).toBeGreaterThan(20)
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect.poll(() => draws(page)).toBe(moving + 1)
+  expect(await uniform(page, 'u_time')).toEqual([0])
+  await page.clock.runFor(1000)
+  expect(await draws(page)).toBe(moving + 1)
+
+  // The change event comes with a rendering update, so step until it lands.
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await expect
+    .poll(async () => {
+      await page.clock.runFor(100)
+      return draws(page)
+    })
+    .toBeGreaterThan(moving + 1)
+})
+
+test('a mouse moves the glows by at most 4% of the canvas', async ({
+  page,
+}) => {
+  await openPaused(page, BASE)
+  await page.mouse.move(page.viewportSize()!.width - 1, 0)
+  await page.clock.runFor(5000)
+  const [x, y] = await uniform(page, 'u_offset')
+  expect(x).toBeGreaterThan(0.035)
+  expect(y).toBeGreaterThan(0.035)
+  expect(Math.max(x, y)).toBeLessThanOrEqual(0.04)
+})
+
+test.describe('touch screen', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+  })
+
+  test('a coarse pointer leaves the glows in place', async ({ page }) => {
+    await openPaused(page, BASE)
+    await page.mouse.move(389, 0)
+    await page.clock.runFor(2000)
+    expect(await uniform(page, 'u_offset')).toEqual([0, 0])
+  })
+})

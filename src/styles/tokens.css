@@ -64,8 +64,10 @@
   --radius-2: 8px;
   --radius-3: 12px;
 
-  /* Entrances take 300 to 500 ms (SPEC); hover feedback is faster. */
-  --duration-fast: 150ms;
-  --duration: 400ms;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Entrances take 300 to 500 ms (SPEC); hover feedback is faster. One
+     decelerating curve for all motion (D014): it starts gently and never
+     overshoots. */
+  --duration-fast: 240ms;
+  --duration: 500ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }

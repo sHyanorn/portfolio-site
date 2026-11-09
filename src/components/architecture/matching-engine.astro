@@ -1,7 +1,7 @@
 ---
 // Architecture of matching-engine, drawn by hand in two variants: a wide one
-// drawn at 672 px for containers that wide and up, where it fills the column,
-// and a narrow one drawn at 358 px for phones, shown at that size.
+// drawn at 720 px, the page column, for containers that wide, and a narrow
+// one drawn at 358 px for narrower ones, both shown at their drawn size.
 interface Props {
   labels: Record<string, string>
   /** Prefix for the arrowhead marker ids, unique on the page. */
@@ -55,7 +55,7 @@ const cylinder = (x: number, y: number, w: number, h: number, ry = 6) => {
 
 // Marker ids are per instance and per variant: a hidden SVG's markers do not render.
 const head = { h: `${id}-head-h`, v: `${id}-head-v` }
-const logH = cylinder(268, 336, 136, 48)
+const logH = cylinder(292, 336, 136, 48)
 const logV = cylinder(63, 432, 136, 48)
 // Text goes in through set:text, so formatting adds no spaces that would
 // shift centred labels.
@@ -64,9 +64,9 @@ const logV = cylinder(63, 432, 136, 48)
 <div class="diagram">
   <svg
     class="wide"
-    width="672"
+    width="720"
     height="424"
-    viewBox="0 0 672 424"
+    viewBox="0 0 720 424"
     aria-hidden="true"
   >
     <defs>
@@ -84,54 +84,54 @@ const logV = cylinder(63, 432, 136, 48)
       </marker>
     </defs>
 
-    <rect x="0" y="96" width="672" height="328" rx="12" class="region"></rect>
+    <rect x="0" y="96" width="720" height="328" rx="12" class="region"></rect>
     <text x="16" y="120" class="region-label" set:text={t.engine} />
 
-    <rect {...box(272, 0, 128, 40)} rx="19.5" class="box"></rect>
-    <text x="336" y="25" class="label" set:text={t.clients} />
-    <path class="line" d="M324.5 40V112" marker-end={`url(#${head.h})`}></path>
-    <path class="line" d="M348.5 112V40" marker-end={`url(#${head.h})`}></path>
-    <text x="316" y="72" class="edge end" set:text={t.requests} />
-    <text x="356" y="72" class="edge" set:text={t.pushes} />
+    <rect {...box(296, 0, 128, 40)} rx="19.5" class="box"></rect>
+    <text x="360" y="25" class="label" set:text={t.clients} />
+    <path class="line" d="M348.5 40V112" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M372.5 112V40" marker-end={`url(#${head.h})`}></path>
+    <text x="340" y="72" class="edge end" set:text={t.requests} />
+    <text x="380" y="72" class="edge" set:text={t.pushes} />
 
-    <rect {...box(216, 112, 240, 56)} rx="7.5" class="box"></rect>
-    <text x="336" y="135" class="label" set:text={t.api} />
-    <text x="336" y="153" class="path" set:text="internal/api" />
+    <rect {...box(240, 112, 240, 56)} rx="7.5" class="box"></rect>
+    <text x="360" y="135" class="label" set:text={t.api} />
+    <text x="360" y="153" class="path" set:text="internal/api" />
 
     <path
       class="line"
-      d="M216 140.5H136.5A8 8 0 0 0 128.5 148.5V248"
+      d="M240 140.5H136.5A8 8 0 0 0 128.5 148.5V248"
       marker-end={`url(#${head.h})`}
     ></path>
-    <path class="line" d="M336.5 240V168" marker-end={`url(#${head.h})`}></path>
-    <text x="344" y="188" class="edge" set:text={t.events} />
+    <path class="line" d="M360.5 240V168" marker-end={`url(#${head.h})`}></path>
+    <text x="368" y="188" class="edge" set:text={t.events} />
 
-    <rect {...box(16, 200, 640, 208)} rx="7.5" class="group"></rect>
+    <rect {...box(16, 200, 688, 208)} rx="7.5" class="group"></rect>
     <text x="32" y="224" class="region-label" set:text={t.symbol} />
 
     <rect {...box(56, 248, 144, 40)} rx="7.5" class="box"></rect>
     <path class="inset" d="M62.5 248.5V287.5M193.5 248.5V287.5"></path>
     <text x="128" y="273" class="label" set:text={t.queue} />
 
-    <path class="line" d="M200 268.5H256" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M200 268.5H280" marker-end={`url(#${head.h})`}></path>
 
-    <rect {...box(256, 240, 160, 56)} rx="7.5" class="box core"></rect>
-    <text x="336" y="263" class="label" set:text={t.market} />
-    <text x="336" y="281" class="path" set:text="internal/engine" />
+    <rect {...box(280, 240, 160, 56)} rx="7.5" class="box core"></rect>
+    <text x="360" y="263" class="label" set:text={t.market} />
+    <text x="360" y="281" class="path" set:text="internal/engine" />
 
-    <path class="line" d="M416 268.5H472" marker-end={`url(#${head.h})`}></path>
-    <text x="444" y="260" class="edge middle" set:text={t.apply} />
+    <path class="line" d="M440 268.5H520" marker-end={`url(#${head.h})`}></path>
+    <text x="480" y="260" class="edge middle" set:text={t.apply} />
 
-    <rect {...box(472, 240, 144, 56)} rx="7.5" class="box"></rect>
-    <text x="544" y="263" class="label" set:text={t.book} />
-    <text x="544" y="281" class="path" set:text="internal/book" />
+    <rect {...box(520, 240, 144, 56)} rx="7.5" class="box"></rect>
+    <text x="592" y="263" class="label" set:text={t.book} />
+    <text x="592" y="281" class="path" set:text="internal/book" />
 
-    <path class="line" d="M336.5 296V336" marker-end={`url(#${head.h})`}></path>
-    <text x="344" y="320" class="edge" set:text={t.writeAhead} />
+    <path class="line" d="M360.5 296V336" marker-end={`url(#${head.h})`}></path>
+    <text x="368" y="320" class="edge" set:text={t.writeAhead} />
 
     <path d={logH.body} class="box"></path>
     <ellipse {...logH.face} class="box"></ellipse>
-    <text x="336" y="371" class="label" set:text={t.log} />
+    <text x="360" y="371" class="label" set:text={t.log} />
   </svg>
 
   <svg
@@ -220,7 +220,7 @@ const logV = cylinder(63, 432, 136, 48)
     display: none;
   }
 
-  @container (min-width: 672px) {
+  @container (min-width: 720px) {
     .wide {
       display: block;
       width: 100%;

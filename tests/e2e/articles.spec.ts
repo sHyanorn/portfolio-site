@@ -1,6 +1,6 @@
 // Article pages name their project and link to it, the project page links
-// back, the body stays English on Chinese pages, and only pages with math
-// load KaTeX's stylesheet (D005).
+// back, the body stays English on Chinese pages, only pages with math load
+// KaTeX's stylesheet (D005), and the lists and the feed describe the articles.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
@@ -69,3 +69,29 @@ for (const [path, zh] of [
       path,
     )
   })
+
+test('the article lists and the feed describe the articles', async ({
+  page,
+  request,
+}) => {
+  const en = "Aaron Yang's articles about the projects on this site."
+  for (const [path, text] of [
+    [`${BASE}articles/`, en],
+    [`${BASE}zh/articles/`, 'Aaron Yang 关于本站项目的文章。'],
+  ]) {
+    await page.goto(path)
+    await expect(page.locator('meta[name=description]')).toHaveAttribute(
+      'content',
+      text,
+    )
+  }
+  const xml = await (await request.get(`${BASE}rss.xml`)).text()
+  const channel = await page.evaluate(
+    (source) =>
+      new DOMParser()
+        .parseFromString(source, 'application/xml')
+        .querySelector('channel > description')?.textContent,
+    xml,
+  )
+  expect(channel).toBe(en)
+})

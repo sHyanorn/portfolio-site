@@ -8,7 +8,7 @@ Personal website of Aaron Yang. Built with Astro and TypeScript, with a hand-wri
 
 - Home: an introduction, the four focus areas and the project list, over the WebGL2 background ([D015](docs/DECISIONS.md))
 - `/projects/<slug>/`: one page per project, from `src/content/projects/<slug>.json` ([D012](docs/DECISIONS.md), [D013](docs/DECISIONS.md)); each project's numbers are traced to its repository in `docs/project-sources/<slug>.md`
-- `/articles/` and `/articles/<slug>/`: one article per project, in MDX ([D005](docs/DECISIONS.md)), and the full-text feed at `/rss.xml` ([D016](docs/DECISIONS.md))
+- `/articles/` and `/articles/<slug>/`: articles about the projects, in MDX ([D005](docs/DECISIONS.md)), and the full-text feed at `/rss.xml` ([D016](docs/DECISIONS.md))
 - `/about/` ([D017](docs/DECISIONS.md))
 
 Every page but the 404 page also exists in Chinese under `/zh/` ([D011](docs/DECISIONS.md)).

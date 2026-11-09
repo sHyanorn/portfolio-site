@@ -62,8 +62,8 @@ const ui = {
     zh: '我的工作处在经济、金融和技术的交汇处。商科提出的问题是：市场怎样撮合订单，一个策略怎样仅凭运气就显得很好，没有线上数据时怎样评判一个决策。软件是我检验这些问题的方式。网站上有三个项目各回答其中一个，给出的数字都能追溯到项目仓库。',
   },
   articlesDescription: {
-    en: "Aaron Yang's articles, one per project.",
-    zh: 'Aaron Yang 的文章，每个项目一篇。',
+    en: "Aaron Yang's articles about the projects on this site.",
+    zh: 'Aaron Yang 关于本站项目的文章。',
   },
   english: { en: 'English', zh: '英文' },
   language: { en: '中文', zh: 'English' },

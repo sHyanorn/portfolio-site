@@ -12,3 +12,25 @@ export const shotImage = (src: ImageMetadata) => ({
   ],
   sizes: '(min-width: 768px) 720px, 100vw',
 })
+
+/** A screenshot and its dark copy, if it has one, each with the theme it
+ * shows under. The page sizes both by one aspect ratio, so the copy must
+ * have the screenshot's size (D013). The check lives here because the
+ * content schema sees image paths, not their sizes. */
+export function themeCopies({
+  src,
+  dark,
+}: {
+  src: ImageMetadata
+  dark?: ImageMetadata
+}): { src: ImageMetadata; theme?: 'light' | 'dark' }[] {
+  if (!dark) return [{ src, theme: undefined }]
+  if (dark.width !== src.width || dark.height !== src.height)
+    throw new Error(
+      `${dark.src} is ${dark.width}×${dark.height}, but ${src.src} is ${src.width}×${src.height}`,
+    )
+  return [
+    { src, theme: 'light' },
+    { src: dark, theme: 'dark' },
+  ]
+}

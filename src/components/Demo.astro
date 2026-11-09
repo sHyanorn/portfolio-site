@@ -2,7 +2,7 @@
 import { getImage, Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { Lang } from '../lib/i18n'
-import { shotImage } from '../lib/shots'
+import { shotImage, themeCopies } from '../lib/shots'
 import { withBase } from '../lib/paths'
 import Text from './Text.astro'
 
@@ -23,10 +23,7 @@ const shots =
         demo.images.map(async (shot) => ({
           ...shot,
           variants: await Promise.all(
-            [
-              { src: shot.src, theme: shot.dark && 'light' },
-              ...(shot.dark ? [{ src: shot.dark, theme: 'dark' }] : []),
-            ].map(async (v) => ({
+            themeCopies(shot).map(async (v) => ({
               ...v,
               full: await getImage({ src: v.src, format: 'avif' }),
             })),

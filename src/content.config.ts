@@ -33,19 +33,14 @@ const projects = defineCollection({
         z.strictObject({
           images: z
             .array(
-              z
-                .strictObject({
-                  src: image(),
-                  dark: image().optional(),
-                  alt: text,
-                  caption: text,
-                })
-                .refine(
-                  ({ src, dark }) =>
-                    !dark ||
-                    (dark.width === src.width && dark.height === src.height),
-                  'A dark copy has the size of its screenshot',
-                ),
+              // themeCopies() in src/lib/shots.ts checks the dark copy's
+              // size, which is not known here.
+              z.strictObject({
+                src: image(),
+                dark: image().optional(),
+                alt: text,
+                caption: text,
+              }),
             )
             .min(2)
             .max(4),

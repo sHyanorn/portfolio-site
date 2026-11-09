@@ -14,16 +14,22 @@
     "format:check": "prettier --check .",
     "typecheck": "astro check",
     "test": "vitest run",
-    "budget": "node scripts/js-budget.ts"
+    "budget": "node scripts/js-budget.ts",
+    "e2e": "playwright test",
+    "screenshots": "SCREENSHOTS=1 playwright test tests/e2e/pages.spec.ts",
+    "audit": "node scripts/audit-report.ts"
   },
   "dependencies": {
     "astro": "7.4.7"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.63.0",
     "@types/node": "22.20.5",
     "es-module-lexer": "3.0.4",
     "oxlint": "1.92.0",
+    "playwright-core": "1.63.0",
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.2",
     "typescript": "6.0.3",

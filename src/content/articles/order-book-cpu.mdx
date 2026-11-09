@@ -1,0 +1,58 @@
+---
+title: "The order book was 2% of the CPU"
+project: matching-engine
+date: 2026-11-09
+summary: "The matching core applies a command in 144 to 198 ns, but end to end the order book is 1.4% to 2% of the engine's CPU, and the latency gains came from a JSON key check and an fsync moved off the matching goroutine."
+math: false
+---
+
+The order book's data structure in matching-engine was chosen by benchmark, and end to end it barely shows up. On its own, the matching core applies a command in 144 to 198 ns. Under load the full engine spends 39 to 95 µs of CPU per request, and in CPU profiles of the running engine `Book.Apply` accounts for 1.4% to 2% of that. The two changes that improved latency were a faster check of JSON keys and moving an fsync onto another goroutine, and neither of them touched the book.
+
+## The order book
+
+matching-engine is a limit order book in Go. Each symbol has one goroutine that owns its book and its command log, so the book needs no locks and replays deterministically (D003). Price levels sit in a hand-written red-black tree with a FIFO queue per level (D004).
+
+D004 came out of a measurement. Three prototypes, a red-black tree, a skip list and a sorted slice, ran the same model tests and benchmarks. At 10,000 price levels, removing one level and adding one near the top took 250 ns in the tree and 405 ns in the skip list. Across the sizes tested, the skip list's writes were 26% to 101% slower. The core benchmark, which replays the project's reference order flow, came out at 144 to 198 ns per command (5.05M to 6.95M commands per second) with up to 1M resting orders in the book.
+
+Those numbers hold, but very little of that speed reaches a client.
+
+## Measuring end to end
+
+The end-to-end benchmark uses an open-loop load generator (D030). Request i is due at t0 + i/rate regardless of the replies, and latency counts from that due time, so a stall is charged to every request it delays. Each rate runs three times on a fresh engine. A run counts only if 99% of the target rate went out, no request failed, and every trade was pushed once and in order.
+
+Dividing the engine's CPU time by the requests it answered gives its CPU per request. It was 95 µs at 10k requests/s and fell to 39 µs at 50k/s, because fixed costs such as idle wakeups and GC are spread over more requests. At 50k/s the engine alone takes about two cores.
+
+The CPU profiles were taken during the optimization work, which ran on a different VM of the same type. That VM was slower than the one behind the headline figures, so shares within a profile can be compared with each other, while absolute times cannot be compared across the two machines. In a profile at 25k/s, taken before any optimization, the CPU went here:
+
+- reading and writing HTTP: about 19% in system calls alone
+- decoding request bodies: 14%, of which 9% was the check of their keys
+- garbage collection: about 10%
+- the matching goroutine, book included: about 10%
+
+`Book.Apply` on its own was 1.4% to 2% of the engine's CPU. The book allocates 0.6 times per command, so pooling its nodes would be the usual next step. The benchmark notes explain why it was not done: at that share, the saving would not show end to end.
+
+## The two changes that helped
+
+Both were measured on the slower VM, with a full sweep for each step.
+
+**Checking request keys with one scan.** A request body has to be one JSON object with exactly the expected field names. The original check walked the body with `json.Decoder` tokens, and the decoder builds a syntax error after each key and scalar and then throws it away. The new check runs `json.Valid` and then scans once for the keys, and a fuzz test holds it to the old check's answers. It went from 5.79 µs and 79 allocations to 0.51 µs and none. Its share of the CPU profile fell from 9.2% to 1.1%, CPU per request fell 5% to 8%, and 30k requests/s became sustainable on that VM. Before the change, this one input check used almost as much CPU as the whole matching goroutine (9% against about 10%).
+
+**Running the fsync beside the matching goroutine (D031).** The command log is fsynced every 10 ms. At first the symbol's goroutine did this itself and stopped for about 0.8 ms on average, sometimes for tens of milliseconds, while every queued command waited. A helper goroutine now runs the fsync, which is also how Redis, Kafka and PostgreSQL handle their logs. At 10k/s, p90 fell from 0.91 to 0.57 ms and p99 from 5.32 to 3.82 ms. At 25k/s the three runs' p99 went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. CPU per request rose by up to 3%. The crash window also grew: a machine crash can now lose up to one interval of commands, plus any taken while an fsync was still running.
+
+On the faster VM, the current code reaches a p99 from order to trade push of 1.76 ms at 10k requests/s and 41.1 ms at 50k/s.
+
+## Limits
+
+- **One machine.** The headline end-to-end figures come from one 4 vCPU VM, and the load generator shares those 4 vCPUs with the engine. The D004 prototype benchmarks were run separately, on a VM of the same type.
+- **Two VMs.** The optimization comparisons ran on a slower VM of the same type. Its absolute latencies are not comparable with the headline table.
+- **A noisy host.** A 1 ms sleep loop in the load generator recorded pauses of up to 53 ms in one run on the faster VM, and a run on the slower VM recorded a stall of about 128 ms. Anything above p99 depends on single pauses like these. Three runs per rate show the spread; they do not remove it.
+- **One symbol, one protocol.** Every end-to-end run used one symbol, JSON over HTTP, and 64 keep-alive connections.
+- **A missed target.** The spec asked for a p99 under 5 ms at 50,000 orders/s, about 71k requests/s in this flow. On this machine the p99 stays under 5 ms only up to 15k requests/s.
+
+## When this does not hold
+
+This is a result about proportions, and the proportions depend on the transport. With a binary protocol, batched submissions or a kernel-bypass network stack, there is less overhead around each request, so the book's share of the CPU grows. With many active symbols per core, the per-symbol work adds up while some fixed costs stay shared.
+
+Startup is the one path in this project where the book is a much larger share of the cost. The engine rebuilds each book by replaying its command log, with no HTTP involved. Replay runs at 534 ns per command, about 3.5 times the cost of `Book.Apply` alone, which puts the book at roughly 30% of it. The rest goes to reading, checksumming and decoding each record and rebuilding the order history. A day of load at 10k requests/s would take about eight minutes to replay from the page cache, and a cold start also waits for the disk. A faster book would shorten that restart measurably.
+
+D004 was also chosen for two properties a throughput profile does not show. A red-black tree has a guaranteed worst case and uses no randomness, so the same command sequence always builds the same tree. A skip list's seed can be attacked: in testing, crafted prices raised the average lookup steps near the top of the book from 18 to 517. Before spending another round of optimization on a component, profile the whole request path to see how much of the CPU it uses.

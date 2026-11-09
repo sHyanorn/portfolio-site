@@ -1,0 +1,52 @@
+---
+title: "Locking the vault means ending a process"
+project: local-ledger
+date: 2026-11-09
+summary: "JavaScript strings cannot be wiped, so Local Ledger ends the renderer process on every lock, unlock and password change, and tests that the old process has exited."
+math: false
+---
+
+In an Electron app, clearing state on lock leaves the master password in memory. JavaScript strings are immutable, and nothing in the language can overwrite one. So Local Ledger treats a lock as the end of a process. On every lock, unlock and committed password change, it loads a fresh page in a new renderer process and closes the old one, and the process that held the typed password exits. Key derivation works the same way: it runs in a worker thread that ends after each derivation. For strings, ending the process is the only reliable way to end their life, and even then the memory becomes unreachable without being erased.
+
+## Why clearing state is not enough
+
+Local Ledger is a personal finance desktop app. Its data sits in a database encrypted with SQLite3 Multiple Ciphers in the SQLCipher format, whose key is sealed under a key that Argon2id derives from the master password. The natural way to implement "lock" in a React app is to close the database, clear the store and show the password screen.
+
+That leaves the password where it was typed. It was the value of an input element, then React state, then an argument passed over IPC. Each of those is a JavaScript string, and strings cannot be wiped. Assigning an empty string to a variable drops one reference and leaves the characters in the heap until garbage collection reclaims them, and V8 may also have copied the string while compacting the heap. Clearing a store changes only what the app can reach.
+
+Binary secrets are easier, because the app can zero a buffer it owns. The data key, the sealing key, the encoded password and the raw key literal live in buffers the app owns and fills with zeros after use, also when an operation fails or is cancelled. While the vault is unlocked, the only copy of the data key is inside SQLite. The trouble is the text that has to pass through strings on its way into those buffers.
+
+## Replacing the page process
+
+D016 hosts the page in a `WebContentsView`. On every unlock, lock and committed password change, the main process loads the page in a new view and closes the old one, whose renderer process then exits. Two views of the same origin get separate processes, so the new page does not inherit the old one's heap. A lock replaces the page even when the vault is already locked, which means a password typed into the unlock screen but never submitted does not survive it either.
+
+Key derivation follows the same rule. D015 runs Argon2id (64 MiB of memory, 3 passes, 4 lanes) in a worker thread that ends after each derivation, releasing its 64 MiB. The worker also keeps the window responsive. On the one machine measured (Electron 45, a 2.1 GHz Xeon with 4 cores), a derivation takes 321 ms; on the main thread it blocked the event loop for 281 ms, and in the worker for 7 ms.
+
+The steps that run at lock time need the vault to lock, so it also locks on its own: after a set idle time (1, 5, 15 or 30 minutes, 5 by default, with no option to turn it off), when the screen locks, when the computer sleeps and when the window closes.
+
+## Tests
+
+What memory holds is hard to test directly, so the end-to-end suite tests the processes instead. One helper reads the operating system process ID of the page currently shown, and another polls until that process no longer exists. The suite records the renderer's PID before an action that should replace the page and waits for it to exit afterwards, in nine places across the vault, import and transaction tests. They cover creating a vault, unlocking after a wrong password, locking, closing the window, a lock that arrives while an unlock is still deriving its key, a password typed but not submitted, and a password change.
+
+A second test looks at the main process, which does not restart. It plants a known control string in the main process, adds a transaction with a random marker in its description, locks, and takes a heap snapshot. A heap snapshot collects garbage first, so it contains only what is still reachable. The test requires the control string to be found, which shows the snapshot can see such strings, and requires the marker to be absent, which shows that no data handler kept a reference to the row. A heap snapshot cannot see the contents of Buffers or memory already freed.
+
+## Limits
+
+These come from the project's own security design, which lists what the app does not claim.
+
+- **The main process keeps strings until garbage collection.** The password crosses IPC into the main process, and decrypted rows become strings there. The main process lives as long as the app, so ending renderers does nothing for these copies. The heap snapshot test shows they are unreachable; it does not show that their memory was overwritten.
+- **Freed memory is not overwritten.** Memory released by a worker or a renderer goes back to the operating system as it is. The app does not scrub it.
+- **SQLite's cache.** While unlocked, SQLite keeps up to 16 MB of decrypted pages in the main process. Closing the database frees them without overwriting, since this build leaves SQLite3 Multiple Ciphers' secure memory option off.
+- **Swap and hibernation.** The operating system may write any of this memory to disk. The app does not lock pages in memory.
+- **Same-user malware is out of scope.** While the vault is unlocked, such malware can read process memory or the screen; while it is locked, it can record the password at the next unlock.
+- **A failed password change keeps its page.** It needs to report the failure, so it clears its fields, but the typed passwords stay in that renderer as strings until the next lock ends it.
+
+After a lock, the design guarantees only that no process that rendered the typed password or the decrypted rows is still running. The tests check that the old processes exit and that the planted text is unreachable. They do not count copies in memory, and nothing here promises that memory is clean.
+
+## When this does not hold
+
+The approach depends on owning the process model. Electron lets the app create and destroy renderer processes. A web page has no such control, so a browser-based app cannot use this method and has to drop references and wait for the garbage collector.
+
+It also assumes the threat that the project's model names: someone at the computer after the app has locked itself. Malware already running as the same user is outside that model. If an attacker can read memory while the vault is unlocked, the data is exposed anyway, since it has to be decrypted to be shown.
+
+The approach also has a cost. Each lock reloads the page and discards its state. For a vault whose lock screen already asks for the password again, that cost is small. An app that is expected to resume exactly where the user left off would need to persist that state somewhere, and that state is what the lock was meant to remove.

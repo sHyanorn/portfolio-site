@@ -1,0 +1,71 @@
+---
+title: "A low PBO can mean the search asked an easy question"
+project: backtest-lab
+date: 2026-11-09
+summary: "A PBO of 0.05 came almost entirely from the long-only versus long/short choice; within the long-only half it is 0.42, in a post hoc, exploratory analysis."
+math: true
+---
+
+The moving-average search in backtest-lab passed its overfitting check easily, with a probability of backtest overfitting (PBO) of 0.05, well inside the green band. Almost all of that came from one yes-or-no question in the parameter grid: whether the strategy may go short. Every in-sample winner was a long-only setting. Restricted to the long-only half of the grid, the PBO is 0.42, and for the momentum search it rises from 0.12 to 0.72. So which long-only setting wins in-sample says little about which one does well out of sample.
+
+This analysis was designed after the pre-registered results were in. The project labels it exploratory, with no confirmatory weight (D029).
+
+## The setup
+
+backtest-lab runs a parameter search on a strategy and then asks whether the winner is probably overfit. The demo searches were fixed before any strategy ran on real data (D021): SPY data from January 1993 to October 2026, net of 1 bp fees and 5 bps slippage per side.
+
+- **Moving-average crossover:** 8 fast windows × 8 slow windows × `allow_short` in \{false, true\}, 128 settings.
+- **Time-series momentum:** 17 lookbacks × `allow_short`, 34 settings.
+
+One of the checks is PBO, estimated by combinatorially symmetric cross-validation (CSCV). The history is cut into S = 16 blocks. For each of the $\binom{16}{8} = 12{,}870$ ways to pick half the blocks as in-sample, the setting with the best in-sample Sharpe ratio is found, and its rank among all settings in the other half is recorded. PBO is the share of splits where that winner ranks at or below the out-of-sample median:
+
+$$
+\widehat{PBO} = \frac{1}{12{,}870} \sum_{c} \mathbf{1}[\lambda_c \le 0]
+$$
+
+Here $\lambda_c$ is the logit of the winner's out-of-sample relative rank. The thresholds were also fixed in advance (D022): green up to 0.10, yellow up to 0.30, red above. The red line comes from a null experiment in which 200 searches over pure noise gave a mean PBO of 0.488, with 89.5% of them above 0.30.
+
+In the registered results, PBO was 0.05 for the moving average and 0.12 for momentum. Both strategies were rated borderline overall, the moving average because of its deflated Sharpe ratio (0.945 against a 0.95 threshold) and momentum because of that PBO.
+
+## What the winners had in common
+
+A PBO of 0.05 means the in-sample winner nearly always lands in the top half out of sample. What those winners share shows up in this table:
+
+| | Moving average | Momentum |
+|---|---|---|
+| Sharpe range, long-only settings | 0.49 to 0.80 | 0.54 to 0.79 |
+| Sharpe range, long/short settings | 0.02 to 0.51 | 0.01 to 0.53 |
+| CSCV splits whose in-sample winner is long-only | 12,870 of 12,870 | 12,869 of 12,870 |
+
+On SPY over these samples, which start in 1994, going short has been costly, so the long/short half of each grid is mostly worse than the long-only half. The in-sample winner is long-only in all 12,870 splits for the moving average and in all but one for momentum. A long-only setting then almost always ranks in the top half out of sample, because the bottom half is full of long/short settings. So the low PBO, though computed correctly, measures the choice between long-only and long/short, which the equity premium already suggests.
+
+Running CSCV again on the long-only half alone:
+
+| | Moving average | Momentum |
+|---|---|---|
+| PBO, whole grid (registered) | 0.05 | 0.12 |
+| PBO, long-only half | 0.42 (64 settings) | 0.72 (17 settings) |
+
+Inside the long-only half, picking the in-sample best is close to a coin flip for the moving average and worse than one for momentum.
+
+## Reading the higher PBO
+
+A high PBO here does not mean the long-only settings are bad. The project's methods note says that if all configurations have similar real skill, PBO is high too, and the pre-registration expected this for momentum, whose lookbacks behave alike. Every long-only setting has a positive Sharpe ratio, from 0.49 to 0.80 for the moving average. The best long-only setting keeps a significant deflated Sharpe ratio within its half, about 1.00 for both strategies, with 10.5 and 3.8 effectively independent settings.
+
+The high PBO does show that the fine choice (fast 10 and slow 200, or lookback 273) finds little support in this exploratory analysis. A different window would probably have done about as well, and the selected one owes part of its rank to luck.
+
+The within-half deflated Sharpe ratio of about 1.00 also needs care. Counting every setting of the grid, as it requires, gives the registered 0.945 and 0.988. The values near 1.00 hold only when the long/short half is left out, and leaving it out is itself a choice made after seeing the outcome. Dropping trials after the fact is one of the things these statistics are meant to penalize.
+
+## Limits
+
+- **Post hoc.** The long-only split was chosen after the registered results were in, to explain them. It is kept out of the credibility reports and labelled post hoc wherever it appears (D029).
+- **One instrument.** Everything is on SPY. The gap between long and short reflects one market's history with a strong upward drift.
+- **No cost of shorting or return on cash.** Cash earns nothing and shorts pay no borrow fee (D015), which shifts the long/short comparison.
+- **Coarse ranks.** S = 16 blocks and, for momentum's long-only half, 17 settings. With few settings, ranks are coarse and PBO moves in large steps.
+- **Same data for both questions.** The halves were defined on the same data the PBO was computed on, so the two PBO values are not independent tests.
+
+## When this does not hold
+
+The pattern needs a grid axis whose effect dwarfs the others. When the dimensions of a grid have comparable effects, no single choice dominates the in-sample winners, and the whole-grid PBO measures the selection you care about. The whole-grid PBO is also the right number when the coarse choice is the decision itself: if the question really is whether to allow shorting, a low whole-grid PBO is a fair answer to it.
+
+The check is quick. Before reading a low PBO as evidence that a parameter choice will hold up out of sample, look at what the in-sample winners have in common. If they all agree on one binary axis, compute PBO again inside that branch, and treat the result as exploratory unless the split was registered in advance.

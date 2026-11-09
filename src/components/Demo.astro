@@ -77,10 +77,11 @@ const shots =
 
 <style>
   /* A video or screenshot is no taller than the first screen leaves below
-     the header and the page intro (about 24rem, plus 2rem to spare), so the
-     first ends on the first screen; the width follows the aspect ratio. */
+     the header and the page intro (about 28rem with four lines of summary,
+     plus a line to spare), so the first ends on the first screen; the width
+     follows the aspect ratio. */
   figure {
-    width: min(100%, max(16rem, 100svh - 26rem) * var(--ratio));
+    width: min(100%, max(16rem, 100svh - 30rem) * var(--ratio));
     margin-inline: auto;
   }
 

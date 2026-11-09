@@ -1,13 +1,17 @@
 // A project's demo video, or its first screenshot, keeps its aspect ratio,
-// sits in the middle of the column and ends on the first screen, so a
-// video's controls show without scrolling. Screenshots number two to four,
+// sits in the middle of the column and ends on the first screen with at
+// least a line of summary to spare, so a video's controls still show when a
+// font wraps the summary once more. Screenshots number two to four,
 // each with alt text, a caption and a link that wraps it; later ones fit
 // one screen each. A screenshot with a dark copy shows and links to the copy
 // that matches the theme, and the hidden lazy copies never load.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
+// Common laptop screens, and a tablet held upright.
 const viewports = [
+  { width: 1366, height: 768 },
+  { width: 1536, height: 864 },
   { width: 1440, height: 900 },
   { width: 768, height: 1024 },
 ]
@@ -62,19 +66,25 @@ for (const viewport of viewports) {
         const first = isVideo ? page.locator('.demo video') : shots.first()
         const box = (await first.boundingBox())!
         const column = (await page.locator('.project').boundingBox())!
-        const [width, height] = await first.evaluate((el) =>
-          el instanceof HTMLVideoElement
+        // The ratio inside the border, which is a larger share of a small demo.
+        const [width, height, inner] = await first.evaluate((el) => [
+          ...(el instanceof HTMLVideoElement
             ? [el.width, el.height]
             : [
                 (el as HTMLImageElement).naturalWidth,
                 (el as HTMLImageElement).naturalHeight,
-              ],
-        )
+              ]),
+          el.clientWidth / el.clientHeight,
+        ])
 
-        expect(box.y + box.height, 'demo bottom').toBeLessThanOrEqual(
-          viewport.height,
-        )
-        expect(box.width / box.height).toBeCloseTo(width / height, 2)
+        const line = await page
+          .locator('.summary')
+          .evaluate((el) => parseFloat(getComputedStyle(el).lineHeight))
+        expect(
+          viewport.height - (box.y + box.height),
+          'space below the demo',
+        ).toBeGreaterThanOrEqual(line)
+        expect(inner).toBeCloseTo(width / height, 2)
         const left = box.x - column.x
         const right = column.x + column.width - (box.x + box.width)
         expect(Math.abs(left - right), 'centred').toBeLessThanOrEqual(1)

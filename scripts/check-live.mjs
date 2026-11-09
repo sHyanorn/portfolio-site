@@ -9,8 +9,10 @@ const base = site.pathname
 const routes = [
   '',
   'articles/',
+  'articles/cryptography-held/',
   'articles/order-book-cpu/',
   'projects/matching-engine/',
+  'projects/vault-share/',
 ]
 const pages = routes.flatMap((r) => [r, `zh/${r}`])
 

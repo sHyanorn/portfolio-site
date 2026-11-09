@@ -5,4 +5,4 @@ package-lock.json
 *.md
 *.mdx
 # Written by scripts/site-image.ts.
-public/og/site.json
+scripts/site-image.json

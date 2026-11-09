@@ -1,13 +1,13 @@
 // The share image of pages without their own (D018): the home page's first
-// screen in each language, saved to public/og/ with the text it shows, which
-// a unit test compares with the current text. Run after `npm run build`:
-// node scripts/site-image.ts
+// screen in each language, saved to public/og/, and the text it shows, saved
+// beside this script for a unit test to compare with the current text.
+// Run after `npm run build`: node scripts/site-image.ts
 import { spawn } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import sharp from 'sharp'
 import { LANGS, t, type Lang } from '../src/lib/i18n.ts'
 
-export const TEXT_FILE = 'public/og/site.json'
+export const TEXT_FILE = 'scripts/site-image.json'
 export const imageFile = (lang: Lang) =>
   `public/og/${lang === 'en' ? 'site' : 'site-zh'}.png`
 

@@ -1,0 +1,229 @@
+{
+  "title": "local-ledger",
+  "order": 4,
+  "summary": {
+    "en": "A personal finance desktop app for macOS and Windows that keeps everything in an encrypted database on your computer and makes no network requests.",
+    "zh": "一款面向 macOS 和 Windows 的个人记账桌面应用，所有数据都存在本机的加密数据库里，应用不发出任何网络请求。"
+  },
+  "tags": [
+    { "en": "Electron", "zh": "Electron" },
+    { "en": "TypeScript", "zh": "TypeScript" },
+    { "en": "React", "zh": "React" },
+    { "en": "SQLCipher", "zh": "SQLCipher" },
+    { "en": "Desktop security", "zh": "桌面应用安全" }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./local-ledger/overview-light.png",
+        "alt": {
+          "en": "The Overview for November 2026: income of $3,850.00 and spending of $3,765.82, four budget bars with Dining Out and Coffee over budget, and the five most recent transactions, beside a sidebar listing four accounts.",
+          "zh": "2026 年 11 月的概览页：收入 3,850.00 美元，支出 3,765.82 美元；四条预算进度条，其中外出就餐和咖啡已超支；下方是最近五笔交易，左侧边栏列出四个账户。"
+        },
+        "caption": {
+          "en": "The Overview: the month's income and spending, budget progress and recent transactions.",
+          "zh": "概览页：当月收支、预算进度和最近的交易。"
+        }
+      },
+      {
+        "src": "./local-ledger/transactions-light.png",
+        "alt": {
+          "en": "All Transactions: a search box, category and period filters, a total of 1,496 transactions, and rows with date, description, category, account and amount, ending with a transfer from Everyday to Savings.",
+          "zh": "全部交易页：搜索框、类别和时间筛选，共 1,496 笔交易；每行列出日期、描述、类别、账户和金额，最后一行是从 Everyday 转入 Savings 的一笔转账。"
+        },
+        "caption": {
+          "en": "Transactions with search and filters; a transfer between your own accounts is marked as one and left out of income and spending.",
+          "zh": "交易列表，可搜索和筛选；自己账户之间的转账会标注出来，不计入收入和支出。"
+        }
+      },
+      {
+        "src": "./local-ledger/reports-light.png",
+        "alt": {
+          "en": "Reports for November 2026 in AUD: twelve months of income and spending as paired columns, spending by category with Housing at $2,450.00 the largest, and an Export button.",
+          "zh": "2026 年 11 月的报表页，币种为澳元：十二个月的收入和支出并排柱状图，按类别的支出中住房 2,450.00 美元最多，右上角有导出按钮。"
+        },
+        "caption": {
+          "en": "Reports: twelve months of income and spending, and spending by category. All screenshots show made-up data.",
+          "zh": "报表页：十二个月的收入和支出，以及按类别的支出。所有截图都使用虚构数据。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": { "en": "0", "zh": "0" },
+        "label": {
+          "en": "network requests: the end-to-end suite and the package check read Chromium's net log and fail on any",
+          "zh": "应用发出的网络请求；端到端测试和打包检查都会读取 Chromium 的网络日志，出现任何请求即失败"
+        }
+      },
+      {
+        "value": { "en": "321 ms", "zh": "321 毫秒" },
+        "label": {
+          "en": "to derive the key with Argon2id at 64 MiB, 3 passes and 4 lanes, in a worker thread",
+          "zh": "用 Argon2id 派生密钥的耗时，参数为 64 MiB 内存、3 轮、4 条并行通道，在工作线程中运行"
+        }
+      },
+      {
+        "value": { "en": "7 ms", "zh": "7 毫秒" },
+        "label": {
+          "en": "of event loop blocked by that derivation in the worker, against 281 ms on the main thread",
+          "zh": "这次派生在工作线程中运行时阻塞事件循环的时长；放在主线程上则是 281 毫秒"
+        }
+      },
+      {
+        "value": { "en": "15", "zh": "15" },
+        "label": {
+          "en": "characters at least in the master password, as NIST SP 800-63B-4 asks for a single-factor password",
+          "zh": "主密码的最少字符数，依据 NIST SP 800-63B-4 对单因素密码的要求"
+        }
+      }
+    ],
+    "note": {
+      "en": "Timings measured with Electron 45 on a 2.1 GHz Xeon with 4 cores. Unlocking has no attempt limit, since an attacker who copies the files is not subject to one; the cost of Argon2id is what slows guessing.",
+      "zh": "耗时在 2.1 GHz、4 核的 Xeon 上用 Electron 45 测得。解锁不限制尝试次数，因为复制走文件的攻击者根本不受这种限制；拖慢猜测靠的是 Argon2id 的计算代价。"
+    },
+    "source": {
+      "label": { "en": "Design decisions", "zh": "设计决策" },
+      "url": "https://github.com/sHyanorn/local-ledger/blob/ae0864182b3fc5076dfc844476c1a9e382f59112/docs/DECISIONS.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "local-ledger is a personal finance app whose data never leaves the computer. It imports bank CSV files, categorizes transactions with rules, sets monthly budgets, draws charts and exports a month to Excel or PDF, all inside an encrypted database that one master password opens. There is no cloud sync, no bank connection and no password recovery.",
+      "zh": "local-ledger 是一款数据从不离开本机的个人记账应用。它导入银行的 CSV 文件，用规则给交易分类，设定每月预算，画图表，把一个月的账单导出为 Excel 或 PDF，所有数据都在一个加密数据库里，由一个主密码打开。它没有云同步，不连接银行，忘了密码也无法找回。"
+    },
+    {
+      "en": "The specification asked for whole-database encryption with a key derived by Argon2id, a hardened Electron app with a typed IPC API, auto-lock when idle, templates for four Australian banks plus a column wizard, fuzzy duplicate detection, rules, budgets with overspending alerts, charts, exports, encrypted backups and dark mode. Its tests had to show that the renderer cannot reach Node.js, that invalid IPC arguments are rejected, that plain SQLite cannot open the database, and that data is unreadable after locking.",
+      "zh": "规格定下的要求有：整库加密，密钥由 Argon2id 派生；加固过的 Electron 应用，配一套带类型的 IPC 接口；空闲时自动锁定；内置四家澳大利亚银行的文件模板，另有列映射向导；模糊查重、分类规则、带超支提醒的预算、图表、导出、加密备份和深色模式。测试要能证明渲染进程碰不到 Node.js，非法的 IPC 参数会被拒绝，普通 SQLite 打不开数据库，锁定之后数据无法读取。"
+    },
+    {
+      "en": "Exported files and the CSV files you import stay unencrypted wherever you keep them. Malware running as the same user is out of scope: it can read memory while the vault is open, or record the password at the next unlock. Releases are not code signed, so each system warns at first launch, and a download is as trustworthy as the checksum and provenance check its user makes.",
+      "zh": "导出的文件和导入的 CSV 文件放在哪里都是明文。以同一用户身份运行的恶意软件不在防护范围内：保险库打开时它能读取内存，锁定时它能在下次解锁时记下密码。发布的安装包没有代码签名，两个系统在首次启动时都会警告；下载的文件可信与否，取决于用户有没有核对校验和与构建来源证明。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "page": { "en": "sandboxed page", "zh": "沙盒中的页面" },
+      "ui": { "en": "React, Zustand", "zh": "React、Zustand" },
+      "preload": { "en": "preload", "zh": "预加载脚本" },
+      "api": { "en": "typed window.ledger", "zh": "带类型的 window.ledger" },
+      "files": { "en": "your files", "zh": "你的文件" },
+      "plain": {
+        "en": "CSV in; Excel, PDF out",
+        "zh": "导入 CSV，导出 Excel、PDF"
+      },
+      "main": { "en": "main process", "zh": "主进程" },
+      "ipc": { "en": "IPC handlers", "zh": "IPC 处理器" },
+      "checks": { "en": "sender and zod checks", "zh": "校验来源和参数" },
+      "vault": { "en": "vault", "zh": "保险库" },
+      "unseal": { "en": "Argon2id, data key", "zh": "Argon2id，数据密钥" },
+      "data": { "en": "import, export", "zh": "导入、导出" },
+      "rules": { "en": "rules, backups", "zh": "规则、备份" },
+      "sealed": { "en": "sealed data key", "zh": "封存的数据密钥" },
+      "encrypted": { "en": "every page encrypted", "zh": "每一页都加密" },
+      "backup": { "en": "encrypted backup", "zh": "加密备份" },
+      "ipcEdge": { "en": "IPC", "zh": "IPC" },
+      "importEdge": { "en": "import", "zh": "导入" },
+      "exportEdge": { "en": "export", "zh": "导出" }
+    },
+    "description": {
+      "en": "The page runs in Chromium's sandbox with no Node.js and is served from `app://local-ledger` under a strict content security policy. It reaches the main process only through the typed `window.ledger` API that the preload script exposes, and every handler checks that the sender is the app's own page and validates the payload with zod. In the main process, the vault derives a key from the master password with Argon2id in a worker thread and unseals the data key kept in `vault.json`; the data key opens the database, `ledger-<n>.db`, every page of which is encrypted with SQLCipher. Import, export and backups also run in the main process: a CSV file comes in only through the system open dialog, an export goes out only where the user picks in the system save dialog and is not encrypted, and a backup is the encrypted database with a sealed header.",
+      "zh": "页面运行在 Chromium 的沙盒里，没有 Node.js，由 `app://local-ledger` 提供，带严格的内容安全策略。它只能通过预加载脚本暴露的带类型的 `window.ledger` 接口与主进程通信，每个处理器都会核对发送方是否为应用自己的页面，并用 zod 校验参数。在主进程中，保险库在工作线程里用 Argon2id 从主密码派生出密钥，解开 `vault.json` 里封存的数据密钥；数据密钥再打开数据库 `ledger-<n>.db`，它的每一页都由 SQLCipher 加密。导入、导出和备份也在主进程中进行：CSV 文件只能经系统的打开对话框进来，导出文件只写到用户在系统保存对话框里选定的位置，并且不加密；备份就是加密的数据库本身，外加一个封存的文件头。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D013",
+        "title": {
+          "en": "A sealed data key and database generations",
+          "zh": "封存的数据密钥与数据库代次"
+        },
+        "body": {
+          "en": "The database is encrypted with a random 32-byte data key, which a key derived from the master password seals with AES-256-GCM; the authenticated header binds the generation and the key derivation settings. A wrong password therefore fails the GCM check before the database is touched, which tells it apart from a damaged database. A password change draws a new data key, re-encrypts a copy of the database, checks it, and renames it to the next generation, and renaming the new `vault.json` over the old one is the single commit point: a crash before it leaves the old password working, after it the new one. The cost is a rewrite of the whole database, which took 7 ms for 20,000 rows.",
+          "zh": "数据库用随机生成的 32 字节数据密钥加密；由主密码派生出的密钥再用 AES-256-GCM 封存这把数据密钥，经过认证的文件头绑定了代次和密钥派生参数。因此密码输错时，GCM 校验在碰到数据库之前就会失败，可以和数据库损坏区分开。修改密码时生成新的数据密钥，把数据库复制一份重新加密、校验之后，重命名为下一代；用新的 `vault.json` 覆盖旧文件是唯一的提交点：在此之前崩溃，旧密码照常可用，之后则以新密码为准。代价是要重写整个数据库，20,000 行用时 7 毫秒。"
+        }
+      },
+      {
+        "id": "D016",
+        "title": {
+          "en": "Locking replaces the page process",
+          "zh": "锁定即替换页面进程"
+        },
+        "body": {
+          "en": "On every unlock, lock and committed password change, the main process loads the page in a new view and closes the old one, whose renderer process then exits, so no process that held a typed password or decrypted data outlives the change. Clearing a store cannot wipe what JavaScript strings and the DOM held; ending the process can. A lock replaces the page even when the vault is already locked, so a password typed but not submitted does not survive it, and the end-to-end suite asserts that the old process has exited.",
+          "zh": "每次解锁、锁定和成功修改密码时，主进程都在一个新视图里重新加载页面并关掉旧视图，旧的渲染进程随之退出，所以任何拿过输入的密码或解密数据的进程都不会活过这次切换。清空状态仓库抹不掉 JavaScript 字符串和 DOM 里留下的内容，结束进程可以。即使保险库已经锁着，锁定操作也会替换页面，这样输入了却没提交的密码也留不下来；端到端测试会断言旧进程确已退出。"
+        }
+      },
+      {
+        "id": "D025",
+        "title": {
+          "en": "Fingerprints for duplicates",
+          "zh": "用指纹识别重复交易"
+        },
+        "body": {
+          "en": "An imported row's fingerprint is its date, amount and description, with case and spacing aside, plus its place among identical rows of the same file, unique within its account, as YNAB's `import_id` works. Two identical genuine rows are occurrences 1 and 2, so both import, and an overlapping later file repeats neither. A row without an exact match is a possible duplicate when the account has a transaction of the same amount within 4 days that no other row has claimed; possible duplicates start unselected and show the transaction they resemble. An import is one SQLite transaction recorded as a batch, so it can be undone.",
+          "zh": "导入的每一行都有一个指纹：日期、金额和描述（忽略大小写和空白），再加上它在同一文件的相同行中排第几，在所属账户内唯一，做法与 YNAB 的 `import_id` 相同。两笔完全相同的真实交易分别是第 1 次和第 2 次出现，所以都会导入，之后有重叠的文件也不会让它们重复。没有精确匹配的行，如果账户里 4 天内有一笔金额相同、尚未被其他行认领的交易，就标为疑似重复；疑似重复默认不勾选，并显示它像哪一笔交易。每次导入是一个 SQLite 事务，记为一个批次，因此可以撤销。"
+        }
+      },
+      {
+        "id": "D027",
+        "title": {
+          "en": "Transfers as pairs",
+          "zh": "把转账识别成一对交易"
+        },
+        "body": {
+          "en": "When both accounts' files are imported, a transfer appears twice, money out of one and the same money into the other. Two transactions can be one transfer when they are in different accounts of one currency, their amounts are exactly opposite and they are at most 4 days apart, since a transfer on a Friday can arrive on Tuesday. After an import, a candidate is paired on its own only when no other candidate shares a transaction with it, or when same-day pairs give every transaction exactly one partner; any other group waits for the user. A \"Transfer\" category, as some apps use, breaks silently when a category is mistyped.",
+          "zh": "两个账户的文件都导入后，同一笔转账会出现两次：一边转出，另一边转入同样的金额。两笔交易要算作一笔转账，必须位于同一币种的不同账户，金额正好相反，日期相差不超过 4 天，因为周五发起的转账可能周二才到账。导入之后，只有在没有别的候选与它共用交易，或者同一天的配对能让每笔交易恰好有一个对应方时，才会自动配对；其他情况都留给用户决定。有些应用用一个“转账”类别来处理，可类别一旦选错，就会悄无声息地出错。"
+        }
+      },
+      {
+        "id": "D009",
+        "title": {
+          "en": "A custom scheme and a network that stays shut",
+          "zh": "自定义协议，网络始终关闭"
+        },
+        "body": {
+          "en": "The page is served from `app://local-ledger`, a scheme registered before the app is ready, whose handler answers GET only and refuses any path outside the build directory; every response, errors included, carries a strict content security policy. New windows, navigation, redirects, webviews and permission requests are refused, and requests outside the app are cancelled. Spellcheck is off with no language, because Chromium otherwise downloads a dictionary from its CDN at startup. The end-to-end suite and the package check read a Chromium net log and fail on any network request.",
+          "zh": "页面由 `app://local-ledger` 提供，这个协议在应用就绪之前注册，处理器只响应 GET 请求，拒绝构建目录之外的任何路径；每个响应，包括报错，都带有严格的内容安全策略。新窗口、页面跳转、重定向、webview 和权限请求一律拒绝，应用之外的请求全部取消。拼写检查关闭且不设语言，否则 Chromium 会在启动时从它的 CDN 下载词典。端到端测试和打包检查都会读取 Chromium 的网络日志，出现任何网络请求即失败。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/local-ledger/blob/ae0864182b3fc5076dfc844476c1a9e382f59112/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "Bank formats nobody documents",
+        "zh": "没有文档的银行格式"
+      },
+      "body": {
+        "en": "CommBank, NAB, ANZ and Westpac confirm a CSV export but publish no columns. Each layout follows open-source parsers written against real exports, taken only where at least two agree, and was checked against the sample files those projects publish. Since none has been checked against a real export, the reader accepts every form the sources differ in: quoting by field or not at all, CRLF or LF, a byte order mark, a missing final line break, blank lines and spaces around fields. A file the app does not recognize opens in the column wizard, and `npm run csv:shape` describes a file's structure without any of its values, for reporting a format the app does not read.",
+        "zh": "CommBank、NAB、ANZ 和 Westpac 都提供 CSV 导出，却不公布列格式。每种格式都参照了针对真实导出文件编写的开源解析器，只采用至少两个来源一致的部分，并用这些项目公开的样例文件核对过。由于没有一种格式拿真实导出文件验证过，读取时会接受各来源之间的所有差异：逐字段加引号或完全不加、CRLF 或 LF、字节顺序标记、末尾缺换行、空行、字段两侧的空格。应用认不出的文件会进入列映射向导；`npm run csv:shape` 只描述文件结构、不含任何数据，可以用来报告应用读不了的格式。"
+      }
+    },
+    {
+      "title": {
+        "en": "A preview of 50,000 rows",
+        "zh": "预览五万行"
+      },
+      "body": {
+        "en": "An import may hold up to 50,000 rows, and drawing them all made the preview take about 4 s, with a checkbox taking up to 1 s to respond. The preview now draws only the rows in view and twenty on each side, with spacers for the rest; every row is fixed at 35 px, so a row's place follows from the scroll position, rows are memoized, and a checkbox changes only its own row. The preview went to about 0.2 s and a checkbox to about 15 ms. A virtual list library would add a dependency for about 60 lines, and CSS `content-visibility` alone skips layout and paint but not React's work.",
+        "zh": "一次导入最多可达 50,000 行，全部绘制时预览大约要 4 秒，点一个复选框最长要 1 秒才有反应。现在预览只绘制可见的行和上下各二十行，其余用占位元素撑开；每行固定 35 像素高，所以行的位置可以由滚动位置直接算出，各行做了记忆化，点复选框只会重绘它所在的那一行。预览降到约 0.2 秒，复选框约 15 毫秒。用虚拟列表库要为大约 60 行代码多引入一个依赖；只用 CSS 的 `content-visibility` 能跳过布局和绘制，却省不掉 React 的计算。"
+      }
+    },
+    {
+      "title": {
+        "en": "Exports that cannot run formulas",
+        "zh": "不会执行公式的导出文件"
+      },
+      "body": {
+        "en": "Transaction text comes from bank files, so a description such as `=HYPERLINK(...)` could become a live formula in an exported workbook. The workbook is written by a small writer of the project's own, zipped with fflate: every text cell is an inline string and the writer has no formula element, text cells use the Text format so a later edit is not read as a formula, and text that starts like one, by OWASP's list, also gets the quote prefix. In LibreOffice every such start shows as typed; Excel and Numbers have not been tried. exceljs would have installed 193 packages, and the npm `xlsx` package is no longer updated there.",
+        "zh": "交易描述来自银行文件，像 `=HYPERLINK(...)` 这样的描述有可能在导出的工作簿里变成会执行的公式。工作簿由项目自己写的一个小型生成器输出，用 fflate 打包：所有文本单元格都是内联字符串，生成器里根本没有公式元素；文本单元格使用文本格式，以后编辑也不会被当成公式；按 OWASP 的列表，看起来像公式开头的文本还会加上引号前缀。在 LibreOffice 里，这些开头都按原样显示；Excel 和 Numbers 还没有试过。换用 exceljs 要装 193 个包，npm 上的 `xlsx` 包在那里也已不再更新。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/local-ledger"
+}

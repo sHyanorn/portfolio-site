@@ -4,7 +4,7 @@ project: local-ledger
 date: 2026-11-09
 summary: "JavaScript strings cannot be wiped, so Local Ledger ends the renderer process on every lock, unlock and password change, and tests that the old process has exited."
 math: false
-draft: true
+draft: false
 ---
 
 In an Electron app, clearing state on lock leaves the master password in memory. JavaScript strings are immutable, and nothing in the language can overwrite one. So Local Ledger treats a lock as the end of a process. On every lock, unlock and committed password change, it loads a fresh page in a new renderer process and closes the old one, and the process that held the typed password exits. Key derivation works the same way: it runs in a worker thread that ends after each derivation. For strings, ending the process is the only reliable way to end their life, and even then the memory becomes unreachable without being erased.

@@ -21,12 +21,21 @@ const projects = defineCollection({
       // 1. Summary and tags
       summary: text,
       tags: z.array(text).min(1),
-      // 2. Demo: an MP4 under public/, with a poster of the same size
-      demo: z.strictObject({
-        video: z.string().regex(/^[\w/-]+\.mp4$/),
-        poster: image(),
-        caption: text,
-      }),
+      // 2. Demo: an MP4 under public/ with a poster of the same size, or two
+      // to four screenshots for a project with no browser demo (D013)
+      demo: z.union([
+        z.strictObject({
+          video: z.string().regex(/^[\w/-]+\.mp4$/),
+          poster: image(),
+          caption: text,
+        }),
+        z.strictObject({
+          images: z
+            .array(z.strictObject({ src: image(), alt: text, caption: text }))
+            .min(2)
+            .max(4),
+        }),
+      ]),
       // 3. Key metrics, the conditions they were measured under, and the report
       metrics: z.strictObject({
         items: z

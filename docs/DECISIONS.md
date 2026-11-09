@@ -80,6 +80,7 @@
 - Alternatives: the GIF (2.15 MB on every visit, no pause); Mermaid rendered at build time (a generic layout, and its colours do not follow the theme)
 - Borrowed: the conversion settings from web.dev's "Replace animated GIFs with video" (libx264, yuv420p, a CRF in the low twenties), without its autoplay; the card whose title link covers the whole card from Inclusive Components ("Cards")
 - Amendment 2026-11-09: the demo is at most as tall as the first screen leaves below the header and the page intro, `max(16rem, 100svh - 26rem)`, and the figure is centred at the width that keeps the aspect ratio, so the controls show without scrolling; an e2e test checks this at 1440×900 and 768×1024. A fixed 70svh still ends the video below the fold at 1440×900, where the intro takes the first 390 px
+- Amendment 2026-11-09: a demo is either the video above or two to four screenshots, each with alt text and a caption, for a project that does not run in a browser (Electron) or whose output is a report. Screenshots stack in the column at the same height limit, as AVIF in 358, 720 and 1440 px widths up to the source width, each linking to its full-size copy; the first loads eagerly, since it is in the first screen. Projects that run in a browser are recorded with Playwright's `recordVideo` and converted with the settings above
 
 ## D014 Entrances in CSS only
 - Date: 2026-11-09

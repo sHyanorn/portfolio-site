@@ -1,12 +1,11 @@
 ---
-import { getImage } from 'astro:assets'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import type { CollectionEntry } from 'astro:content'
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js'
 import Base from '../layouts/Base.astro'
 import { publishedArticles } from '../lib/articles'
 import { t, toLang } from '../lib/i18n'
-import { withBase } from '../lib/paths'
+import Demo from './Demo.astro'
 import RepoLink from './RepoLink.astro'
 import Tags from './Tags.astro'
 import Text from './Text.astro'
@@ -20,7 +19,6 @@ const lang = toLang(Astro.currentLocale)
 const article = (await publishedArticles()).find(
   (a) => a.data.project === Astro.props.project.id,
 )
-const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 
 // Each project's diagram is drawn by hand in architecture/<slug>.astro (D013).
 const diagrams = import.meta.glob<{ default: AstroComponentFactory }>(
@@ -51,26 +49,9 @@ const labels = Object.fromEntries(
       </div>
     </header>
 
-    <figure
-      class="demo rise"
-      style={`--rise: 3; --ratio: ${p.demo.poster.width} / ${p.demo.poster.height}`}
-    >
-      <video
-        controls
-        muted
-        loop
-        playsinline
-        preload="none"
-        poster={poster.src}
-        width={p.demo.poster.width}
-        height={p.demo.poster.height}
-      >
-        <source src={withBase(p.demo.video)} type="video/mp4" />
-      </video>
-      <figcaption>
-        <Text value={p.demo.caption[lang]} />
-      </figcaption>
-    </figure>
+    <div class="demo rise" style="--rise: 3">
+      <Demo demo={p.demo} {lang} />
+    </div>
 
     <section class="reveal" aria-labelledby="metrics">
       <h2 id="metrics">{t(lang, 'metrics')}</h2>
@@ -168,12 +149,8 @@ const labels = Object.fromEntries(
     margin-top: var(--section-gap);
   }
 
-  /* No taller than the first screen leaves below the header and the page
-     intro (about 24rem, plus 2rem to spare), so the controls show without
-     scrolling; the width follows the video's aspect ratio. */
   .project > .demo {
-    width: min(100%, max(16rem, 100svh - 26rem) * var(--ratio));
-    margin: var(--space-5) auto 0;
+    margin-top: var(--space-5);
   }
 
   .intro {
@@ -197,14 +174,6 @@ const labels = Object.fromEntries(
     margin-top: var(--space-3);
   }
 
-  .demo video {
-    width: 100%;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-3);
-    background: var(--color-surface);
-  }
-
-  figcaption,
   .note {
     margin-top: var(--space-2);
     color: var(--color-text-muted);

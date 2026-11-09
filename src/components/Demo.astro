@@ -1,0 +1,97 @@
+---
+import { getImage, Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import type { Lang } from '../lib/i18n'
+import { withBase } from '../lib/paths'
+import Text from './Text.astro'
+
+interface Props {
+  demo: CollectionEntry<'projects'>['data']['demo']
+  lang: Lang
+}
+
+const { demo, lang } = Astro.props
+// AVIF from the build (D013); screenshots also get a full-size copy to open.
+const poster =
+  'video' in demo
+    ? await getImage({ src: demo.poster, format: 'avif' })
+    : undefined
+const shots =
+  'images' in demo
+    ? await Promise.all(
+        demo.images.map(async (shot) => ({
+          ...shot,
+          full: await getImage({ src: shot.src, format: 'avif' }),
+        })),
+      )
+    : []
+---
+
+{'video' in demo ? (
+  <figure style={`--ratio: ${demo.poster.width} / ${demo.poster.height}`}>
+    <video
+      controls
+      muted
+      loop
+      playsinline
+      preload="none"
+      poster={poster!.src}
+      width={demo.poster.width}
+      height={demo.poster.height}
+    >
+      <source src={withBase(demo.video)} type="video/mp4" />
+    </video>
+    <figcaption>
+      <Text value={demo.caption[lang]} />
+    </figcaption>
+  </figure>
+) : (
+  <div class="shots">
+    {shots.map((shot, i) => (
+      <figure style={`--ratio: ${shot.src.width} / ${shot.src.height}`}>
+        <a href={shot.full.src}>
+          <Image
+            src={shot.src}
+            alt={shot.alt[lang]}
+            format="avif"
+            widths={[358, 720, 1440].filter((w) => w <= shot.src.width)}
+            sizes="(min-width: 768px) 720px, 100vw"
+            loading={i === 0 ? 'eager' : 'lazy'}
+          />
+        </a>
+        <figcaption>
+          <Text value={shot.caption[lang]} />
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+)}
+
+<style>
+  /* A video or screenshot is no taller than the first screen leaves below
+     the header and the page intro (about 24rem, plus 2rem to spare), so the
+     first ends on the first screen; the width follows the aspect ratio. */
+  figure {
+    width: min(100%, max(16rem, 100svh - 26rem) * var(--ratio));
+    margin-inline: auto;
+  }
+
+  video,
+  img {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-3);
+    background: var(--color-surface);
+  }
+
+  .shots {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  figcaption {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+</style>

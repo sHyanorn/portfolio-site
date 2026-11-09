@@ -8,9 +8,10 @@ on:
 permissions:
   contents: read
 
+# Runs on main queue up and finish; a newer push to a pull request cancels the older run.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:

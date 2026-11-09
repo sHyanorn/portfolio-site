@@ -58,8 +58,8 @@ const ui = {
   },
   direction: { en: 'Where the work sits', zh: '我的方向' },
   directionBody: {
-    en: 'My work sits where economics, finance and technology meet. Commerce asks how markets match orders, how a strategy can look good by chance, and how to judge a decision without live data. Software is how I test those questions, and each project on this site answers one with numbers that trace back to its repository.',
-    zh: '我的工作处在经济、金融和技术的交汇处。商科提出的问题是：市场怎样撮合订单，一个策略怎样仅凭运气就显得很好，没有线上数据时怎样评判一个决策。软件是我检验这些问题的方式，这个网站上的每个项目都回答其中一个问题，给出的数字都能追溯到项目仓库。',
+    en: 'My work sits where economics, finance and technology meet. Commerce asks how markets match orders, how a strategy can look good by chance, and how to judge a decision without live data. Software is how I test those questions. Three projects on this site each take one, with numbers that trace back to their repositories.',
+    zh: '我的工作处在经济、金融和技术的交汇处。商科提出的问题是：市场怎样撮合订单，一个策略怎样仅凭运气就显得很好，没有线上数据时怎样评判一个决策。软件是我检验这些问题的方式。网站上有三个项目各回答其中一个，给出的数字都能追溯到项目仓库。',
   },
   articlesDescription: {
     en: "Aaron Yang's articles, one per project.",

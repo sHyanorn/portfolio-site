@@ -2,9 +2,10 @@
 // sits in the middle of the column and ends on the first screen, so a
 // video's controls show without scrolling. Screenshots number two to four,
 // each with alt text, a caption and a link that wraps it; later ones fit
-// one screen each.
+// one screen each. A screenshot with a dark copy shows and links to the copy
+// that matches the theme, and the hidden lazy copies never load.
 import { expect, test } from '@playwright/test'
-import { pages } from './site'
+import { BASE, pages } from './site'
 
 const viewports = [
   { width: 1440, height: 900 },
@@ -22,7 +23,7 @@ for (const viewport of viewports) {
       test(p.name, async ({ page }) => {
         await page.goto(p.path)
         await page.evaluate(() => document.fonts.ready)
-        const shots = page.locator('.demo figure img')
+        const shots = page.locator('.demo figure img:visible')
         const isVideo = (await shots.count()) === 0
         if (!isVideo) {
           expect(await shots.count()).toBeGreaterThanOrEqual(2)
@@ -79,5 +80,66 @@ for (const viewport of viewports) {
         expect(Math.abs(left - right), 'centred').toBeLessThanOrEqual(1)
       })
     }
+  })
+}
+
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`local-ledger screenshots follow the ${colorScheme} theme`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme })
+    const fetched: string[] = []
+    page.on('request', (r) => {
+      if (r.resourceType() === 'image') fetched.push(r.url())
+    })
+    await page.goto(`${BASE}projects/local-ledger/`)
+    const shots = page.locator('.demo figure img:visible')
+    expect(await shots.count()).toBe(3)
+    for (const shot of await shots.all()) {
+      await shot.scrollIntoViewIfNeeded()
+      await expect(shot).toHaveJSProperty('complete', true)
+      const [src, href] = await shot.evaluate((el: HTMLImageElement) => [
+        el.currentSrc,
+        el.closest('a')!.href,
+      ])
+      for (const url of [src, href])
+        expect(url, 'visible copy').toMatch(new RegExp(`-${colorScheme}\\.`))
+    }
+    const other = colorScheme === 'dark' ? 'light' : 'dark'
+    expect(fetched.filter((u) => u.includes(`-${other}.`))).toEqual([])
+
+    // The preload for this scheme asks for the files the first image uses.
+    const preloads = await page
+      .locator('link[rel="preload"][as="image"]')
+      .evaluateAll((links: HTMLLinkElement[]) =>
+        links
+          .filter((l) => matchMedia(l.media).matches)
+          .map((l) => [l.getAttribute('imagesrcset'), l.imageSizes]),
+      )
+    expect(preloads).toEqual([
+      await shots
+        .first()
+        .evaluate((el: HTMLImageElement) => [
+          el.getAttribute('srcset'),
+          el.sizes,
+        ]),
+    ])
+
+    // One tab stop per screenshot, its visible link.
+    await page.locator('h1').click()
+    const stops: string[] = []
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press('Tab')
+      const href = await page.evaluate(() =>
+        document.activeElement?.closest('.demo')
+          ? (document.activeElement as HTMLAnchorElement).href
+          : null,
+      )
+      if (href) stops.push(href)
+      else if (stops.length) break
+    }
+    expect(stops).toHaveLength(3)
+    for (const href of stops)
+      expect(href).toMatch(new RegExp(`-${colorScheme}\\.`))
   })
 }

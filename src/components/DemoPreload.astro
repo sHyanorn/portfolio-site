@@ -1,0 +1,39 @@
+---
+import { getImage } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import { shotImage } from '../lib/shots'
+
+interface Props {
+  demo: CollectionEntry<'projects'>['data']['demo']
+}
+
+// When the first screenshot has a dark copy, both copies load lazily, so the
+// hidden one never loads; these preloads, one per colour scheme, start the
+// visible one as early as an eager image would (D013).
+const { demo } = Astro.props
+const first = 'images' in demo ? demo.images[0] : undefined
+const preloads = first?.dark
+  ? await Promise.all(
+      [
+        { src: first.src, media: 'not (prefers-color-scheme: dark)' },
+        { src: first.dark, media: '(prefers-color-scheme: dark)' },
+      ].map(async ({ src, media }) => {
+        const options = shotImage(src)
+        const image = await getImage(options)
+        return { media, srcset: image.srcSet.attribute, sizes: options.sizes }
+      }),
+    )
+  : []
+---
+
+{preloads.map(({ media, srcset, sizes }) => (
+  <link
+    rel="preload"
+    as="image"
+    type="image/avif"
+    imagesrcset={srcset}
+    imagesizes={sizes}
+    media={media}
+    fetchpriority="high"
+  />
+))}

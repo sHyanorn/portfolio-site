@@ -22,7 +22,8 @@ const projects = defineCollection({
       summary: text,
       tags: z.array(text).min(1),
       // 2. Demo: an MP4 under public/ with a poster of the same size, or two
-      // to four screenshots for a project with no browser demo (D013)
+      // to four screenshots for a project with no browser demo, each with an
+      // optional dark-theme copy of the same size (D013)
       demo: z.union([
         z.strictObject({
           video: z.string().regex(/^[\w/-]+\.mp4$/),
@@ -31,7 +32,21 @@ const projects = defineCollection({
         }),
         z.strictObject({
           images: z
-            .array(z.strictObject({ src: image(), alt: text, caption: text }))
+            .array(
+              z
+                .strictObject({
+                  src: image(),
+                  dark: image().optional(),
+                  alt: text,
+                  caption: text,
+                })
+                .refine(
+                  ({ src, dark }) =>
+                    !dark ||
+                    (dark.width === src.width && dark.height === src.height),
+                  'A dark copy has the size of its screenshot',
+                ),
+            )
             .min(2)
             .max(4),
         }),

@@ -14,7 +14,7 @@ All paths are in github.com/sHyanorn/local-ledger at commit ae08641.
 | Exports and imported CSV files unencrypted | README.md:22, 59; docs/SECURITY_DESIGN.md:18 |
 | Malware as the same user: memory while unlocked, password at the next unlock | docs/SECURITY_DESIGN.md:15 |
 | Unsigned releases warn at first launch; trust rests on the checksum and attestation check | README.md:29; docs/SECURITY_DESIGN.md:114 |
-| Demo: three screenshots from the repository, light theme, made-up data | docs/screenshots/overview-light.png, transactions-light.png, reports-light.png; README.md:5-14 |
+| Demo: three screenshots from the repository, each in the light and dark theme, made-up data | docs/screenshots/overview-light.png, transactions-light.png, reports-light.png and their -dark copies; README.md:5-14 |
 | Transfers between own accounts paired and left out of income and spending | README.md:20 |
 | 0 network requests; net log read by the e2e suite and the package check | README.md:3; docs/DECISIONS.md:49 (D009) |
 | 321 ms; Argon2id 64 MiB, t=3, p=4; worker thread | docs/DECISIONS.md:87-88 (D015) |

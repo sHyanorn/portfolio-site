@@ -2,6 +2,7 @@
 import { getImage, Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { Lang } from '../lib/i18n'
+import { shotImage } from '../lib/shots'
 import { withBase } from '../lib/paths'
 import Text from './Text.astro'
 
@@ -21,7 +22,15 @@ const shots =
     ? await Promise.all(
         demo.images.map(async (shot) => ({
           ...shot,
-          full: await getImage({ src: shot.src, format: 'avif' }),
+          variants: await Promise.all(
+            [
+              { src: shot.src, theme: shot.dark && 'light' },
+              ...(shot.dark ? [{ src: shot.dark, theme: 'dark' }] : []),
+            ].map(async (v) => ({
+              ...v,
+              full: await getImage({ src: v.src, format: 'avif' }),
+            })),
+          ),
         })),
       )
     : []
@@ -49,19 +58,15 @@ const shots =
   <div class="shots">
     {shots.map((shot, i) => (
       <figure style={`--ratio: ${shot.src.width} / ${shot.src.height}`}>
-        <a href={shot.full.src}>
-          <Image
-            src={shot.src}
-            alt={shot.alt[lang]}
-            format="avif"
-            widths={[
-              ...[358, 720].filter((w) => w < shot.src.width),
-              Math.min(shot.src.width, 1440),
-            ]}
-            sizes="(min-width: 768px) 720px, 100vw"
-            loading={i === 0 ? 'eager' : 'lazy'}
-          />
-        </a>
+        {shot.variants.map((v) => (
+          <a href={v.full.src} class={v.theme}>
+            <Image
+              {...shotImage(v.src)}
+              alt={shot.alt[lang]}
+              loading={i === 0 && !shot.dark ? 'eager' : 'lazy'}
+            />
+          </a>
+        ))}
         <figcaption>
           <Text value={shot.caption[lang]} />
         </figcaption>
@@ -102,6 +107,21 @@ const shots =
   .shots a {
     display: block;
     border-radius: var(--radius-3);
+  }
+
+  /* A screenshot with a dark copy shows the one that matches the theme, and
+     each links to its own full-size copy. Both copies load lazily, so the
+     hidden one never loads; DemoPreload starts the first visible one early. */
+  @media (prefers-color-scheme: dark) {
+    .shots .light {
+      display: none;
+    }
+  }
+
+  @media not (prefers-color-scheme: dark) {
+    .shots .dark {
+      display: none;
+    }
   }
 
   figcaption {

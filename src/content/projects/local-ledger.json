@@ -16,6 +16,7 @@
     "images": [
       {
         "src": "./local-ledger/overview-light.png",
+        "dark": "./local-ledger/overview-dark.png",
         "alt": {
           "en": "The Overview for November 2026: income of $3,850.00 and spending of $3,765.82, four budget bars with Dining Out and Coffee over budget, and the five most recent transactions, beside a sidebar listing four accounts.",
           "zh": "2026 年 11 月的概览页：收入 3,850.00 澳元，支出 3,765.82 澳元；四条预算进度条，其中外出就餐和咖啡已超支；下方是最近五笔交易，左侧边栏列出四个账户。"
@@ -27,6 +28,7 @@
       },
       {
         "src": "./local-ledger/transactions-light.png",
+        "dark": "./local-ledger/transactions-dark.png",
         "alt": {
           "en": "All Transactions: a search box, category and period filters, a total of 1,496 transactions, and rows with date, description, category, account and amount, ending with a transfer from Everyday to Savings.",
           "zh": "全部交易页：搜索框、类别和时间筛选，共 1,496 笔交易；每行列出日期、描述、类别、账户和金额，最后一行是从 Everyday 转入 Savings 的一笔转账。"
@@ -38,6 +40,7 @@
       },
       {
         "src": "./local-ledger/reports-light.png",
+        "dark": "./local-ledger/reports-dark.png",
         "alt": {
           "en": "Reports for November 2026 in AUD: twelve months of income and spending as paired columns, spending by category with Housing at $2,450.00 the largest, and an Export button.",
           "zh": "2026 年 11 月的报表页，币种为澳元：十二个月的收入和支出并排柱状图，按类别的支出中住房 2,450.00 澳元最多，右上角有导出按钮。"

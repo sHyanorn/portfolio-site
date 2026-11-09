@@ -6,6 +6,7 @@ import Base from '../layouts/Base.astro'
 import { publishedArticles } from '../lib/articles'
 import { t, toLang } from '../lib/i18n'
 import Demo from './Demo.astro'
+import DemoPreload from './DemoPreload.astro'
 import RepoLink from './RepoLink.astro'
 import Tags from './Tags.astro'
 import Text from './Text.astro'
@@ -38,6 +39,7 @@ const labels = Object.fromEntries(
 ---
 
 <Base title={`${p.title} · Aaron Yang`} description={p.summary[lang]}>
+  <DemoPreload slot="head" demo={p.demo} />
   <article class="project">
     <header class="intro">
       <h1 class="rise">{p.title}</h1>

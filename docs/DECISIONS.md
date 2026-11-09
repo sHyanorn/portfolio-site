@@ -109,6 +109,6 @@
 
 ## D017 Home introduction and About page
 - Date: 2026-11-09
-- Decision: the home page opens with the name, a two-sentence introduction and the four focus areas of SPEC §2 as tags, above the project list. `/about/` and `/zh/about/` give education (The University of Melbourne, Bachelor of Commerce, 2024 to 2027, in progress) and one paragraph on where economics, finance and technology meet, and nothing else; contact details stay in the footer of every page. The text lives in the interface dictionary, so each string has both languages. Word joiners keep the year range on one line. "About" follows "Articles" in the navigation
+- Decision: the home page opens with the name, a two-sentence introduction and the four focus areas of SPEC §2 as tags, above the project list. `/about/` and `/zh/about/` give education (The University of Melbourne, Bachelor of Commerce, 2024 to 2027, in progress) and one paragraph on where economics, finance and technology meet, and nothing else; contact details stay in the footer of every page. The text lives in the interface dictionary, so each string has both languages. The year range does not wrap. "About" follows "Articles" in the navigation
 - Rationale: the introduction names only the projects on the site, so every claim on the first screen links to a page with its evidence; a short About page avoids duplicating the project pages
 

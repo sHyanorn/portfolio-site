@@ -3,6 +3,12 @@ import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
 
 const lang = toLang(Astro.currentLocale)
+// The year range stays on one line, without invisible characters in the
+// text. The parts form one expression, as line breaks between them would
+// render as spaces, which show in Chinese.
+const YEARS = '2024–2027'
+const d = t(lang, 'degree').split(YEARS)
+if (d.length !== 2) throw new Error(`degree must name ${YEARS} once`)
 ---
 
 <Base
@@ -14,7 +20,7 @@ const lang = toLang(Astro.currentLocale)
   <section class="rise" style="--rise: 1" aria-labelledby="education">
     <h2 id="education">{t(lang, 'education')}</h2>
     <p class="school">{t(lang, 'school')}</p>
-    <p class="meta">{t(lang, 'degree')}</p>
+    <p class="meta">{[d[0], <span class="years">{YEARS}</span>, d[1]]}</p>
   </section>
 
   <section class="rise" style="--rise: 2" aria-labelledby="direction">
@@ -46,5 +52,9 @@ const lang = toLang(Astro.currentLocale)
 
   .meta {
     color: var(--color-text-muted);
+  }
+
+  .years {
+    white-space: nowrap;
   }
 </style>

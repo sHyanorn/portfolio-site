@@ -52,10 +52,9 @@ const ui = {
     en: 'The University of Melbourne',
     zh: '墨尔本大学（The University of Melbourne）',
   },
-  // Word joiners keep the year range on one line.
   degree: {
-    en: 'Bachelor of Commerce, 2024\u2060–\u20602027 (in progress)',
-    zh: '商学学士（Bachelor of Commerce），2024\u2060–\u20602027，在读',
+    en: 'Bachelor of Commerce, 2024–2027 (in progress)',
+    zh: '商学学士（Bachelor of Commerce），2024–2027，在读',
   },
   direction: { en: 'Where the work sits', zh: '我的方向' },
   directionBody: {

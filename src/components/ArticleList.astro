@@ -33,11 +33,9 @@ const articles = await Promise.all(
         </p>
         <p class="meta">
           <span>{project.data.title}</span>
-          <span aria-hidden="true">·</span>
           <time datetime={article.data.date.toISOString().slice(0, 10)}>
             {formatDate(lang, article.data.date)}
           </time>
-          <span aria-hidden="true">·</span>
           <span>{formatMinutes(lang, minutes)}</span>
           {lang === 'zh' && <span class="english">{t(lang, 'english')}</span>}
         </p>
@@ -87,17 +85,33 @@ const articles = await Promise.all(
     color: var(--color-text-muted);
   }
 
+  /* Each item after the first is preceded by a separator. The row starts
+     one separator to the left and that strip is clipped, so a line that
+     wraps neither ends nor starts with one. */
   .meta {
+    --sep: calc(2 * var(--space-1) + 0.35em);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-1);
+    row-gap: var(--space-1);
     margin-top: var(--space-2);
+    margin-inline-start: calc(-1 * var(--sep));
+    clip-path: inset(0 0 0 var(--sep));
     color: var(--color-text-muted);
     font-size: var(--step--1);
   }
 
+  /* The empty alternative text keeps the separator from screen readers. */
+  .meta > :not(.english)::before {
+    display: inline-block;
+    width: var(--sep);
+    content: '·';
+    content: '·' / '';
+    text-align: center;
+  }
+
   .english {
+    margin-inline-start: var(--sep);
     padding: 0 0.75em;
     border-radius: 999px;
     background: var(--color-surface);

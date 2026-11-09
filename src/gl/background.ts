@@ -154,7 +154,8 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
       inView &&
       document.visibilityState === 'visible'
     if (play && !frame) {
-      last = 0
+      // Late frames before a pause don't count towards a stop after it.
+      last = slow = 0
       frame = requestAnimationFrame(tick)
     } else if (!play && frame) {
       cancelAnimationFrame(frame)

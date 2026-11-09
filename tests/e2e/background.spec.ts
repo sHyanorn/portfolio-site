@@ -211,26 +211,28 @@ test('draws about 30 frames a second', async ({ page }) => {
   expect(perSecond).toBeLessThanOrEqual(32)
 })
 
+/** Reports the page as hidden or visible, as a tab switch does. */
+const hide = (page: Page, hidden: boolean) =>
+  page.evaluate((h) => {
+    Object.defineProperty(document, 'visibilityState', {
+      value: h ? 'hidden' : 'visible',
+      configurable: true,
+    })
+    document.dispatchEvent(new Event('visibilitychange'))
+  }, hidden)
+
 test('a hidden page draws nothing and resumes where it stopped', async ({
   page,
 }) => {
-  const hide = (hidden: boolean) =>
-    page.evaluate((h) => {
-      Object.defineProperty(document, 'visibilityState', {
-        value: h ? 'hidden' : 'visible',
-        configurable: true,
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
-    }, hidden)
   await openPaused(page, BASE)
   await page.clock.runFor(1000)
-  await hide(true)
+  await hide(page, true)
   const before = await draws(page)
   const [time] = await uniform(page, 'u_time')
   await page.clock.runFor(10_000)
   expect(await draws(page)).toBe(before)
 
-  await hide(false)
+  await hide(page, false)
   await page.clock.runFor(200)
   expect(await draws(page)).toBeGreaterThan(before)
   const [after] = await uniform(page, 'u_time')
@@ -278,6 +280,23 @@ test('a steady 20 fps keeps animating, a little over 50 ms a frame', async ({
   await page.clock.runFor(1000)
   expect(after - before).toBeGreaterThan(30)
   expect(await draws(page)).toBeGreaterThan(after + 15)
+})
+
+test('late frames before a pause and after it do not add up to a stop', async ({
+  page,
+}) => {
+  await openPaused(page, BASE)
+  await spaceFrames(page, 60)
+  // About six late frames each side of the pause, twelve in all.
+  await page.clock.runFor(450)
+  await hide(page, true)
+  await page.clock.runFor(1000)
+  await hide(page, false)
+  await page.clock.runFor(450)
+  await page.evaluate(() => (window.frameGap = 33))
+  const before = await draws(page)
+  await page.clock.runFor(1000)
+  expect(await draws(page)).toBeGreaterThan(before + 20)
 })
 
 test('frames that keep coming late stop the loop on the current frame', async ({

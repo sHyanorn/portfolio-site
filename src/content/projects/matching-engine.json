@@ -59,7 +59,7 @@
   "problem": [
     {
       "en": "A matching engine takes orders and cancels, matches them by price and then by time, and streams the results to clients. Matching is sequential, every result has to be reproducible from the log, and an acknowledged order must survive a crash of the process.",
-      "zh": "撮合引擎接收下单和撤单，先按价格、再按时间撮合，并把结果实时推给客户端。撮合本身是顺序的，每个结果都要能从日志重放出来，已确认的订单在进程崩溃后也不能丢。"
+      "zh": "撮合引擎接收订单和撤单请求，先按价格、再按时间撮合，并把结果实时推给客户端。撮合本身是顺序的，每个结果都要能从日志重放出来，已确认的订单在进程崩溃后也不能丢。"
     },
     {
       "en": "The project set three targets: more than 1M operations per second in the core on one symbol, a p99 under 5 ms from a REST order to its trade push at 50,000 orders per second, and a measurement of memory use with 1M resting orders.",
@@ -158,7 +158,7 @@
       },
       "body": {
         "en": "Every 10 ms the symbol's goroutine stopped for its fsync, 0.8 ms on average and tens of milliseconds at times, and every command waited. A helper goroutine now runs the fsync, as Redis, Kafka and PostgreSQL flush their logs on a background thread (D031). The median p99 at 10k requests/s fell from 5.32 to 3.82 ms, and the three runs at 25k/s went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. These sweeps ran at earlier commits on a slower VM of the same type, so they compare with each other, not with the metrics above.",
-        "zh": "原先交易对的 goroutine 每 10 ms 停下来 fsync 一次，平均 0.8 ms，有时几十毫秒，所有命令都得等着。现在 fsync 交给一个辅助 goroutine，Redis、Kafka 和 PostgreSQL 也都在后台线程刷日志（D031）。每秒 1 万个请求时，三次运行的 p99 延迟中位数从 5.32 ms 降到 3.82 ms；每秒 2.5 万个请求的三次运行从 20.0、36.4、215 ms 降到 19.6、19.8、28.7 ms。这几轮测试用的是更早的提交和同型号但更慢的一台虚拟机，只能互相比较，不能和上面的指标对比。"
+        "zh": "原先交易对的 goroutine 每 10 ms 停下来 fsync 一次，平均 0.8 ms，有时几十毫秒，所有命令都得等着。现在 fsync 交给一个辅助 goroutine，Redis、Kafka 和 PostgreSQL 也都在后台线程刷日志（D031）。每秒 1 万个请求时，三次运行的 p99 延迟中位数从 5.32 ms 降到 3.82 ms；每秒 2.5 万个请求的三次运行从 20.0、36.4、215 ms 降到 19.6、19.8、28.7 ms。这几轮测试跑在更早的提交上，用的是同型号但更慢的一台虚拟机，只能互相比较，不能和上面的指标对比。"
       }
     },
     {

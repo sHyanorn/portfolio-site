@@ -62,3 +62,10 @@
 - Decision: Astro's i18n routing with locales `en` and `zh`, English as the default and unprefixed. Each route has a thin page file in `src/pages/` and one in `src/pages/zh/`, both rendering one component that reads `Astro.currentLocale`. `lang` and `hreflang` use `en` and `zh-CN`; every page has a canonical URL and links both versions and `x-default`, the English one. The language toggle links to the same page in the other language: `pagePath()` strips the base and the `zh/` prefix, and `getRelativeLocaleUrl()` builds the other version's URL. Interface text sits in one dictionary in `src/lib/i18n.ts` where each key holds both languages, so a missing translation fails the type check. The 404 page, which GitHub Pages serves for every missing path, carries both languages and no alternates
 - Rationale: a reader who switches language stays on the same page, and search engines can pair the two versions
 - Borrowed: the `i18n` configuration and `astro:i18n` helpers from Astro's internationalization guide; the head tags (canonical URL from `Astro.url` and `site`, Open Graph) from Astro's blog example
+
+## D012 One bilingual JSON file per project
+- Date: 2026-11-09
+- Decision: each project is a JSON file in `src/content/projects/`, checked by a Zod schema in `src/content.config.ts` whose fields follow the eight sections of the project page (SPEC §2). Every field a page shows is an `{ en, zh }` pair and every object is strict, so a missing translation or a misspelt key fails the build. Text is plain, with backticks for inline code. The demo poster goes through Astro's image pipeline, which gives the video its size. Metrics and decisions link to the repository file they come from, at the commit the numbers were taken from
+- Rationale: a new project needs one content file and no page code (D002), and the two languages of each paragraph sit side by side for review
+- Alternatives: one file per language (translations drift apart unnoticed); MDX (a free-form body the schema cannot hold to the eight sections)
+- Borrowed: content collections with the `glob()` loader and the `image()` schema helper from Astro's content collections guide

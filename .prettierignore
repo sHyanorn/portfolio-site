@@ -1,0 +1,6 @@
+dist
+.astro
+package-lock.json
+# Prose is formatted by hand; Prettier would rewrite tables and MDX escapes.
+*.md
+*.mdx

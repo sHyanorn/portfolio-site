@@ -15,7 +15,7 @@
 - [x] Entrance motion, off under reduced motion (D014)
 
 ## M2 GLSL background
-- [ ] WebGL2 initialization and full-screen quad
+- [ ] WebGL2 initialization and full-screen triangle
 - [ ] Noise-field or flowing-gradient fragment shader
 - [ ] Mouse interaction, reduced motion, fallback when WebGL is not supported
 - [ ] Pause when the page is hidden

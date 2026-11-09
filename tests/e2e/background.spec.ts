@@ -4,7 +4,15 @@
 // get one still frame; a fine pointer moves the glows a little. Tests run as
 // on a hardware renderer unless they name another.
 import { expect, test, type Page } from '@playwright/test'
-import { draws, fakeRenderer, GPU, instrument, openPaused, uniform } from './gl'
+import {
+  draws,
+  fakeMaskedRenderer,
+  fakeRenderer,
+  GPU,
+  instrument,
+  openPaused,
+  uniform,
+} from './gl'
 import { BASE } from './site'
 
 const homes = [BASE, `${BASE}zh/`]
@@ -135,6 +143,34 @@ for (const [renderer, still] of [
       await expect.poll(() => draws(page)).toBeGreaterThan(5)
     }
   })
+
+test('a masked RENDERER falls back to the debug extension', async ({
+  page,
+}) => {
+  await page.addInitScript(fakeMaskedRenderer, 'SwiftShader driver')
+  await page.goto(BASE)
+  await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+  await page.waitForTimeout(500)
+  expect(await draws(page)).toBe(1)
+})
+
+test('a named RENDERER leaves the debug extension alone', async ({ page }) => {
+  await page.addInitScript(() => {
+    const gl = WebGL2RenderingContext.prototype
+    const getExtension: (
+      this: WebGL2RenderingContext,
+      name: string,
+    ) => unknown = gl.getExtension
+    gl.getExtension = function (this: WebGL2RenderingContext, name: string) {
+      if (name === 'WEBGL_debug_renderer_info')
+        document.documentElement.dataset.debugInfo = 'asked'
+      return getExtension.call(this, name)
+    } as typeof gl.getExtension
+  })
+  await page.goto(BASE)
+  await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+  await expect(page.locator('html')).not.toHaveAttribute('data-debug-info')
+})
 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' })

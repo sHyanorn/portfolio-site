@@ -33,6 +33,15 @@ export function fakeRenderer(name: string) {
   }
 }
 
+/** Like fakeRenderer, but RENDERER stays masked as in Chrome and Safari. */
+export function fakeMaskedRenderer(name: string) {
+  const { getParameter } = WebGL2RenderingContext.prototype
+  WebGL2RenderingContext.prototype.getParameter = function (pname: number) {
+    if (pname === 0x1f01) return 'WebKit WebGL'
+    return pname === 0x9246 ? name : getParameter.call(this, pname)
+  }
+}
+
 /** Counts draws, records uniforms and keeps the context; runs in the page before its scripts. */
 export function instrument() {
   window.draws = 0

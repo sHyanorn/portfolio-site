@@ -59,11 +59,15 @@ function idle(step: () => void): void {
 
 /** Whether the context shades on the CPU, going by its renderer's name. */
 function isSoftware(gl: WebGL2RenderingContext): boolean {
-  const debug = gl.getExtension('WEBGL_debug_renderer_info')
-  const name: unknown = gl.getParameter(
-    debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER,
-  )
-  return SOFTWARE.test(String(name))
+  // Chrome and Safari mask RENDERER and name the renderer only through the
+  // debug extension; Firefox names it in RENDERER and warns when the
+  // extension is asked for.
+  let name = String(gl.getParameter(gl.RENDERER))
+  if (name === 'WebKit WebGL') {
+    const debug = gl.getExtension('WEBGL_debug_renderer_info')
+    if (debug) name = String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL))
+  }
+  return SOFTWARE.test(name)
 }
 
 export function mountBackground(canvas: HTMLCanvasElement): void {

@@ -1,0 +1,154 @@
+{
+  "education": {
+    "title": {
+      "en": "Education",
+      "zh": "教育"
+    },
+    "school": {
+      "en": "The University of Melbourne",
+      "zh": "墨尔本大学（The University of Melbourne）"
+    },
+    "degree": {
+      "en": "Bachelor of Commerce, 2024–2027 (in progress)",
+      "zh": "商学学士（Bachelor of Commerce），2024–2027，在读"
+    },
+    "location": {
+      "en": "Based in Melbourne, Australia.",
+      "zh": "现居澳大利亚墨尔本。"
+    }
+  },
+  "areas": [
+    {
+      "title": {
+        "en": "Backend systems",
+        "zh": "后端系统"
+      },
+      "items": [
+        {
+          "en": "Limit order book matching engine in Go: price-time priority, REST and WebSocket APIs, a bounded queue per symbol; new orders and cancels get 503 when it is full.",
+          "zh": "用 Go 写的限价订单簿撮合引擎：价格优先、时间优先，提供 REST 和 WebSocket 接口；每个交易对一个有界队列，队列满时下单和撤单直接返回 503。"
+        },
+        {
+          "en": "Durability by a write-ahead command log, fsynced every 10 ms on a background goroutine, with a crash test that kills the engine under load.",
+          "zh": "持久化靠预写命令日志，由后台 goroutine 每 10 ms fsync 一次；崩溃测试在压测中途杀掉引擎进程。"
+        },
+        {
+          "en": "Price levels in a red-black tree chosen by benchmark over a skip list and a sorted slice (250 ns against 405 ns at 10,000 levels).",
+          "zh": "价格档位用红黑树，经基准测试与跳表、有序切片比较后选定（1 万个档位时 250 ns 对 405 ns）。"
+        },
+        {
+          "en": "Open-loop load generation with scheduled send times, so a stalled server is charged the delay; a run counts only if every trade reaches the client once and in order, checked by sequence numbers and 64-bit hash sums.",
+          "zh": "开环压测按计划时间发请求，服务端卡顿的时间会计入延迟；只有每笔成交都按序、恰好一次送达客户端，这次运行才算数，用序号和 64 位哈希和核对。"
+        },
+        {
+          "en": "CPU profiling that moved the work away from the book: a JSON key check from 5.79 µs and 79 allocations to 0.51 µs and none.",
+          "zh": "用 CPU 剖析找到真正的开销：JSON 键检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配。"
+        }
+      ],
+      "projects": ["matching-engine"]
+    },
+    {
+      "title": {
+        "en": "Security engineering",
+        "zh": "安全工程"
+      },
+      "items": [
+        {
+          "en": "Client-side encryption with Web Crypto in RFC 8188 `aes128gcm` records of 64 KiB, AES-256-GCM, with the key in the URL fragment the browser never sends.",
+          "zh": "用 Web Crypto 在浏览器端加密，采用 RFC 8188 `aes128gcm` 格式，64 KiB 分块，AES-256-GCM；密钥放在浏览器从不发送的 URL 片段里。"
+        },
+        {
+          "en": "Password protection and accounts with Argon2id key derivation and HKDF, where the server never sees the password.",
+          "zh": "密码保护和账户体系用 Argon2id 派生密钥并配合 HKDF，服务端始终看不到密码。"
+        },
+        {
+          "en": "Download counts decremented in one conditional SQL UPDATE, so concurrent requests cannot over-issue; stateless HMAC challenges.",
+          "zh": "下载次数在一条带条件的 SQL UPDATE 里扣减，并发请求不会超发；挑战值无状态，用 HMAC 签名。"
+        },
+        {
+          "en": "A threat model and an OWASP Top 10:2025 self-assessment: 170 black-box checks, 30 browser checks, 46 findings, 4 of them High, 44 fixed.",
+          "zh": "威胁模型和 OWASP Top 10:2025 自评：170 项黑盒检查、30 项浏览器检查，46 项发现，其中高危 4 项，已修复 44 项。"
+        },
+        {
+          "en": "Electron hardening: sandboxed renderer without Node.js, a custom protocol with a content security policy, typed IPC validated with zod, no network requests (checked by the e2e suite's net log), and a renderer process replaced on every lock.",
+          "zh": "Electron 加固：渲染进程沙箱化且没有 Node.js，自定义协议配内容安全策略，IPC 有类型并用 zod 校验，应用不发任何网络请求（端到端测试读取网络日志核对），每次锁定都换掉渲染进程。"
+        }
+      ],
+      "projects": ["vault-share", "local-ledger"]
+    },
+    {
+      "title": {
+        "en": "Quantitative research",
+        "zh": "量化研究"
+      },
+      "items": [
+        {
+          "en": "A daily multi-asset backtesting engine, long and short, that trades at the next open after the signal's close, net of fees and slippage.",
+          "zh": "日频多资产回测引擎，支持做多做空，在信号收盘后的下一个开盘价成交，扣除手续费和滑点。"
+        },
+        {
+          "en": "Overfitting diagnostics on every recorded trial: walk-forward analysis, purged cross-validation, the probability of backtest overfitting (PBO) and the deflated Sharpe ratio (DSR).",
+          "zh": "对每一次参数试验做过拟合诊断：滚动前推分析、清洗交叉验证、回测过拟合概率（PBO）和紧缩夏普比率（DSR）。"
+        },
+        {
+          "en": "Pre-registration: data range, grids, costs and pass thresholds fixed before any run on real data; post hoc analyses kept in their own module and labelled.",
+          "zh": "预注册：数据区间、参数网格、成本和通过阈值都在任何真实数据运行之前固定；事后分析放在单独的模块里并加标注。"
+        },
+        {
+          "en": "Reproducible reports: registered results frozen with SHA-256 sums checked in CI.",
+          "zh": "结果可复现：注册结果冻结后，CI 校验其 SHA-256。"
+        },
+        {
+          "en": "Data pipeline on yfinance and FRED into Parquet and DuckDB, refreshed by a weekly GitHub Actions workflow.",
+          "zh": "数据管道从 yfinance 和 FRED 取数，存为 Parquet 并用 DuckDB 查询，每周由 GitHub Actions 更新。"
+        }
+      ],
+      "projects": ["backtest-lab"]
+    },
+    {
+      "title": {
+        "en": "Recommender systems",
+        "zh": "推荐系统"
+      },
+      "items": [
+        {
+          "en": "A push notification pipeline on public data: two-tower recall with a faiss index, coarse and LightGBM fine ranking, uplift models, and a delivery policy for send, time slot and copy.",
+          "zh": "基于公开数据的推送推荐管线：双塔召回配 faiss 索引，粗排加 LightGBM 精排，增益模型，以及决定发不发、何时发、发什么文案的投放策略。"
+        },
+        {
+          "en": "Off-policy evaluation (IPS, DR) checked against a known answer on the Open Bandit Dataset; on the full campaign no estimator passed, so the project reports no result that rests on one.",
+          "zh": "离线策略评估（IPS、DR）先在 Open Bandit 数据集上对照已知答案检验；在完整活动数据上没有估计器通过，因此项目不报告依赖它的结果。"
+        },
+        {
+          "en": "A simulator fitted on KuaiRand random exposures for effects no public dataset records, with results labelled by evidence tier (A real data, B checked estimator, C simulator only).",
+          "zh": "公开数据集没有记录的效应，用在 KuaiRand 随机曝光上拟合的模拟器估计；每个结果按证据等级标注（A 真实数据，B 经检验的估计器，C 仅在模拟器中成立）。"
+        },
+        {
+          "en": "Comparisons registered before the simulations and reported as they came out, including a pre-registered ranking result that went the other way.",
+          "zh": "比较方案在模拟之前登记，结果原样报告，包括一个与预期方向相反的预注册排序结果。"
+        }
+      ],
+      "projects": ["push-lab"]
+    }
+  ],
+  "tools": {
+    "title": {
+      "en": "Tools",
+      "zh": "技术栈"
+    },
+    "body": {
+      "en": "Go, Python, TypeScript. React, FastAPI, Electron. SQLite, SQLCipher 4 format, DuckDB, Parquet. Web Crypto, Argon2id. LightGBM, faiss. GitHub Actions. This site: Astro and hand-written WebGL2 and GLSL.",
+      "zh": "Go、Python、TypeScript。React、FastAPI、Electron。SQLite、SQLCipher 4 格式、DuckDB、Parquet。Web Crypto、Argon2id。LightGBM、faiss。GitHub Actions。本站：Astro，以及手写的 WebGL2 和 GLSL。"
+    }
+  },
+  "direction": {
+    "title": {
+      "en": "Where the work sits",
+      "zh": "我的方向"
+    },
+    "body": {
+      "en": "My work sits where economics, finance and technology meet. Commerce asks how markets match orders, how a strategy can look good by chance, and how to judge a decision without live data. Software is how I test those questions. Three projects on this site each take one, with numbers that trace back to their repositories.",
+      "zh": "我的工作处在经济、金融和技术的交汇处。商科提出的问题是：市场怎样撮合订单，一个策略怎样仅凭运气就显得很好，没有线上数据时怎样评判一个决策。软件是我检验这些问题的方式。网站上有三个项目各回答其中一个，给出的数字都能追溯到项目仓库。"
+    }
+  }
+}

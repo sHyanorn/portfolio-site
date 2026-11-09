@@ -108,4 +108,47 @@ const articles = defineCollection({
     }),
 })
 
-export const collections = { projects, articles }
+/** The home page's introduction (D017). */
+const home = defineCollection({
+  loader: glob({ pattern: 'home.json', base: './src/content/site' }),
+  schema: z.strictObject({
+    headline: text,
+    intro: text,
+    /** The four areas of the work, each a title and a sentence. */
+    areas: z.array(item).length(4),
+  }),
+})
+
+/** The About page (D017): education, the areas of the work with the
+ * projects behind each, tools, and where the work sits. */
+const about = defineCollection({
+  loader: glob({ pattern: 'about.json', base: './src/content/site' }),
+  schema: z.strictObject({
+    education: z.strictObject({
+      title: text,
+      school: text,
+      degree: text,
+      location: text,
+    }),
+    areas: z
+      .array(
+        z.strictObject({
+          title: text,
+          items: z.array(text).min(1),
+          /** Project ids, linked to their pages. */
+          projects: z
+            .array(
+              z.string().refine((id) => projectIds.has(id), {
+                message: 'names no project in src/content/projects',
+              }),
+            )
+            .min(1),
+        }),
+      )
+      .length(4),
+    tools: z.strictObject({ title: text, body: text }),
+    direction: z.strictObject({ title: text, body: text }),
+  }),
+})
+
+export const collections = { projects, articles, home, about }

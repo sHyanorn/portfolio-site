@@ -1,0 +1,52 @@
+{
+  "headline": {
+    "en": "Backend systems, security engineering, quantitative research and recommender systems.",
+    "zh": "后端系统、安全工程、量化研究与推荐系统。"
+  },
+  "intro": {
+    "en": "Commerce student at the University of Melbourne. Each project below ships its tests and decision log in its repository.",
+    "zh": "墨尔本大学商科在读。下面每个项目的测试和决策记录都在各自仓库里。"
+  },
+  "areas": [
+    {
+      "title": {
+        "en": "Backend systems",
+        "zh": "后端系统"
+      },
+      "body": {
+        "en": "Go limit order book with a write-ahead command log and open-loop load testing: 5.05M–6.95M commands/s in the core, p99 1.76 ms at 10k requests/s.",
+        "zh": "用 Go 写的限价订单簿，带预写命令日志和开环压测：撮合核心每秒 505 万–695 万条命令，每秒 1 万个请求时 p99 为 1.76 ms。"
+      }
+    },
+    {
+      "title": {
+        "en": "Security engineering",
+        "zh": "安全工程"
+      },
+      "body": {
+        "en": "End-to-end encryption on Web Crypto with an OWASP Top 10:2025 self-assessment; a sandboxed Electron app on a SQLCipher 4 format database.",
+        "zh": "基于 Web Crypto 的端到端加密，按 OWASP Top 10:2025 做了自评；渲染进程沙箱化的 Electron 应用，数据库采用 SQLCipher 4 格式加密。"
+      }
+    },
+    {
+      "title": {
+        "en": "Quantitative research",
+        "zh": "量化研究"
+      },
+      "body": {
+        "en": "Walk-forward analysis, purged cross-validation, PBO and the deflated Sharpe ratio, thresholds fixed before real data.",
+        "zh": "滚动前推分析、清洗交叉验证、回测过拟合概率（PBO）和紧缩夏普比率，阈值在接触真实数据之前固定。"
+      }
+    },
+    {
+      "title": {
+        "en": "Recommender systems",
+        "zh": "推荐系统"
+      },
+      "body": {
+        "en": "Two-tower recall, gradient-boosted ranking, uplift models and off-policy evaluation, labelled by evidence tier.",
+        "zh": "双塔召回、梯度提升排序、增益模型和离线策略评估，结果按证据等级标注。"
+      }
+    }
+  ]
+}

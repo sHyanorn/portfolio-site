@@ -74,10 +74,10 @@ test('the article lists and the feed describe the articles', async ({
   page,
   request,
 }) => {
-  const en = "Aaron Yang's articles about the projects on this site."
+  const en = 'Articles about the projects on this site.'
   for (const [path, text] of [
     [`${BASE}articles/`, en],
-    [`${BASE}zh/articles/`, 'Aaron Yang 关于本站项目的文章。'],
+    [`${BASE}zh/articles/`, '关于本站项目的文章。'],
   ]) {
     await page.goto(path)
     await expect(page.locator('meta[name=description]')).toHaveAttribute(

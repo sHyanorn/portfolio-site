@@ -1,16 +1,14 @@
 ---
-import { getCollection } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
 import { byOrder } from '../lib/projects'
 import ProjectCard from './ProjectCard.astro'
-import Tags from './Tags.astro'
+import Text from './Text.astro'
 
 const lang = toLang(Astro.currentLocale)
 const projects = byOrder(await getCollection('projects'))
-const focus = (
-  ['focusBackend', 'focusSecurity', 'focusRecommender', 'focusQuant'] as const
-).map((key) => t(lang, key))
+const home = (await getEntry('home', 'home'))!.data
 ---
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>
@@ -19,18 +17,20 @@ const focus = (
   </div>
 
   <section class="intro">
-    <h1 class="rise">Aaron Yang</h1>
+    <h1 class="rise">{home.headline[lang]}</h1>
     <p class="lede rise" style="--rise: 1">
-      {t(lang, 'intro')}
+      {home.intro[lang]}
     </p>
-    <div
-      class="rise"
-      style="--rise: 2"
-      role="group"
-      aria-label={t(lang, 'focusLabel')}
-    >
-      <Tags tags={focus} />
-    </div>
+    <dl class="areas rise" style="--rise: 2">
+      {home.areas.map((area) => (
+        <div>
+          <dt>{area.title[lang]}</dt>
+          <dd>
+            <Text value={area.body[lang]} />
+          </dd>
+        </div>
+      ))}
+    </dl>
   </section>
 
   <section
@@ -111,9 +111,28 @@ const focus = (
     padding-block: var(--space-6) var(--space-7);
   }
 
+  /* The headline is a list: Chinese breaks only after its commas, and a
+     phone takes a step down so the list leaves room for the introduction,
+     small enough at 320 px for the longest phrase, ten characters. */
   h1 {
-    font-size: var(--step-5);
+    max-width: 20em;
+    font-size: min(var(--step-4), 8.8vw);
     line-height: 1.1;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  /* A wide introduction ends evenly rather than with a word or two, and
+     Chinese breaks between phrases. */
+  @media (min-width: 48rem) {
+    h1 {
+      font-size: var(--step-5);
+    }
+
+    .lede {
+      text-wrap: balance;
+      word-break: keep-all;
+    }
   }
 
   .lede {
@@ -121,6 +140,41 @@ const focus = (
     margin-block: var(--space-3);
     color: var(--color-text-muted);
     font-size: var(--step-1);
+  }
+
+  /* One area a row on a phone, two on a tablet, four on a wide screen. */
+  .areas {
+    display: grid;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    .areas {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .areas {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .areas div {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line);
+  }
+
+  dt {
+    font-weight: 600;
+  }
+
+  dd {
+    max-width: var(--width-prose);
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
   }
 
   h2 {

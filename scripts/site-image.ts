@@ -5,32 +5,24 @@
 import { spawn } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import sharp from 'sharp'
-import { LANGS, t, type Lang } from '../src/lib/i18n.ts'
+import { LANGS, type Lang } from '../src/lib/i18n.ts'
 
 export const TEXT_FILE = 'scripts/site-image.json'
 export const imageFile = (lang: Lang) =>
   `public/og/${lang === 'en' ? 'site' : 'site-zh'}.png`
 
 export interface SiteText {
-  name: string
+  headline: string
   intro: string
-  tags: string[]
 }
 
-/** The text the images should show: the home page's heading, introduction and focus tags. */
+/** The text the images should show: the home page's headline and
+ * introduction. The four areas the headline names are left out. */
 export function siteText(lang: Lang): SiteText {
-  const home = readFileSync('src/components/Home.astro', 'utf8')
+  const home = JSON.parse(readFileSync('src/content/site/home.json', 'utf8'))
   return {
-    name: /<h1[^>]*>\s*([^<]+?)\s*<\/h1>/.exec(home)![1],
-    intro: t(lang, 'intro'),
-    tags: (
-      [
-        'focusBackend',
-        'focusSecurity',
-        'focusRecommender',
-        'focusQuant',
-      ] as const
-    ).map((key) => t(lang, key)),
+    headline: home.headline[lang],
+    intro: home.intro[lang],
   }
 }
 
@@ -87,9 +79,9 @@ if (import.meta.main) {
       await page.goto(lang === 'en' ? root : `${root}zh/`)
       await page.evaluate(() => document.fonts.ready)
       await page.waitForTimeout(1500)
-      // The introduction alone, centred in the frame.
+      // The headline and introduction alone, centred in the frame.
       await page.addStyleTag({
-        content: `header.header, .skip, #projects, footer { display: none !important }
+        content: `header.header, .skip, #projects, footer, .areas { display: none !important }
           main { display: flex; flex-direction: column; justify-content: center;
             min-height: 420px; padding-top: 0 !important }
           main > * { margin-block: 0 !important; padding-block: 0 !important }`,
@@ -98,11 +90,8 @@ if (import.meta.main) {
         .png({ compressionLevel: 9 })
         .toFile(imageFile(lang))
       text[lang] = await page.evaluate(() => ({
-        name: document.querySelector('h1')!.textContent!.trim(),
+        headline: document.querySelector('h1')!.textContent!.trim(),
         intro: document.querySelector('.lede')!.textContent!.trim(),
-        tags: [...document.querySelectorAll('.intro .tags li')].map((li) =>
-          li.textContent!.trim(),
-        ),
       }))
       await page.close()
     }

@@ -10,6 +10,7 @@
 // animation, 0 being the first frame: BACKGROUND_TIMES=0,30,90.
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
+import { fakeRenderer, GPU } from './gl'
 import { BASE } from './site'
 
 const screenshots = !!process.env.SCREENSHOTS
@@ -180,6 +181,7 @@ for (const viewport of viewports) {
       test('animation', async ({ page, browser }) => {
         test.slow()
         const decoder = await browser.newPage()
+        await page.addInitScript(fakeRenderer, GPU)
         await page.clock.install({ time: 0 })
         await page.clock.pauseAt(1000)
         await page.goto(BASE)

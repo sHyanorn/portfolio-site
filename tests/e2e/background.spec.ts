@@ -1,7 +1,9 @@
 // The home page background (D015): it draws once WebGL2 is ready, and falls
 // back to the CSS gradient, without errors, when WebGL2 is missing, the
-// shaders fail or the context is lost.
+// shaders fail or the context is lost. A software renderer draws one still
+// frame.
 import { expect, test, type Page } from '@playwright/test'
+import { fakeRenderer, GPU } from './gl'
 import { BASE } from './site'
 
 const homes = [BASE, `${BASE}zh/`]
@@ -128,3 +130,28 @@ test('a lost context hides the canvas until it is restored', async ({
   expect(await page.evaluate(() => window.draws)).toBeGreaterThan(before)
   expect(errors).toEqual([])
 })
+
+for (const [renderer, still] of [
+  [
+    'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)',
+    true,
+  ],
+  ['llvmpipe (LLVM 17.0.6, 256 bits)', true],
+  ['Software Rasterizer', true],
+  [GPU, false],
+] as const)
+  test(`${renderer}: ${still ? 'one still frame' : 'animates'}`, async ({
+    page,
+  }) => {
+    await page.addInitScript(fakeRenderer, renderer)
+    await page.goto(BASE)
+    await expect(page.locator('.backdrop canvas')).toHaveClass('ready')
+    if (still) {
+      await page.waitForTimeout(500)
+      expect(await page.evaluate(() => window.draws)).toBe(1)
+    } else {
+      await expect
+        .poll(() => page.evaluate(() => window.draws))
+        .toBeGreaterThan(5)
+    }
+  })

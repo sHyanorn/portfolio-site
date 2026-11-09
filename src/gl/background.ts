@@ -1,7 +1,8 @@
 // The home page background (D015): WebGL2 shades one full-screen triangle
 // with soft, slowly drifting glows. The CSS gradients under the canvas show
 // until the first frame, and stay when WebGL2 is missing, the shaders fail
-// to link or the context is lost; none of these throws or logs an error.
+// to link or the context is lost; none of these throws or logs an error. A
+// renderer that shades on the CPU draws the first frame only.
 import vertexSource from './shaders/background.vert.glsl?raw'
 import fragmentSource from './shaders/background.frag.glsl?raw'
 
@@ -9,6 +10,9 @@ import fragmentSource from './shaders/background.frag.glsl?raw'
 const MAX_PIXELS = 200_000
 /** Smallest backbuffer scale: upscaled further, the dither smears and banding shows. */
 const MIN_SCALE = 0.5
+
+/** Renderers that shade on the CPU, where one frame takes tens of milliseconds. */
+const SOFTWARE = /SwiftShader|llvmpipe|Software/i
 
 /** Shader colours and the tokens in tokens.css they come from. */
 const COLORS = {
@@ -22,6 +26,15 @@ function idle(step: () => void): void {
   if (typeof requestIdleCallback === 'function')
     requestIdleCallback(step, { timeout: 1000 })
   else setTimeout(step, 1)
+}
+
+/** Whether the context shades on the CPU, going by its renderer's name. */
+function isSoftware(gl: WebGL2RenderingContext): boolean {
+  const debug = gl.getExtension('WEBGL_debug_renderer_info')
+  const name: unknown = gl.getParameter(
+    debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER,
+  )
+  return SOFTWARE.test(String(name))
 }
 
 export function mountBackground(canvas: HTMLCanvasElement): void {
@@ -38,6 +51,8 @@ export function mountBackground(canvas: HTMLCanvasElement): void {
 }
 
 function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
+  /** Draw the first frame and no more. */
+  const still = isSoftware(gl)
   let program: WebGLProgram | null = null
   let ready = false
   let loc: Record<string, WebGLUniformLocation | null> = {}
@@ -98,6 +113,7 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     draw()
     ready = true
     canvas.classList.add('ready')
+    if (still) return
     last = now
     frame = requestAnimationFrame(tick)
   }

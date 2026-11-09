@@ -21,13 +21,15 @@
   --color-accent-solid: #3e63dd;
   --color-accent: light-dark(#3a5bc7, #9eb1ff);
 
-  /* The home page background (D015) mixes the page background with indigo 3
-     and 4, here and in its CSS fallback. Indigo 4 is the strongest step it
-     may use: on it, slate 11 text keeps 4.8:1 in light mode, dither included,
-     over the 4.5:1 body text needs. */
+  /* The home page background (D015) lays glows of two indigo steps over the
+     page background, here and in its CSS fallback: 3 and 4 in light mode, 2
+     and 3 in dark mode, where the glow stays faint against the near-black
+     page. Indigo 4 is the strongest step it may use: on it, slate 11 text
+     keeps 4.8:1 in light mode, dither included, over the 4.5:1 body text
+     needs. */
   --color-backdrop: var(--color-bg);
-  --color-backdrop-tint: var(--color-accent-subtle);
-  --color-backdrop-strong: light-dark(#e1e9ff, #1d2e62);
+  --color-backdrop-tint: light-dark(#edf2fe, #141726);
+  --color-backdrop-strong: light-dark(#e1e9ff, #182449);
 
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Segoe UI',

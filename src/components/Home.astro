@@ -40,23 +40,35 @@ const projects = await getCollection('projects')
 </script>
 
 <style>
-  /* The background field (D015): one screen high at the top of the page,
-     behind the header and the introduction. The shader fades it into the
-     page itself, dithered; a CSS mask would band. The gradient, close to the
-     first frame, shows until the canvas draws and stays when WebGL2 is
-     unavailable. */
+  /* The background (D015): one screen high at the top of the page, behind
+     the header and the introduction. The shader fades it into the page
+     itself, dithered; a CSS mask would band. The gradients show until the
+     canvas draws and stay when WebGL2 is unavailable. They are the shader's
+     glows where they start, each Gaussian drawn as a linear fall to
+     transparent over 1.6 radii, which meets it at one radius. */
   .backdrop {
+    --radius: calc(1.6 * (50vw + 50svh));
+
     position: absolute;
     inset: 0 0 auto;
     z-index: -1;
     height: 100svh;
     background:
       radial-gradient(
-        45% 50% at 80% 0%,
+        calc(0.34 * var(--radius)) calc(0.28 * var(--radius)) at 80% -10%,
         var(--color-backdrop-strong),
         transparent
       ),
-      linear-gradient(var(--color-backdrop-tint), transparent 95%);
+      radial-gradient(
+        calc(0.4 * var(--radius)) calc(0.3 * var(--radius)) at 92% -6%,
+        var(--color-backdrop-tint),
+        transparent
+      ),
+      radial-gradient(
+        calc(0.42 * var(--radius)) calc(0.3 * var(--radius)) at 12% -12%,
+        var(--color-backdrop-tint),
+        transparent
+      );
     pointer-events: none;
   }
 

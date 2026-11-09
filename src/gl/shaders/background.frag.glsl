@@ -1,9 +1,11 @@
 #version 300 es
 precision highp float;
 
-// The home page background (D015): low-frequency noise, bent by one layer of
-// domain warping, mixes the page background with indigo 3 and 4. The colour
-// gathers toward the top and fades into the page over the lower half.
+// The home page background (D015): soft colour fields. Three wide glows sit
+// just above the top edge, so only their lower parts show, and drift on slow
+// paths whose periods share no common factor. Two mix the page background
+// with the tint; the third, smaller, brings in the strong colour near the top
+// right. The colour fades into the page over the lower half.
 
 uniform vec2 u_resolution;
 uniform float u_time;
@@ -13,103 +15,60 @@ uniform vec3 u_strong;
 
 out vec4 color;
 
-//
-// Description : Array and textureless GLSL 2D simplex noise function.
-//      Author : Ian McEwan, Ashima Arts.
-//  Maintainer : stegu
-//     Lastmod : 20110822 (ijm)
-//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-//               Distributed under the MIT License. See LICENSE file.
-//               https://github.com/ashima/webgl-noise
-//               https://github.com/stegu/webgl-noise
-// 
+const float TAU = 6.28318531;
 
-vec3 mod289(vec3 x) {
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec2 mod289(vec2 x) {
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec3 permute(vec3 x) {
-  return mod289(((x*34.0)+10.0)*x);
-}
-
-float snoise(vec2 v)
-  {
-  const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
-                      0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
-                     -0.577350269189626,  // -1.0 + 2.0 * C.x
-                      0.024390243902439); // 1.0 / 41.0
-// First corner
-  vec2 i  = floor(v + dot(v, C.yy) );
-  vec2 x0 = v -   i + dot(i, C.xx);
-
-// Other corners
-  vec2 i1;
-  //i1.x = step( x0.y, x0.x ); // x0.x > x0.y ? 1.0 : 0.0
-  //i1.y = 1.0 - i1.x;
-  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-  // x0 = x0 - 0.0 + 0.0 * C.xx ;
-  // x1 = x0 - i1 + 1.0 * C.xx ;
-  // x2 = x0 - 1.0 + 2.0 * C.xx ;
-  vec4 x12 = x0.xyxy + C.xxzz;
-  x12.xy -= i1;
-
-// Permutations
-  i = mod289(i); // Avoid truncation effects in permutation
-  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-		+ i.x + vec3(0.0, i1.x, 1.0 ));
-
-  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-  m = m*m ;
-  m = m*m ;
-
-// Gradients: 41 points uniformly over a line, mapped onto a diamond.
-// The ring size 17*17 = 289 is close to a multiple of 41 (41*7 = 287)
-
-  vec3 x = 2.0 * fract(p * C.www) - 1.0;
-  vec3 h = abs(x) - 0.5;
-  vec3 ox = floor(x + 0.5);
-  vec3 a0 = x - ox;
-
-// Normalise gradients implicitly by scaling m
-// Approximation of: m *= inversesqrt( a0*a0 + h*h );
-  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-
-// Compute final noise value at P
-  vec3 g;
-  g.x  = a0.x  * x0.x  + h.x  * x0.y;
-  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-  return 130.0 * dot(m, g);
-}
-
-// Two octaves, the second turned against the first so that their lattices
-// do not line up (Inigo Quilez, "fbm").
-const mat2 OCTAVE = mat2(0.8, -0.6, 0.6, 0.8);
-
-float fbm(vec2 p) {
-  return (0.5 * snoise(p) + 0.25 * snoise(OCTAVE * p * 2.0)) / 0.75;
+// 1 at the glow's centre, falling off as a Gaussian of the distance in radii.
+// The centre swings by `reach` either side of `home`, once per `period`
+// seconds on each axis. Positions are fractions of the canvas from its bottom
+// left; radii are in units of half its width plus height, so a glow keeps its
+// shape from a phone to a wide screen, and `size` is the canvas in those
+// units. The CSS fallback in Home.astro draws each glow at its home.
+float glow(
+  vec2 uv,
+  vec2 size,
+  vec2 home,
+  vec2 reach,
+  vec2 period,
+  vec2 radius
+) {
+  vec2 centre = home + reach * sin(TAU * u_time / period);
+  vec2 d = (uv - centre) * size / radius;
+  return exp(-dot(d, d));
 }
 
 void main() {
-  float y = gl_FragCoord.y / u_resolution.y;
-  // Centred and scaled by height: a phone shows the middle of the field a
-  // wide screen shows, at the same size.
-  vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution) / u_resolution.y * 0.7;
-  float t = u_time * 0.006;
+  vec2 uv = gl_FragCoord.xy / u_resolution;
+  vec2 size = u_resolution / (0.5 * (u_resolution.x + u_resolution.y));
 
-  // One layer of domain warping, f(p + q) (Inigo Quilez, "warp").
-  vec2 q = vec2(
-    fbm(p + vec2(0.0, t)),
-    fbm(p + vec2(5.2, 1.3) + vec2(t, 0.0))
+  float left = glow(
+    uv,
+    size,
+    vec2(0.12, 1.12),
+    vec2(0.12, 0.05),
+    vec2(43.0, 31.0),
+    vec2(0.42, 0.3)
   );
-  float f = fbm(p + q) + 0.3 * (y - 0.5);
+  float right = glow(
+    uv,
+    size,
+    vec2(0.92, 1.06),
+    vec2(-0.1, 0.05),
+    vec2(37.0, 47.0),
+    vec2(0.4, 0.3)
+  );
+  float core = glow(
+    uv,
+    size,
+    vec2(0.8, 1.1),
+    vec2(-0.16, -0.04),
+    vec2(53.0, 41.0),
+    vec2(0.34, 0.28)
+  );
 
-  vec3 c = mix(u_base, u_tint, smoothstep(-0.2, 0.55, f));
-  c = mix(c, u_strong, smoothstep(0.35, 0.75, f));
-  c = mix(u_base, c, smoothstep(0.0, 0.5, y));
+  // Glows of one colour add like light: together they stay under full strength.
+  vec3 c = mix(u_base, u_tint, 1.0 - (1.0 - left) * (1.0 - right));
+  c = mix(c, u_strong, core);
+  c = mix(u_base, c, smoothstep(0.0, 0.5, uv.y));
 
   // Interleaved gradient noise (Jimenez 2014) dithers by half an 8-bit step,
   // so the slow gradients show no bands.

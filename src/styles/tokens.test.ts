@@ -45,7 +45,7 @@ const cases = (['light', 'dark'] as const).flatMap((scheme) =>
 )
 
 describe('background palette', () => {
-  it('is the page background, indigo 3 and indigo 4 (Radix Colors 3.0)', () => {
+  it('is the page background with indigo 3 and 4, or 2 and 3 in dark mode (Radix Colors 3.0)', () => {
     const hex = (scheme: Scheme) =>
       BACKDROP.map((t) =>
         rgb(t, scheme)
@@ -53,7 +53,7 @@ describe('background palette', () => {
           .join(''),
       )
     expect(hex('light')).toEqual(['fcfcfd', 'edf2fe', 'e1e9ff'])
-    expect(hex('dark')).toEqual(['111113', '182449', '1d2e62'])
+    expect(hex('dark')).toEqual(['111113', '141726', '182449'])
   })
 
   // A frame mixes these colours and adds under one 8-bit step of dither, so

@@ -1,6 +1,6 @@
 // The home page background (D015): WebGL2 shades one full-screen triangle
-// with a slowly flowing noise field. The CSS gradient under the canvas shows
-// until the first frame, and stays when WebGL2 is missing, the shaders fail
+// with soft, slowly drifting glows. The CSS gradients under the canvas show
+// until the first frame, and stay when WebGL2 is missing, the shaders fail
 // to link or the context is lost; none of these throws or logs an error.
 import vertexSource from './shaders/background.vert.glsl?raw'
 import fragmentSource from './shaders/background.frag.glsl?raw'

@@ -10,8 +10,8 @@ const projects = await getCollection('projects')
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>
   <section class="intro">
-    <h1>Aaron Yang</h1>
-    <ul class="contact">
+    <h1 class="rise">Aaron Yang</h1>
+    <ul class="contact rise" style="--rise: 1">
       <li>
         <a href="mailto:yang341133@gmail.com">yang341133@gmail.com</a>
       </li>
@@ -21,7 +21,12 @@ const projects = await getCollection('projects')
     </ul>
   </section>
 
-  <section id="projects" aria-labelledby="projects-title">
+  <section
+    id="projects"
+    class="rise"
+    style="--rise: 2"
+    aria-labelledby="projects-title"
+  >
     <h2 id="projects-title">{t(lang, 'projects')}</h2>
     <div class="list">
       {projects.map((project) => (

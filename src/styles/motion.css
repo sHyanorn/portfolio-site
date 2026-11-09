@@ -1,0 +1,31 @@
+/* Entrances (D014). Nothing moves when the reader asks for reduced motion.
+   `.rise` fades the first screen in on load, one step of 90 ms per
+   `--rise`; `.reveal` fades a block in as its top scrolls through the bottom
+   96 px of the viewport, so a block is never caught half-faded in the
+   reading area. */
+@keyframes enter {
+  from {
+    opacity: 0;
+    translate: 0 var(--enter-shift, 16px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    --enter-shift: 10px;
+    animation: enter var(--duration) var(--ease-out) both;
+    animation-delay: calc(var(--rise, 0) * 90ms);
+  }
+
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    /* Longhands only: the minifier folds a complete set into the
+       `animation` shorthand with the timeline inside, which browsers reject. */
+    .reveal {
+      animation-name: enter;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0 entry 96px;
+    }
+  }
+}

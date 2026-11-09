@@ -76,3 +76,10 @@
 - Rationale: the video is a seventh of the GIF and can be paused; a demo that moves on its own distracts from the text beside it. An SVG in the page can use the page's colours and fonts, which an `<img>` cannot
 - Alternatives: the GIF (2.15 MB on every visit, no pause); Mermaid rendered at build time (a generic layout, and its colours do not follow the theme)
 - Borrowed: the conversion settings from web.dev's "Replace animated GIFs with video" (libx264, yuv420p, a CRF in the low twenties), without its autoplay; the card whose title link covers the whole card from Inclusive Components ("Cards")
+
+## D014 Entrances in CSS only
+- Date: 2026-11-09
+- Decision: two entrances, both in CSS and both off when the reader prefers reduced motion. On load, the first screen fades in from 10 px lower over 400 ms, its elements 90 ms apart. Blocks further down follow the scroll with `animation-timeline: view()`: each fades in from 16 px lower while its top crosses the bottom 96 px of the viewport, so a block can be half-faded only inside that strip. Browsers without scroll-driven animations show those blocks at once. The scroll-driven rule is written in longhands, because the CSS minifier folds a complete set into an `animation` shorthand with the timeline inside, which browsers reject. An e2e test checks that blocks below the fold start hidden and that every animated element ends fully visible once scrolled to
+- Rationale: decoration runs no script, so pages still ship no JS. A range fixed in pixels gives every block the same short entrance whatever its height
+- Alternatives: an IntersectionObserver that adds a class (a script on every page); the whole `entry` range (a block taller than the viewport stays partly transparent while it is read)
+- Borrowed: the scroll-driven entry effect and its `@supports` guard from Chrome's guide to scroll-driven animations; the staggered first-screen fade from antfu.me

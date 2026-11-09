@@ -19,16 +19,16 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 <Base title={`${p.title} · Aaron Yang`} description={p.summary[lang]}>
   <article class="project">
     <header class="intro">
-      <h1>{p.title}</h1>
-      <p class="summary">
+      <h1 class="rise">{p.title}</h1>
+      <p class="summary rise" style="--rise: 1">
         <Text value={p.summary[lang]} />
       </p>
-      <div class="tags">
+      <div class="tags rise" style="--rise: 2">
         <Tags tags={p.tags.map((tag) => tag[lang])} />
       </div>
     </header>
 
-    <figure class="demo">
+    <figure class="demo rise" style="--rise: 3">
       <video
         controls
         muted
@@ -46,7 +46,7 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
       </figcaption>
     </figure>
 
-    <section aria-labelledby="metrics">
+    <section class="reveal" aria-labelledby="metrics">
       <h2 id="metrics">{t(lang, 'metrics')}</h2>
       <dl class="metrics">
         {p.metrics.items.map((m) => (
@@ -64,7 +64,7 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
       </p>
     </section>
 
-    <section aria-labelledby="problem">
+    <section class="reveal" aria-labelledby="problem">
       <h2 id="problem">{t(lang, 'problem')}</h2>
       {p.problem.map((para) => (
         <p>
@@ -73,14 +73,14 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
       ))}
     </section>
 
-    <section aria-labelledby="architecture">
+    <section class="reveal" aria-labelledby="architecture">
       <h2 id="architecture">{t(lang, 'architecture')}</h2>
       <p id="architecture-description">
         <Text value={p.architecture.description[lang]} />
       </p>
     </section>
 
-    <section aria-labelledby="decisions">
+    <section class="reveal" aria-labelledby="decisions">
       <h2 id="decisions">{t(lang, 'decisions')}</h2>
       <ul class="items">
         {p.decisions.items.map((d) => (
@@ -100,7 +100,7 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
       </p>
     </section>
 
-    <section aria-labelledby="challenges">
+    <section class="reveal" aria-labelledby="challenges">
       <h2 id="challenges">{t(lang, 'challenges')}</h2>
       <ul class="items">
         {p.challenges.map((c) => (
@@ -114,7 +114,7 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
       </ul>
     </section>
 
-    <footer class="links">
+    <footer class="links reveal">
       <a class="repo" href={p.repo}>
         {t(lang, 'repo')}
       </a>

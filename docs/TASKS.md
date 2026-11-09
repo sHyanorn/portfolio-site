@@ -15,10 +15,10 @@
 - [x] Entrance motion, off under reduced motion (D014)
 
 ## M2 GLSL background
-- [ ] WebGL2 initialization and full-screen triangle
-- [ ] Noise-field or flowing-gradient fragment shader
-- [ ] Mouse interaction, reduced motion, fallback when WebGL is not supported
-- [ ] Pause when the page is hidden
+- [x] WebGL2 initialization and full-screen triangle (D015)
+- [x] Noise-field or flowing-gradient fragment shader (D015)
+- [x] Mouse interaction, reduced motion, fallback when WebGL is not supported (D015)
+- [x] Pause when the page is hidden (D015)
 
 ## M3 Pages
 - [ ] Home page

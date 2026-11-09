@@ -21,10 +21,10 @@
 - [x] Pause when the page is hidden (D015)
 
 ## M3 Pages
-- [ ] Home page
-- [ ] About page
-- [ ] Articles list page and article page template (D005), with a build check for article references to projects (D012)
-- [ ] RSS feed
+- [x] Home page
+- [x] About page
+- [x] Articles list page and article page template (D005), with a build check for article references to projects (D012)
+- [x] RSS feed
 
 ## M4 Polish and launch
 - [ ] Performance and accessibility optimization, Lighthouse 95 or higher

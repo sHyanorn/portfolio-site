@@ -1,0 +1,101 @@
+// The share image of pages without their own (D018): the home page's first
+// screen in each language, saved to public/og/ with the text it shows, which
+// a unit test compares with the current text. Run after `npm run build`:
+// node scripts/site-image.ts
+import { spawn } from 'node:child_process'
+import { readFileSync, writeFileSync } from 'node:fs'
+import sharp from 'sharp'
+import { LANGS, t, type Lang } from '../src/lib/i18n.ts'
+
+export const TEXT_FILE = 'public/og/site.json'
+export const imageFile = (lang: Lang) =>
+  `public/og/${lang === 'en' ? 'site' : 'site-zh'}.png`
+
+export interface SiteText {
+  name: string
+  intro: string
+  tags: string[]
+}
+
+/** The text the images should show: the home page's heading, introduction and focus tags. */
+export function siteText(lang: Lang): SiteText {
+  const home = readFileSync('src/components/Home.astro', 'utf8')
+  return {
+    name: /<h1[^>]*>\s*([^<]+?)\s*<\/h1>/.exec(home)![1],
+    intro: t(lang, 'intro'),
+    tags: (
+      [
+        'focusBackend',
+        'focusSecurity',
+        'focusRecommender',
+        'focusQuant',
+      ] as const
+    ).map((key) => t(lang, key)),
+  }
+}
+
+if (import.meta.main) {
+  const { chromium } = await import('@playwright/test')
+  const port = 4329
+  const server = spawn(
+    'npx',
+    ['astro', 'preview', '--port', `${port}`, '--ignore-lock'],
+    {
+      env: { ...process.env, BASE_PATH: '/' },
+      stdio: 'ignore',
+      detached: true,
+    },
+  )
+  const root = `http://localhost:${port}/`
+  for (let i = 0; i < 100; i++) {
+    if (
+      await fetch(root).then(
+        (r) => r.ok,
+        () => false,
+      )
+    )
+      break
+    await new Promise((r) => setTimeout(r, 200))
+  }
+  // A software renderer draws the background's still frame (D015).
+  const browser = await chromium.launch({
+    args: ['--enable-unsafe-swiftshader'],
+  })
+  const text: Partial<Record<Lang, SiteText>> = {}
+  try {
+    for (const lang of LANGS) {
+      // 800×420 at 1.5× gives 1200×630 with type large enough for a thumbnail.
+      const page = await browser.newPage({
+        viewport: { width: 800, height: 420 },
+        deviceScaleFactor: 1.5,
+        colorScheme: 'light',
+        reducedMotion: 'reduce',
+      })
+      await page.goto(lang === 'en' ? root : `${root}zh/`)
+      await page.evaluate(() => document.fonts.ready)
+      await page.waitForTimeout(1500)
+      // The introduction alone, centred in the frame.
+      await page.addStyleTag({
+        content: `header.header, .skip, #projects, footer { display: none !important }
+          main { display: flex; flex-direction: column; justify-content: center;
+            min-height: 420px; padding-top: 0 !important }
+          main > * { margin-block: 0 !important; padding-block: 0 !important }`,
+      })
+      await sharp(await page.screenshot())
+        .png({ compressionLevel: 9 })
+        .toFile(imageFile(lang))
+      text[lang] = await page.evaluate(() => ({
+        name: document.querySelector('h1')!.textContent!.trim(),
+        intro: document.querySelector('.lede')!.textContent!.trim(),
+        tags: [...document.querySelectorAll('.intro .tags li')].map((li) =>
+          li.textContent!.trim(),
+        ),
+      }))
+      await page.close()
+    }
+  } finally {
+    await browser.close()
+    process.kill(-server.pid!)
+  }
+  writeFileSync(TEXT_FILE, `${JSON.stringify(text, null, 2)}\n`)
+}

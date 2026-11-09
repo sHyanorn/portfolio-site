@@ -9,7 +9,7 @@ interface Props {
   lang: Lang
   /** False on a page with no counterpart in the other language, such as the 404 page. */
   alternates: boolean
-  /** The 1200×630 share image, a path under the base; the site's own by default. */
+  /** The 1200×630 share image, a path under the base; the site's own in the page's language by default. */
   image?: string
   /** An article's date; the page is shared as an article. */
   published?: Date
@@ -20,7 +20,7 @@ const {
   description,
   lang,
   alternates,
-  image = 'og/site.png',
+  image = lang === 'zh' ? 'og/site-zh.png' : 'og/site.png',
   published,
 } = Astro.props
 const canonical = new URL(Astro.url.pathname, Astro.site)

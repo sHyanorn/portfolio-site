@@ -1,7 +1,7 @@
 // Share and search metadata: every page has an absolute 1200×630 share image
-// under the base, project pages their own, article pages their project's;
-// articles are shared as articles; the sitemap lists every page with its
-// other language.
+// under the base, project pages their own, article pages their project's and
+// other pages the site's in their language; articles are shared as articles;
+// the sitemap lists every page with its other language.
 import { expect, test, type Page as Tab } from '@playwright/test'
 import { BASE, pages } from './site'
 
@@ -36,8 +36,11 @@ for (const p of pages)
     expect(await meta(page, 'og:type')).toBe(article ? 'article' : 'website')
     if (!article) {
       await expect(page.locator('meta[property^="article:"]')).toHaveCount(0)
+      // Pages without an image of their own use the site's, in their language.
+      const site = p.path.startsWith(`${BASE}zh/`) ? 'site-zh' : 'site'
       if (p.path.includes('/projects/'))
-        expect(image).not.toMatch(/\/site\.png$/)
+        expect(image).not.toMatch(/\/site(-zh)?\.png$/)
+      else expect(image).toBe(`${ROOT}og/${site}.png`)
       return
     }
     const date = await page.locator('.meta time').getAttribute('datetime')

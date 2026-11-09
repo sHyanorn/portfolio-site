@@ -27,6 +27,7 @@ npm run budget                         # JS each page loads, gzipped; limit 150 
 npm run e2e                            # axe, overflow, links and keyboard, on the built site
 npm run screenshots && npm run audit   # screenshots, then the overflow and axe table
 node scripts/copy-export.ts <project>…  # a project's text, one file per language, in artifacts/
+node scripts/site-image.ts             # after a build: the site's share images, when the home introduction changes
 ```
 
 `npm run screenshots` saves a full-page screenshot of every page to `artifacts/screens/`, and the home page background as `home-{390,1440}-{light,dark}-{t0,t10,t20,still,fallback}.png`: three points of the animation, the still frame and the CSS fallback. `BACKGROUND_TIMES=0,30,90` picks other points, in seconds. `PERF=1 npx playwright test tests/e2e/background-perf.spec.ts` prints what the background costs two phones with the CPU slowed 4 and 6 times.

@@ -4,3 +4,5 @@ package-lock.json
 # Prose is formatted by hand; Prettier would rewrite tables and MDX escapes.
 *.md
 *.mdx
+# Written by scripts/site-image.ts.
+public/og/site.json

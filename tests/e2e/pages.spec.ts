@@ -1,6 +1,7 @@
 // Every page at three widths in light and dark: axe, horizontal overflow and
-// scroll containers. Each run writes its measurements to artifacts/audit/;
-// SCREENSHOTS=1 also saves full-page screenshots to artifacts/screens/.
+// scroll containers, with reduced motion so nothing is caught mid-animation.
+// Each run writes its measurements to artifacts/audit/; SCREENSHOTS=1 also
+// saves full-page screenshots to artifacts/screens/.
 import { writeFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
@@ -31,6 +32,7 @@ for (const { width, height, mobile } of viewports) {
         hasTouch: mobile,
         deviceScaleFactor: screenshots ? 2 : 1,
         colorScheme,
+        reducedMotion: 'reduce',
       })
 
       for (const p of pages) {

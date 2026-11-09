@@ -9,7 +9,7 @@ test('internal links and assets resolve', async ({ request }) => {
   for (const p of pages) {
     const html = readFileSync(p.file, 'utf8')
     for (const [, name, value] of html.matchAll(
-      /\s(href|src|srcset)="([^"]*)"/g,
+      /\s(href|src|srcset|poster)="([^"]*)"/g,
     )) {
       const refs =
         name === 'srcset'

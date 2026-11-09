@@ -5,7 +5,12 @@
 const desktop = process.env.LHCI_PRESET === 'desktop'
 const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/')
 const port = 4322
-const pages = ['']
+const pages = [
+  '',
+  'zh/',
+  'projects/matching-engine/',
+  'zh/projects/matching-engine/',
+]
 
 const categories = ['performance', 'accessibility', 'best-practices', 'seo']
 

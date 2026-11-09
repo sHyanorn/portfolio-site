@@ -1,0 +1,10 @@
+---
+/** Content text, in which backticks mark inline code (D012). */
+interface Props {
+  value: string
+}
+
+const parts = Astro.props.value.split('`')
+---
+
+{parts.map((part, i) => (i % 2 ? <code>{part}</code> : part))}

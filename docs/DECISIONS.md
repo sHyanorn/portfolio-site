@@ -69,3 +69,10 @@
 - Rationale: a new project needs one content file and no page code (D002), and the two languages of each paragraph sit side by side for review
 - Alternatives: one file per language (translations drift apart unnoticed); MDX (a free-form body the schema cannot hold to the eight sections)
 - Borrowed: content collections with the `glob()` loader and the `image()` schema helper from Astro's content collections guide
+
+## D013 Project page template
+- Date: 2026-11-09
+- Decision: `/projects/<slug>/` and `/zh/projects/<slug>/` render one component, `ProjectPage.astro`, in the order of SPEC §2. A demo is an H.264 MP4 with native controls, muted, looping, `playsinline` and `preload="none"`: it never plays on its own and downloads nothing until played. Its poster is a PNG that Astro's image service turns into AVIF at build time, and its size gives the video its dimensions. matching-engine's 2.15 MB demo GIF became a 316 kB MP4 (libx264, CRF 22, yuv420p, `+faststart`) with a 29 kB poster. Architecture diagrams are inline SVG drawn by hand and coloured with the design tokens, so they follow the theme and the language; a narrow screen gets a vertical layout, and a visible paragraph describes the diagram in words and serves as its text alternative
+- Rationale: the video is a seventh of the GIF and can be paused; a demo that moves on its own distracts from the text beside it. An SVG in the page can use the page's colours and fonts, which an `<img>` cannot
+- Alternatives: the GIF (2.15 MB on every visit, no pause); Mermaid rendered at build time (a generic layout, and its colours do not follow the theme)
+- Borrowed: the conversion settings from web.dev's "Replace animated GIFs with video" (libx264, yuv420p, a CRF in the low twenties), without its autoplay; the card whose title link covers the whole card from Inclusive Components ("Cards")

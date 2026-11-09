@@ -32,8 +32,15 @@ const ui = {
   },
   skip: { en: 'Skip to content', zh: '跳到正文' },
   projects: { en: 'Projects', zh: '项目' },
-  home: { en: 'Home', zh: '首页' },
   language: { en: '中文', zh: 'English' },
+  metrics: { en: 'Key metrics', zh: '关键指标' },
+  benchmarks: { en: 'Benchmark report', zh: '压测报告' },
+  problem: { en: 'Problem and goals', zh: '问题与目标' },
+  architecture: { en: 'Architecture', zh: '架构' },
+  decisions: { en: 'Key decisions', zh: '关键决策' },
+  decisionLog: { en: 'Decision log', zh: '决策记录' },
+  challenges: { en: 'Challenges', zh: '难点与解法' },
+  repo: { en: 'Source on GitHub', zh: 'GitHub 源码' },
 } satisfies Record<string, Record<Lang, string>>
 
 export type UiKey = keyof typeof ui

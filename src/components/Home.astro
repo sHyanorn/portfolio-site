@@ -1,8 +1,11 @@
 ---
+import { getCollection } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
+import ProjectCard from './ProjectCard.astro'
 
 const lang = toLang(Astro.currentLocale)
+const projects = await getCollection('projects')
 ---
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>
@@ -17,11 +20,20 @@ const lang = toLang(Astro.currentLocale)
       </li>
     </ul>
   </section>
+
+  <section id="projects" aria-labelledby="projects-title">
+    <h2 id="projects-title">{t(lang, 'projects')}</h2>
+    <div class="list">
+      {projects.map((project) => (
+        <ProjectCard {project} {lang} />
+      ))}
+    </div>
+  </section>
 </Base>
 
 <style>
   .intro {
-    padding-block: var(--space-6) var(--space-5);
+    padding-block: var(--space-6) var(--space-7);
   }
 
   h1 {
@@ -49,5 +61,15 @@ const lang = toLang(Astro.currentLocale)
   .contact a:hover {
     color: var(--color-text);
     text-decoration-color: currentColor;
+  }
+
+  h2 {
+    margin-bottom: var(--space-3);
+    font-size: var(--step-2);
+  }
+
+  .list {
+    display: grid;
+    gap: var(--space-2);
   }
 </style>

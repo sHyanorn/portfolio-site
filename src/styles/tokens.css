@@ -1,0 +1,64 @@
+/* Design tokens (D010). Colours are Radix Colors 3.0.0 (MIT), slate and
+   indigo, as light-dark() pairs: the theme follows the system. */
+:root {
+  color-scheme: light dark;
+
+  /* Slate steps 1, 2, 3, 4, 6, 7, 8, 11 and 12. */
+  --color-bg: light-dark(#fcfcfd, #111113);
+  --color-bg-subtle: light-dark(#f9f9fb, #18191b);
+  --color-surface: light-dark(#f0f0f3, #212225);
+  --color-surface-hover: light-dark(#e8e8ec, #272a2d);
+  --color-line: light-dark(#d9d9e0, #363a3f);
+  --color-border: light-dark(#cdced6, #43484e);
+  --color-border-strong: light-dark(#b9bbc6, #5a6169);
+  --color-text-muted: light-dark(#60646c, #b0b4ba);
+  --color-text: light-dark(#1c2024, #edeef0);
+
+  /* Indigo steps 3, 5, 6, 9 and 11. Step 11 also draws focus rings: slate 7
+     is under the 3:1 that WCAG 1.4.11 asks of them. */
+  --color-accent-subtle: light-dark(#edf2fe, #182449);
+  --color-accent-selected: light-dark(#d2deff, #253974);
+  --color-accent-line: light-dark(#c1d0ff, #304384);
+  --color-accent-solid: #3e63dd;
+  --color-accent: light-dark(#3a5bc7, #9eb1ff);
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Segoe UI',
+    Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+
+  /* Fluid type scale from 360 to 1280 px: 16 to 17 px body text, ratio 1.2 to
+     1.25. Rem bounds keep text zoomable. */
+  --step--1: clamp(0.8333rem, 0.8268rem + 0.029vw, 0.85rem);
+  --step-0: clamp(1rem, 0.9755rem + 0.1087vw, 1.0625rem);
+  --step-1: clamp(1.2rem, 1.1499rem + 0.2228vw, 1.3281rem);
+  --step-2: clamp(1.44rem, 1.3539rem + 0.3829vw, 1.6602rem);
+  --step-3: clamp(1.728rem, 1.5921rem + 0.6038vw, 2.0752rem);
+  --step-4: clamp(2.0736rem, 1.87rem + 0.905vw, 2.594rem);
+  --step-5: clamp(2.4883rem, 2.1932rem + 1.3116vw, 3.2425rem);
+
+  /* Spacing in multiples of 8 px. */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+  --space-8: 8rem;
+
+  --width-page: 45rem;
+  --width-prose: 65ch;
+  --gutter: clamp(1rem, 4vw, 1.5rem);
+
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+
+  /* Entrances take 300 to 500 ms (SPEC); hover feedback is faster. */
+  --duration-fast: 150ms;
+  --duration: 400ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

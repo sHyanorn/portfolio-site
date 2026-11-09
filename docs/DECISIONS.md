@@ -49,3 +49,10 @@
 - Decision: `deploy.yml` builds with `withastro/action` and publishes with `actions/deploy-pages`, and `actions/configure-pages` supplies `SITE_URL` and `BASE_PATH` (D007). Until launch the workflow runs only when started by hand, after a milestone is accepted; from launch it will run after CI passes on `main`
 - Rationale: text awaiting review and unfinished pages stay off the public site until launch
 - Borrowed: the workflow in Astro's GitHub Pages guide (`withastro/action@v6`, `actions/deploy-pages@v5`), with the `configure-pages` step added
+
+## D010 Design tokens
+- Date: 2026-11-09
+- Decision: colours, type, spacing, widths, radii and motion are CSS custom properties in `src/styles/tokens.css`. Colours are Radix Colors slate for the neutrals and indigo for the one accent, written as `light-dark()` pairs, so dark mode follows the system setting. Text is slate 12, secondary text slate 11, separators and borders slate 6 to 8; links and focus rings are indigo 11, because slate 7 has 1.5:1 against the page in light mode, under the 3:1 that WCAG 1.4.11 asks of focus indicators. Type uses the system font stack with SF Pro and PingFang SC first, on a fluid scale with 16 to 17 px body text; Chinese text has a line height of 1.75 against 1.6 for English; spacing is in multiples of 8 px
+- Rationale: each Radix step has a defined role and tested contrast: slate 11 on slate 1 is 5.8:1 in light mode and 9.1:1 in dark, indigo 11 is 5.9:1 and 9.2:1. `light-dark()` keeps both values of a colour on one line, with no script and no flash before the theme applies
+- Alternatives: a theme toggle (needs a script before the first paint)
+- Borrowed: the slate and indigo scales and their step roles from Radix Colors 3.0.0 (MIT); the `clamp()` type scale from Utopia's fluid type calculator (360 to 1280 px viewports, ratio 1.2 to 1.25); the monospace stack from GitHub Primer

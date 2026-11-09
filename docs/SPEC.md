@@ -24,6 +24,14 @@ Fixed structure:
 7. Challenges and how they were solved
 8. GitHub link
 
+### Articles
+- List page `/articles`: newest first; each entry shows the title, a one-sentence summary, the project, the date and the reading time
+- Article page `/articles/<slug>`: one per project, on one finding that runs against expectation. It opens with the conclusion, then covers how it was found, the evidence and numbers, the limits, and when the conclusion does not hold
+- Every number can be traced to a file in the project's repository
+- Each article ends with one sentence: the implementation was AI-assisted, with Aaron setting the direction, making the decisions and reviewing the work. No other page mentions AI
+- English only. In the Chinese version the interface is translated, the body stays in English with `lang="en"`, and the list marks articles as English
+- Published on this site only, with a full-text RSS feed at `/rss.xml`
+
 ### About page
 - Education (University of Melbourne)
 - The combination of economics, finance and technology
@@ -31,6 +39,7 @@ Fixed structure:
 ## 3. Technical approach
 
 - Astro + TypeScript with static output (D003); React only for two islands, the GLSL background and the language toggle
+- Articles in MDX, rendered at build time (D005): Shiki highlighting with light and dark themes through CSS variables; math through remark-math and rehype-katex, only in articles marked `math: true`, which alone load the KaTeX stylesheet; reading time counted at 230 words per minute. Articles add no client JS
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
 - English and Chinese: English by default, with a button that switches the whole site to Chinese and back
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)

@@ -21,6 +21,8 @@
 - [ ] Home page
 - [ ] Project detail page template
 - [ ] About page
+- [ ] Articles list page and article page template (D005)
+- [ ] RSS feed
 - [ ] English and Chinese versions: English by default, with a language toggle button
 
 ## M4 Polish and launch
@@ -30,3 +32,4 @@
 
 ## Ongoing
 - [ ] Add a project page for each finished project
+- [ ] Write one article for each finished project

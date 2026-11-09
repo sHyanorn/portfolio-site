@@ -11,7 +11,6 @@ The Chinese text writes rates and counts in 万 (10k = 1 万, 1M = 100 万); eve
 | Demo at 2,000 requests per second | README.md:5 |
 | 5.05M to 6.95M commands/s in the matching core | docs/BENCHMARKS.md:13-18 (README.md:13 rounds them to 5.0M to 6.9M) |
 | p99 1.76 ms at 10k/s, order to trade push | docs/BENCHMARKS.md:29, 38 |
-| p99 41.1 ms at 50k/s | docs/BENCHMARKS.md:44 |
 | 128 MiB with 1M resting orders | README.md:15; docs/BENCHMARKS.md:22 (127.7 MiB, 1,000,000 orders) |
 | 92% of statements | README.md:16; `make cover` (Makefile:21-24) at 1d50110 with Go 1.27.3 prints a total of 92.1% |
 | One 4 vCPU cloud VM; the load generator and the engine share the 4 vCPUs | README.md:9; docs/BENCHMARKS.md:5 |

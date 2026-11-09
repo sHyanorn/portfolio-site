@@ -32,8 +32,8 @@
       {
         "value": { "en": "1.76 ms", "zh": "1.76 ms" },
         "label": {
-          "en": "p99 from order to trade push at 10k requests/s; 41.1 ms at 50k",
-          "zh": "每秒 1 万个请求时，从下单到收到成交推送的 p99 延迟；每秒 5 万个时为 41.1 ms"
+          "en": "p99 from order to trade push at 10k requests/s",
+          "zh": "每秒 1 万个请求时，从下单到收到成交推送的 p99 延迟"
         }
       },
       {

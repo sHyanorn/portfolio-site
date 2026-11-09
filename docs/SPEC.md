@@ -27,7 +27,6 @@ Fixed structure:
 ### About page
 - Education (University of Melbourne)
 - The combination of economics, finance and technology
-- How I work with AI coding tools
 
 ## 3. Technical approach
 

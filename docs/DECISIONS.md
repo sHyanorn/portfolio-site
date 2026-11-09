@@ -43,3 +43,9 @@
 - Date: 2026-11-09
 - Decision: CI runs on every push and pull request: oxlint, Prettier, `astro check` (TypeScript 6, the newest version it supports), Vitest, a build under the non-root base `/ci-base/`, the JS budget of 150 kB gzipped per page, and Playwright with axe on every page at 390, 768 and 1440 px in light and dark. The page checks require no axe violations, no content wider than its box outside a scroll container, a tabindex on every region that scrolls, and every internal link to resolve. Lighthouse CI then runs the mobile preset three times per page and requires 0.95 in all four categories; the desktop preset runs once per page for reference
 - Borrowed: Lighthouse CI's `autorun` setup from its getting-started guide, keeping reports as a workflow artifact instead of public temporary storage; `@axe-core/playwright` with the WCAG 2.2 AA and best-practice tags
+
+## D009 Deploy to GitHub Pages from Actions
+- Date: 2026-11-09
+- Decision: `deploy.yml` builds with `withastro/action` and publishes with `actions/deploy-pages`, and `actions/configure-pages` supplies `SITE_URL` and `BASE_PATH` (D007). Until launch the workflow runs only when started by hand, after a milestone is accepted; from launch it will run after CI passes on `main`
+- Rationale: text awaiting review and unfinished pages stay off the public site until launch
+- Borrowed: the workflow in Astro's GitHub Pages guide (`withastro/action@v6`, `actions/deploy-pages@v5`), with the `configure-pages` step added

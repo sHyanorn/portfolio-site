@@ -5,11 +5,17 @@
 const desktop = process.env.LHCI_PRESET === 'desktop'
 const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/')
 const port = 4322
+// One page of each kind: home and a project page in both languages, the
+// article list, an article with math (the KaTeX stylesheet and fonts) and a
+// project page whose demo is screenshots.
 const pages = [
   '',
   'zh/',
   'projects/matching-engine/',
   'zh/projects/matching-engine/',
+  'projects/push-lab/',
+  'articles/',
+  'articles/low-pbo-easy-question/',
 ]
 
 const categories = ['performance', 'accessibility', 'best-practices', 'seo']

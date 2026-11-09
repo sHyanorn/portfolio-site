@@ -76,6 +76,12 @@ const shots =
     margin-inline: auto;
   }
 
+  /* Later screenshots are read after scrolling, so each only has to fit one
+     screen with its caption. */
+  figure + figure {
+    width: min(100%, max(16rem, 100svh - 8rem) * var(--ratio));
+  }
+
   video,
   img {
     width: 100%;

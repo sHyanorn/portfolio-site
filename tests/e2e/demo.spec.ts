@@ -1,7 +1,7 @@
 // A project's demo video, or its first screenshot, keeps its aspect ratio,
 // sits in the middle of the column and ends on the first screen, so a
 // video's controls show without scrolling. Screenshots number two to four,
-// each with alt text and a caption.
+// each with alt text and a caption; later ones fit one screen each.
 import { expect, test } from '@playwright/test'
 import { pages } from './site'
 
@@ -34,6 +34,12 @@ for (const viewport of viewports) {
             .locator('.demo figcaption')
             .allTextContents())
             expect(caption.trim()).toBeTruthy()
+          for (const later of (await shots.all()).slice(1)) {
+            const { height } = (await later.boundingBox())!
+            expect(height, 'later screenshot height').toBeLessThanOrEqual(
+              viewport.height,
+            )
+          }
         }
         const first = isVideo ? page.locator('.demo video') : shots.first()
         const box = (await first.boundingBox())!

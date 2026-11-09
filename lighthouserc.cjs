@@ -21,7 +21,13 @@ module.exports = {
       startServerReadyPattern: `localhost:${port}`,
       url: pages.map((page) => `http://localhost:${port}${base}${page}`),
       numberOfRuns: desktop ? 1 : 3,
-      settings: desktop ? { preset: 'desktop' } : {},
+      settings: {
+        // WebGL from SwiftShader on a runner without a GPU, whatever the
+        // Chrome version, so the home page always takes the same path: one
+        // still frame (D015). A string, because LHCI appends its own flags.
+        chromeFlags: '--enable-unsafe-swiftshader',
+        ...(desktop && { preset: 'desktop' }),
+      },
     },
     assert: {
       assertions: Object.fromEntries(

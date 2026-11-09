@@ -43,3 +43,29 @@ for (const p of articles) {
     await expect(page.locator('link[href*="katex"]')).toHaveCount(math ? 1 : 0)
   })
 }
+
+for (const [path, zh] of [
+  [`${BASE}articles/`, false],
+  [`${BASE}zh/articles/`, true],
+] as const)
+  test(`${path}: every article, newest first`, async ({ page }) => {
+    await page.goto(path)
+    const items = page.locator('.list > li')
+    const links = await items
+      .locator('h2 a')
+      .evaluateAll((as) => as.map((a) => a.getAttribute('href')))
+    const own = articles
+      .filter((p) => p.name.startsWith('zh-') === zh)
+      .map((p) => p.path)
+    expect(links.toSorted()).toEqual(own.toSorted())
+
+    const dates = await items
+      .locator('time')
+      .evaluateAll((ts) => ts.map((t) => t.getAttribute('datetime')!))
+    expect(dates).toEqual(dates.toSorted().toReversed())
+    await expect(items.locator('.english')).toHaveCount(zh ? own.length : 0)
+    await expect(page.locator('header a[aria-current="page"]')).toHaveAttribute(
+      'href',
+      path,
+    )
+  })

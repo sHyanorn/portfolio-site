@@ -1,0 +1,106 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n'
+import { render } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import { projectOf, publishedArticles } from '../lib/articles'
+import { formatDate, formatMinutes, t, toLang } from '../lib/i18n'
+
+const lang = toLang(Astro.currentLocale)
+const articles = await Promise.all(
+  (await publishedArticles()).map(async (article) => ({
+    article,
+    project: await projectOf(article),
+    minutes: (await render(article)).remarkPluginFrontmatter.minutes as number,
+  })),
+)
+---
+
+<Base
+  title={`${t(lang, 'articles')} · Aaron Yang`}
+  description={t(lang, 'articlesDescription')}
+>
+  <h1 class="rise">{t(lang, 'articles')}</h1>
+  <ol class="list rise" style="--rise: 1">
+    {articles.map(({ article, project, minutes }) => (
+      <li>
+        <h2 lang="en">
+          <a href={getRelativeLocaleUrl(lang, `articles/${article.id}/`)}>
+            {article.data.title}
+          </a>
+        </h2>
+        <p class="summary" lang="en">
+          {article.data.summary}
+        </p>
+        <p class="meta">
+          <span>{project.data.title}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={article.data.date.toISOString().slice(0, 10)}>
+            {formatDate(lang, article.data.date)}
+          </time>
+          <span aria-hidden="true">·</span>
+          <span>{formatMinutes(lang, minutes)}</span>
+          {lang === 'zh' && <span class="english">{t(lang, 'english')}</span>}
+        </p>
+      </li>
+    ))}
+  </ol>
+</Base>
+
+<style>
+  h1 {
+    padding-top: var(--space-4);
+    font-size: var(--step-5);
+    line-height: 1.1;
+  }
+
+  .list {
+    margin-top: var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  li:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  h2 {
+    font-size: var(--step-2);
+  }
+
+  h2 a {
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  h2 a:hover {
+    color: var(--color-accent);
+  }
+
+  .summary {
+    max-width: var(--width-prose);
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+
+  .english {
+    padding: 0 0.75em;
+    border-radius: 999px;
+    background: var(--color-surface);
+    line-height: 1.75rem;
+  }
+</style>

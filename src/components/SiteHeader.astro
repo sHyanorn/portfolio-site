@@ -32,6 +32,20 @@ const home = getRelativeLocaleUrl(lang)
           {t(lang, 'projects')}
         </a>
       </li>
+      <li>
+        <a
+          href={getRelativeLocaleUrl(lang, 'articles/')}
+          aria-current={
+            path === 'articles/'
+              ? 'page'
+              : path.startsWith('articles/')
+                ? 'true'
+                : undefined
+          }
+        >
+          {t(lang, 'articles')}
+        </a>
+      </li>
       {alternates && (
         <li>
           <a

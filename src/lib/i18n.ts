@@ -32,6 +32,12 @@ const ui = {
   },
   skip: { en: 'Skip to content', zh: '跳到正文' },
   projects: { en: 'Projects', zh: '项目' },
+  articles: { en: 'Articles', zh: '文章' },
+  articlesDescription: {
+    en: "Aaron Yang's articles, one per project.",
+    zh: 'Aaron Yang 的文章，每个项目一篇。',
+  },
+  english: { en: 'English', zh: '英文' },
   language: { en: '中文', zh: 'English' },
   metrics: { en: 'Key metrics', zh: '关键指标' },
   benchmarks: { en: 'Benchmark report', zh: '压测报告' },

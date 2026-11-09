@@ -24,7 +24,7 @@ npm run build && npm run preview
 npm test                               # unit tests
 npm run lint && npm run typecheck && npm run format:check
 npm run budget                         # JS each page loads, gzipped; limit 150 kB
-npm run e2e                            # axe, overflow and links, on the built site
+npm run e2e                            # axe, overflow, links and keyboard, on the built site
 npm run screenshots && npm run audit   # screenshots, then the overflow and axe table
 node scripts/copy-export.ts <project>…  # a project's text, one file per language, in artifacts/
 ```

@@ -2,9 +2,9 @@
 
 ## M0 Setup
 - [x] Choose the static generation approach: Astro (D003)
-- [ ] Configure oxlint, Prettier, Vitest
-- [ ] CI: build, tests, Lighthouse CI
-- [ ] Deployment pipeline
+- [x] Configure oxlint, Prettier, Vitest
+- [x] CI: build, tests, Lighthouse CI (D008)
+- [x] Deployment pipeline (D009)
 
 ## M1 Skeleton and design system
 - [ ] CSS variables: colors, fonts, spacing, dark mode

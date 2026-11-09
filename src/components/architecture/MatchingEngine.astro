@@ -1,0 +1,305 @@
+---
+// Architecture of matching-engine, drawn by hand in two variants: a wide one
+// drawn at 672 px for containers that wide and up, where it fills the column,
+// and a narrow one drawn at 358 px for phones, shown at that size.
+interface Props {
+  labels: Record<string, string>
+  /** Id of a visible paragraph that describes the diagram in words. */
+  labelledby: string
+}
+
+const KEYS = [
+  'clients',
+  'engine',
+  'api',
+  'symbol',
+  'queue',
+  'market',
+  'book',
+  'log',
+  'requests',
+  'pushes',
+  'apply',
+  'writeAhead',
+  'events',
+] as const
+
+const { labels, labelledby } = Astro.props
+const missing = KEYS.filter((key) => !labels[key])
+if (missing.length > 0)
+  throw new Error(
+    `MatchingEngine: missing label${missing.length > 1 ? 's' : ''} ${missing.join(', ')}`,
+  )
+const t = labels as Record<(typeof KEYS)[number], string>
+
+// A box over whole pixels x..x+w, y..y+h, with its 1 px stroke inside.
+const box = (x: number, y: number, w: number, h: number) => ({
+  x: x + 0.5,
+  y: y + 0.5,
+  width: w - 1,
+  height: h - 1,
+})
+
+// A cylinder over x..x+w, y..y+h: the body, then the top face drawn over it.
+const cylinder = (x: number, y: number, w: number, h: number, ry = 6) => {
+  const l = x + 0.5
+  const r = x + w - 0.5
+  const top = y + 0.5 + ry
+  const bottom = y + h - 0.5 - ry
+  const rx = (r - l) / 2
+  return {
+    body: `M${l} ${top}A${rx} ${ry} 0 0 0 ${r} ${top}V${bottom}A${rx} ${ry} 0 0 1 ${l} ${bottom}Z`,
+    face: { cx: l + rx, cy: top, rx, ry },
+  }
+}
+
+// Marker ids are per instance and per variant: a hidden SVG's markers do not render.
+const head = { h: `${labelledby}-head-h`, v: `${labelledby}-head-v` }
+const logH = cylinder(268, 336, 136, 48)
+const logV = cylinder(63, 432, 136, 48)
+// Text goes in through set:text, so formatting adds no spaces that would
+// shift centred labels.
+---
+
+<div class="diagram">
+  <svg
+    class="wide"
+    width="672"
+    height="424"
+    viewBox="0 0 672 424"
+    role="img"
+    aria-labelledby={labelledby}
+  >
+    <defs>
+      <marker
+        id={head.h}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    <rect x="0" y="96" width="672" height="328" rx="12" class="region"></rect>
+    <text x="16" y="120" class="region-label" set:text={t.engine} />
+
+    <rect {...box(272, 0, 128, 40)} rx="19.5" class="box"></rect>
+    <text x="336" y="25" class="label" set:text={t.clients} />
+    <path class="line" d="M324.5 40V112" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M348.5 112V40" marker-end={`url(#${head.h})`}></path>
+    <text x="316" y="72" class="edge end" set:text={t.requests} />
+    <text x="356" y="72" class="edge" set:text={t.pushes} />
+
+    <rect {...box(216, 112, 240, 56)} rx="7.5" class="box"></rect>
+    <text x="336" y="135" class="label" set:text={t.api} />
+    <text x="336" y="153" class="path" set:text="internal/api" />
+
+    <path
+      class="line"
+      d="M216 140.5H136.5A8 8 0 0 0 128.5 148.5V248"
+      marker-end={`url(#${head.h})`}
+    ></path>
+    <path class="line" d="M336.5 240V168" marker-end={`url(#${head.h})`}></path>
+    <text x="344" y="188" class="edge" set:text={t.events} />
+
+    <rect {...box(16, 200, 640, 208)} rx="7.5" class="group"></rect>
+    <text x="32" y="224" class="region-label" set:text={t.symbol} />
+
+    <rect {...box(56, 248, 144, 40)} rx="7.5" class="box"></rect>
+    <path class="inset" d="M62.5 248.5V287.5M193.5 248.5V287.5"></path>
+    <text x="128" y="273" class="label" set:text={t.queue} />
+
+    <path class="line" d="M200 268.5H256" marker-end={`url(#${head.h})`}></path>
+
+    <rect {...box(256, 240, 160, 56)} rx="7.5" class="box core"></rect>
+    <text x="336" y="263" class="label" set:text={t.market} />
+    <text x="336" y="281" class="path" set:text="internal/engine" />
+
+    <path class="line" d="M416 268.5H472" marker-end={`url(#${head.h})`}></path>
+    <text x="444" y="260" class="edge middle" set:text={t.apply} />
+
+    <rect {...box(472, 240, 144, 56)} rx="7.5" class="box"></rect>
+    <text x="544" y="263" class="label" set:text={t.book} />
+    <text x="544" y="281" class="path" set:text="internal/book" />
+
+    <path class="line" d="M336.5 296V336" marker-end={`url(#${head.h})`}></path>
+    <text x="344" y="320" class="edge" set:text={t.writeAhead} />
+
+    <path d={logH.body} class="box"></path>
+    <ellipse {...logH.face} class="box"></ellipse>
+    <text x="336" y="371" class="label" set:text={t.log} />
+  </svg>
+
+  <svg
+    class="narrow"
+    width="358"
+    height="608"
+    viewBox="0 0 358 608"
+    role="img"
+    aria-labelledby={labelledby}
+  >
+    <defs>
+      <marker
+        id={head.v}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    <rect x="0" y="96" width="358" height="512" rx="12" class="region"></rect>
+    <text x="16" y="120" class="region-label" set:text={t.engine} />
+
+    <rect {...box(115, 0, 128, 40)} rx="19.5" class="box"></rect>
+    <text x="179" y="25" class="label" set:text={t.clients} />
+    <path class="line" d="M167.5 40V136" marker-end={`url(#${head.v})`}></path>
+    <path class="line" d="M191.5 136V40" marker-end={`url(#${head.v})`}></path>
+    <text x="159" y="72" class="edge end" set:text={t.requests} />
+    <text x="199" y="72" class="edge" set:text={t.pushes} />
+
+    <rect {...box(67, 136, 224, 56)} rx="7.5" class="box"></rect>
+    <text x="179" y="159" class="label" set:text={t.api} />
+    <text x="179" y="177" class="path" set:text="internal/api" />
+
+    <path class="line" d="M131.5 192V264" marker-end={`url(#${head.v})`}></path>
+    <path class="line" d="M227.5 336V192" marker-end={`url(#${head.v})`}></path>
+    <text x="235" y="212" class="edge" set:text={t.events} />
+
+    <rect {...box(16, 224, 326, 368)} rx="7.5" class="group"></rect>
+    <text x="32" y="248" class="region-label" set:text={t.symbol} />
+
+    <rect {...box(59, 264, 144, 40)} rx="7.5" class="box"></rect>
+    <path class="inset" d="M65.5 264.5V303.5M196.5 264.5V303.5"></path>
+    <text x="131" y="289" class="label" set:text={t.queue} />
+
+    <path class="line" d="M131.5 304V336" marker-end={`url(#${head.v})`}></path>
+
+    <rect {...box(67, 336, 224, 56)} rx="7.5" class="box core"></rect>
+    <text x="179" y="359" class="label" set:text={t.market} />
+    <text x="179" y="377" class="path" set:text="internal/engine" />
+
+    <path class="line" d="M131.5 392V432" marker-end={`url(#${head.v})`}></path>
+    <text x="123" y="416" class="edge end" set:text={t.writeAhead} />
+
+    <path d={logV.body} class="box"></path>
+    <ellipse {...logV.face} class="box"></ellipse>
+    <text x="131" y="467" class="label" set:text={t.log} />
+
+    <path class="line" d="M227.5 392V512" marker-end={`url(#${head.v})`}></path>
+    <text x="235" y="456" class="edge" set:text={t.apply} />
+
+    <rect {...box(67, 512, 224, 56)} rx="7.5" class="box"></rect>
+    <text x="179" y="535" class="label" set:text={t.book} />
+    <text x="179" y="553" class="path" set:text="internal/book" />
+  </svg>
+</div>
+
+<style>
+  .diagram {
+    container-type: inline-size;
+  }
+
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+    font-family: inherit;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  @container (min-width: 672px) {
+    .wide {
+      display: block;
+      width: 100%;
+    }
+
+    .narrow {
+      display: none;
+    }
+  }
+
+  .region {
+    fill: var(--color-surface);
+  }
+
+  .group {
+    fill: none;
+    stroke: var(--color-border-strong);
+    stroke-dasharray: 4 4;
+  }
+
+  .box {
+    fill: var(--color-bg-subtle);
+    stroke: var(--color-border-strong);
+  }
+
+  /* The one use of the accent: the goroutine that owns the book and the log. */
+  .core {
+    fill: var(--color-accent-subtle);
+    stroke: var(--color-accent-line);
+  }
+
+  .inset {
+    fill: none;
+    stroke: var(--color-border);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--color-border-strong);
+  }
+
+  .head {
+    fill: var(--color-text-muted);
+  }
+
+  /* Box labels and package paths are centred on their x; edge labels start at
+     it unless marked .middle or .end. */
+  .label,
+  .path,
+  .middle {
+    text-anchor: middle;
+  }
+
+  .end {
+    text-anchor: end;
+  }
+
+  .label {
+    fill: var(--color-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .path {
+    fill: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .edge {
+    fill: var(--color-text-muted);
+    font-size: 12px;
+  }
+
+  .region-label {
+    fill: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+</style>

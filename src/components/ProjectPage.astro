@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
 import { withBase } from '../lib/paths'
 import Tags from './Tags.astro'
+import MatchingEngine from './architecture/MatchingEngine.astro'
 import Text from './Text.astro'
 
 interface Props {
@@ -14,6 +15,20 @@ interface Props {
 const p = Astro.props.project.data
 const lang = toLang(Astro.currentLocale)
 const poster = await getImage({ src: p.demo.poster, format: 'avif' })
+
+// Each project's architecture diagram is drawn by hand (D013).
+const diagrams: Record<string, typeof MatchingEngine> = {
+  'matching-engine': MatchingEngine,
+}
+const Diagram = diagrams[Astro.props.project.id]
+if (!Diagram)
+  throw new Error(`No architecture diagram for ${Astro.props.project.id}`)
+const labels = Object.fromEntries(
+  Object.entries(p.architecture.labels).map(([key, label]) => [
+    key,
+    label[lang],
+  ]),
+)
 ---
 
 <Base title={`${p.title} · Aaron Yang`} description={p.summary[lang]}>
@@ -75,7 +90,8 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 
     <section class="reveal" aria-labelledby="architecture">
       <h2 id="architecture">{t(lang, 'architecture')}</h2>
-      <p id="architecture-description">
+      <Diagram {labels} labelledby="architecture-description" />
+      <p id="architecture-description" class="described">
         <Text value={p.architecture.description[lang]} />
       </p>
     </section>
@@ -188,6 +204,10 @@ const poster = await getImage({ src: p.demo.poster, format: 'avif' })
 
   section > p + p {
     margin-top: var(--space-2);
+  }
+
+  .described {
+    margin-top: var(--space-3);
   }
 
   .metrics {

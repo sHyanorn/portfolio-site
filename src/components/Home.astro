@@ -4,9 +4,13 @@ import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
 import { byOrder } from '../lib/projects'
 import ProjectCard from './ProjectCard.astro'
+import Tags from './Tags.astro'
 
 const lang = toLang(Astro.currentLocale)
 const projects = byOrder(await getCollection('projects'))
+const focus = (
+  ['focusBackend', 'focusSecurity', 'focusRecommender', 'focusQuant'] as const
+).map((key) => t(lang, key))
 ---
 
 <Base title="Aaron Yang" description={t(lang, 'description')}>
@@ -16,12 +20,23 @@ const projects = byOrder(await getCollection('projects'))
 
   <section class="intro">
     <h1 class="rise">Aaron Yang</h1>
+    <p class="lede rise" style="--rise: 1">
+      {t(lang, 'intro')}
+    </p>
+    <div
+      class="rise"
+      style="--rise: 2"
+      role="group"
+      aria-label={t(lang, 'focusLabel')}
+    >
+      <Tags tags={focus} />
+    </div>
   </section>
 
   <section
     id="projects"
     class="rise"
-    style="--rise: 1"
+    style="--rise: 3"
     aria-labelledby="projects-title"
   >
     <h2 id="projects-title">{t(lang, 'projects')}</h2>
@@ -99,6 +114,13 @@ const projects = byOrder(await getCollection('projects'))
   h1 {
     font-size: var(--step-5);
     line-height: 1.1;
+  }
+
+  .lede {
+    max-width: 36em;
+    margin-block: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--step-1);
   }
 
   h2 {

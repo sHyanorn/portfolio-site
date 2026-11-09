@@ -31,6 +31,15 @@ const ui = {
     zh: 'Aaron Yang：后端系统、安全、推荐系统和量化研究。',
   },
   skip: { en: 'Skip to content', zh: '跳到正文' },
+  intro: {
+    en: "I'm Aaron, a commerce student at the University of Melbourne. I build systems whose correctness can be measured: an exchange matching engine, end-to-end encrypted file sharing, a finance app that never leaves your computer, and research tools that test their own results.",
+    zh: '我是 Aaron，在墨尔本大学读商科。我做的系统，对错都能用数字衡量：交易所撮合引擎、端到端加密的文件分享、数据从不离开本机的记账应用，以及会检验自身结果的研究工具。',
+  },
+  focusLabel: { en: 'Focus', zh: '方向' },
+  focusBackend: { en: 'Backend systems', zh: '后端系统' },
+  focusSecurity: { en: 'Security', zh: '安全' },
+  focusRecommender: { en: 'Recommender systems', zh: '推荐系统' },
+  focusQuant: { en: 'Quantitative research', zh: '量化研究' },
   projects: { en: 'Projects', zh: '项目' },
   articles: { en: 'Articles', zh: '文章' },
   articlesDescription: {

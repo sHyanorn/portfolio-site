@@ -38,3 +38,8 @@
 - Decision: `astro.config.ts` reads `site` from `SITE_URL` and `base` from `BASE_PATH`, falling back to the local root. The deploy workflow takes both from `actions/configure-pages`, which reports the origin and path GitHub Pages serves the site from. Internal links go through `withBase()` or Astro's locale helpers, and no page writes the base itself
 - Rationale: renaming the repository to `sHyanorn.github.io` or adding a custom domain changes only the repository settings. CI builds under a non-root base, so a link that ignores the base fails the link check
 - Borrowed: `site` and `base` from Astro's GitHub Pages guide, which writes both into the config; here they come from the Pages configuration instead
+
+## D008 Automated checks
+- Date: 2026-11-09
+- Decision: CI runs on every push and pull request: oxlint, Prettier, `astro check` (TypeScript 6, the newest version it supports), Vitest, a build under the non-root base `/ci-base/`, the JS budget of 150 kB gzipped per page, and Playwright with axe on every page at 390, 768 and 1440 px in light and dark. The page checks require no axe violations, no content wider than its box outside a scroll container, a tabindex on every region that scrolls, and every internal link to resolve. Lighthouse CI then runs the mobile preset three times per page and requires 0.95 in all four categories; the desktop preset runs once per page for reference
+- Borrowed: Lighthouse CI's `autorun` setup from its getting-started guide, keeping reports as a workflow artifact instead of public temporary storage; `@axe-core/playwright` with the WCAG 2.2 AA and best-practice tags

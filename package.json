@@ -17,7 +17,8 @@
     "budget": "node scripts/js-budget.ts",
     "e2e": "playwright test",
     "screenshots": "SCREENSHOTS=1 playwright test tests/e2e/pages.spec.ts",
-    "audit": "node scripts/audit-report.ts"
+    "audit": "node scripts/audit-report.ts",
+    "lighthouse:summary": "node scripts/lighthouse-summary.ts"
   },
   "dependencies": {
     "astro": "7.4.7"

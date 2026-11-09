@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # A non-root base, so a link that ignores the base fails the link check (D007).
+      BASE_PATH: /ci-base
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run budget
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - name: Lighthouse, mobile (must pass)
+        run: |
+          export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
+          npx --yes @lhci/cli@0.16.0 autorun
+      - name: Lighthouse, desktop (reference)
+        env:
+          LHCI_PRESET: desktop
+        run: |
+          export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
+          npx --yes @lhci/cli@0.16.0 collect
+          npx --yes @lhci/cli@0.16.0 upload
+      - if: ${{ !cancelled() }}
+        run: npm run lighthouse:summary
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports
+          path: |
+            playwright-report/
+            artifacts/audit/
+            .lighthouseci/
+          include-hidden-files: true

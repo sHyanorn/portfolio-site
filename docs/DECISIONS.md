@@ -76,6 +76,7 @@
 - Rationale: the video is a seventh of the GIF and can be paused; a demo that moves on its own distracts from the text beside it. An SVG in the page can use the page's colours and fonts, which an `<img>` cannot
 - Alternatives: the GIF (2.15 MB on every visit, no pause); Mermaid rendered at build time (a generic layout, and its colours do not follow the theme)
 - Borrowed: the conversion settings from web.dev's "Replace animated GIFs with video" (libx264, yuv420p, a CRF in the low twenties), without its autoplay; the card whose title link covers the whole card from Inclusive Components ("Cards")
+- Amendment 2026-11-09: the demo is at most as tall as the first screen leaves below the header and the page intro, `max(16rem, 100svh - 26rem)`, and the figure is centred at the width that keeps the aspect ratio, so the controls show without scrolling; an e2e test checks this at 1440×900 and 768×1024. A fixed 70svh still ends the video below the fold at 1440×900, where the intro takes the first 390 px
 
 ## D014 Entrances in CSS only
 - Date: 2026-11-09

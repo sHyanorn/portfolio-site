@@ -45,7 +45,10 @@ const labels = Object.fromEntries(
       </div>
     </header>
 
-    <figure class="demo rise" style="--rise: 3">
+    <figure
+      class="demo rise"
+      style={`--rise: 3; --ratio: ${p.demo.poster.width} / ${p.demo.poster.height}`}
+    >
       <video
         controls
         muted
@@ -150,8 +153,12 @@ const labels = Object.fromEntries(
     margin-top: var(--section-gap);
   }
 
+  /* No taller than the first screen leaves below the header and the page
+     intro (about 24rem, plus 2rem to spare), so the controls show without
+     scrolling; the width follows the video's aspect ratio. */
   .project > .demo {
-    margin-top: var(--space-5);
+    width: min(100%, max(16rem, 100svh - 26rem) * var(--ratio));
+    margin: var(--space-5) auto 0;
   }
 
   .intro {

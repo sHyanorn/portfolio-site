@@ -22,12 +22,13 @@ Fixed structure:
 5. Architecture diagram
 6. Three to five key technical decisions (from each repository's DECISIONS.md)
 7. Challenges and how they were solved
-8. GitHub link
+8. GitHub link, and a link to the project's article when there is one
 
 ### Articles
 - List page `/articles`: newest first; each entry shows the title, a one-sentence summary, the project, the date and the reading time
 - Article page `/articles/<slug>`: one per project, on one finding that runs against expectation. It opens with the conclusion, then covers how it was found, the evidence and numbers, the limits, and when the conclusion does not hold
 - Every number can be traced to a file in the project's repository
+- Names its project at the top, linked to the project page; the repository link sits below the body
 - Each article ends with one sentence: the implementation was AI-assisted, with Aaron setting the direction, making the decisions and reviewing the work. No other page mentions AI
 - English only. In the Chinese version the interface is translated, the body stays in English with `lang="en"`, and the list marks articles as English
 - Published on this site only, with a full-text RSS feed at `/rss.xml`

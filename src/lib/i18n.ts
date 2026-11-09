@@ -40,7 +40,6 @@ const ui = {
   english: { en: 'English', zh: '英文' },
   language: { en: '中文', zh: 'English' },
   metrics: { en: 'Key metrics', zh: '关键指标' },
-  benchmarks: { en: 'Benchmark report', zh: '压测报告' },
   problem: { en: 'Problem and goals', zh: '问题与目标' },
   architecture: { en: 'Architecture', zh: '架构' },
   decisions: { en: 'Key decisions', zh: '关键决策' },

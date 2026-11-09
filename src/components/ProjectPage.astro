@@ -67,7 +67,7 @@ const labels = Object.fromEntries(
       </dl>
       <p class="note">
         <Text value={p.metrics.note[lang]} />
-        <a href={p.metrics.source}>{t(lang, 'benchmarks')}</a>
+        <a href={p.metrics.source.url}>{p.metrics.source.label[lang]}</a>
       </p>
     </section>
 

@@ -55,7 +55,10 @@
       "en": "Measured on one 4 vCPU cloud VM; in the end-to-end runs the engine shares it with the load generator.",
       "zh": "均在一台 4 vCPU 的云虚拟机上测得；端到端测试时，引擎和压测程序共用这台机器。"
     },
-    "source": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/BENCHMARKS.md"
+    "source": {
+      "label": { "en": "Benchmark report", "zh": "压测报告" },
+      "url": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/BENCHMARKS.md"
+    }
   },
   "problem": [
     {

@@ -43,7 +43,8 @@ const projects = defineCollection({
           .min(2)
           .max(6),
         note: text,
-        source: z.url(),
+        /** The report the numbers come from, named as the project names it. */
+        source: z.strictObject({ label: text, url: z.url() }),
       }),
       // 4. Problem and goals, one entry per paragraph
       problem: z.array(text).min(1),

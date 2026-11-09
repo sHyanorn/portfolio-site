@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro'
+import { t, toLang } from '../lib/i18n'
+
+const lang = toLang(Astro.currentLocale)
+---
+
+<Base
+  title={`${t(lang, 'about')} · Aaron Yang`}
+  description={t(lang, 'aboutDescription')}
+>
+  <h1 class="rise">{t(lang, 'about')}</h1>
+
+  <section class="rise" style="--rise: 1" aria-labelledby="education">
+    <h2 id="education">{t(lang, 'education')}</h2>
+    <p class="school">{t(lang, 'school')}</p>
+    <p class="meta">{t(lang, 'degree')}</p>
+  </section>
+
+  <section class="rise" style="--rise: 2" aria-labelledby="direction">
+    <h2 id="direction">{t(lang, 'direction')}</h2>
+    <p>{t(lang, 'directionBody')}</p>
+  </section>
+</Base>
+
+<style>
+  h1 {
+    padding-top: var(--space-4);
+    font-size: var(--step-5);
+    line-height: 1.1;
+  }
+
+  section {
+    max-width: 36em;
+    margin-top: var(--space-6);
+  }
+
+  h2 {
+    margin-bottom: var(--space-2);
+    font-size: var(--step-2);
+  }
+
+  .school {
+    font-weight: 500;
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+  }
+</style>

@@ -8,6 +8,7 @@ const base = site.pathname
 // English routes; each also exists under zh/. Add new pages here.
 const routes = [
   '',
+  'about/',
   'articles/',
   'articles/cryptography-held/',
   'articles/locking-ends-a-process/',

@@ -16,7 +16,7 @@
     "test": "vitest run",
     "budget": "node scripts/js-budget.ts",
     "e2e": "playwright test",
-    "screenshots": "SCREENSHOTS=1 playwright test tests/e2e/pages.spec.ts",
+    "screenshots": "SCREENSHOTS=1 playwright test tests/e2e/pages.spec.ts tests/e2e/background-contrast.spec.ts",
     "audit": "node scripts/audit-report.ts",
     "lighthouse:summary": "node scripts/lighthouse-summary.ts"
   },

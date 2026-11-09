@@ -41,16 +41,22 @@ const projects = await getCollection('projects')
 
 <style>
   /* The background field (D015): one screen high at the top of the page,
-     behind the header and the introduction, fading out at the bottom. The
-     gradient shows until the canvas draws its first frame, and stays when
-     WebGL2 is unavailable. */
+     behind the header and the introduction. The shader fades it into the
+     page itself, dithered; a CSS mask would band. The gradient, close to the
+     first frame, shows until the canvas draws and stays when WebGL2 is
+     unavailable. */
   .backdrop {
     position: absolute;
     inset: 0 0 auto;
     z-index: -1;
     height: 100svh;
-    background: linear-gradient(var(--color-accent-subtle), transparent);
-    mask-image: linear-gradient(#000 50%, transparent);
+    background:
+      radial-gradient(
+        45% 50% at 80% 0%,
+        var(--color-backdrop-strong),
+        transparent
+      ),
+      linear-gradient(var(--color-backdrop-tint), transparent 95%);
     pointer-events: none;
   }
 

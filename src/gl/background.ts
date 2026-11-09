@@ -1,7 +1,7 @@
-// The home page background (D015): WebGL2 shades one full-screen triangle.
-// The CSS gradient under the canvas shows until the first frame, and stays
-// when WebGL2 is missing, the shaders fail to link or the context is lost;
-// none of these throws or logs an error.
+// The home page background (D015): WebGL2 shades one full-screen triangle
+// with a slowly flowing noise field. The CSS gradient under the canvas shows
+// until the first frame, and stays when WebGL2 is missing, the shaders fail
+// to link or the context is lost; none of these throws or logs an error.
 import vertexSource from './shaders/background.vert.glsl?raw'
 import fragmentSource from './shaders/background.frag.glsl?raw'
 
@@ -11,7 +11,11 @@ const MAX_PIXELS = 200_000
 const MIN_SCALE = 0.5
 
 /** Shader colours and the tokens in tokens.css they come from. */
-const COLORS = { u_base: '--color-bg', u_tint: '--color-accent-subtle' }
+const COLORS = {
+  u_base: '--color-backdrop',
+  u_tint: '--color-backdrop-tint',
+  u_strong: '--color-backdrop-strong',
+}
 
 /** Runs a startup step while the main thread is idle, so no step lengthens a task. */
 function idle(step: () => void): void {
@@ -37,6 +41,11 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
   let program: WebGLProgram | null = null
   let ready = false
   let loc: Record<string, WebGLUniformLocation | null> = {}
+  /** Seconds of animation drawn so far. */
+  let time = 0
+  /** Timestamp of the last frame drawn. */
+  let last = 0
+  let frame = 0
 
   // Compiles and links without asking for the result, which would wait on the driver.
   function build() {
@@ -54,19 +63,20 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
       gl.deleteShader(shader)
     }
     gl.linkProgram(program)
-    requestAnimationFrame(function check() {
+    requestAnimationFrame(function check(now) {
       if (gl.isContextLost() || !program) return
       if (
         parallel &&
         !gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)
       )
         requestAnimationFrame(check)
-      else if (gl.getProgramParameter(program, gl.LINK_STATUS)) setup(program)
+      else if (gl.getProgramParameter(program, gl.LINK_STATUS))
+        setup(program, now)
       else canvas.remove()
     })
   }
 
-  function setup(linked: WebGLProgram) {
+  function setup(linked: WebGLProgram, now: number) {
     gl.useProgram(linked)
     // Corners at (-1, -1), (3, -1) and (-1, 3) put the clip square inside the triangle.
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
@@ -78,7 +88,7 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     gl.enableVertexAttribArray(0)
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
     loc = Object.fromEntries(
-      ['u_resolution', ...Object.keys(COLORS)].map((name) => [
+      ['u_resolution', 'u_time', ...Object.keys(COLORS)].map((name) => [
         name,
         gl.getUniformLocation(linked, name),
       ]),
@@ -88,6 +98,15 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
     draw()
     ready = true
     canvas.classList.add('ready')
+    last = now
+    frame = requestAnimationFrame(tick)
+  }
+
+  function tick(now: number) {
+    frame = requestAnimationFrame(tick)
+    time += (now - last) / 1000
+    last = now
+    draw()
   }
 
   // light-dark() resolves only in a computed value, so each token passes
@@ -121,6 +140,7 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
   function draw() {
     gl.viewport(0, 0, canvas.width, canvas.height)
     gl.uniform2f(loc.u_resolution, canvas.width, canvas.height)
+    gl.uniform1f(loc.u_time, time)
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
@@ -136,6 +156,7 @@ function run(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext): void {
 
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault()
+    cancelAnimationFrame(frame)
     ready = false
     program = null
     canvas.classList.remove('ready')

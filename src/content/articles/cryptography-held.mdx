@@ -13,7 +13,7 @@ vault-share is an end-to-end encrypted file sharing service. The browser encrypt
 
 ## How the findings were found
 
-The log records the source of each finding. Most came from a review at the end of each milestone or from an adversarial re-check of the fixes for earlier findings. Others came from a pass against the OWASP Top 10:2025 using black-box and browser test scripts, two from a simplification review, and one came up while fixing another finding. Fixes such as those for F26, F38 and F39 record tests or measurements from before and after.
+The log records the source of each finding. Most came from independent reviews of milestones M2 to M7 or from an adversarial re-check of the fixes for earlier findings. Others came from a pass against the OWASP Top 10:2025 using black-box and browser test scripts, two from a simplification review, and one came up while fixing another finding. Fixes such as those for F26, F38 and F39 record tests or measurements from before and after.
 
 ## The four High findings
 
@@ -22,7 +22,7 @@ The log records the source of each finding. Most came from a review at the end o
 - **F3, long uploads stored but not acknowledged.** Only the read deadline was extended for large bodies. The server's 60-second write timeout cut the connection before the reply reached the client, which then retried and ran straight into F2.
 - **F26, concurrent uploads to one file.** Nothing stopped an owner from running many uploads to one record at once. The S3 store buffered each in memory, and 40 uploads to one record took the server from 18 to 341 MiB. On disk, six uploads to one 64 MiB record held 360 MiB, beyond a quota that counted records only. After the fix a file takes one upload at a time, so six uploads to one record left one temp file and five 409 replies. The S3 store now streams each body instead of buffering it, and ten uploads to ten records moved the server from 19 to 20 MiB; streaming caps files on S3 at 5 GiB.
 
-F2 and F3 are connected: the timeout in F3 caused retries, and through F2 those retries destroyed data the server had already acknowledged.
+F2 and F3 are connected: the timeout in F3 caused retries, and through F2 those retries could replace or delete data the server had already acknowledged.
 
 ## Limits that were checked before they were counted
 
@@ -30,7 +30,7 @@ Two later findings, F38 and F39, came from rate limits and lockouts that each lo
 
 The second sign-in step read its ticket, checked the code, and only then counted a failure. The account's lockout was asked before the check and told after it. Codes sent at the same moment all passed both gates before any failure was recorded, which gave an attacker who already knew the password many more guesses at the second factor. In a test, 40 wrong codes on one ticket had 7 to 20 of them checked, where the ticket allows 5. For sign-ins, 50 wrong sign-ins sent at once from 50 addresses were all checked where the account allows 20, and 20 bad download signatures at once had 11 to 14 checked where 5 should lock the client out of the file.
 
-The fix reverses the order. A lockout now admits an attempt before it is checked, and refuses one while the failures already counted plus the attempts in flight could reach the limit. A ticket gives up an attempt in the same statement that reads its count. The tests send the attempts at once and failed before the fix. Afterwards at most 5 codes are checked per ticket, and exactly 20 sign-ins and 5 signatures.
+The fix reverses the order. A lockout now admits an attempt before it is checked, and refuses one while the failures already counted plus the attempts in flight could reach the limit. A ticket gives up an attempt in the same statement that reads its count. The tests send the attempts at once and failed before the fix. Afterwards at most 5 codes are checked, whether they arrive on one ticket or over eight, and exactly 20 sign-ins from many addresses, 5 from one client and 5 signatures.
 
 This is counting code with no cryptography in it, and it sets how many guesses an attacker gets against a six-digit code.
 
@@ -38,14 +38,14 @@ This is counting code with no cryptography in it, and it sets how many guesses a
 
 The cryptographic design deliberately avoided anything new. D002 restricts the project to the browser's Web Crypto API and mature libraries, on the grounds that hand-written primitives are error-prone. D012 adopts an existing format as well: files are encrypted in the record format of RFC 8188, the `aes128gcm` content encoding, which Firefox Send also used. Keeping that layout lets the RFC's section 3.1 test vector run against this implementation unchanged, with the RFC's 128-bit key; files themselves use a 256-bit key. The section 3.2 vector carries a key id, which vault-share rejects, so it runs only with the key id removed. Where vault-share differs from Firefox Send, it is stricter. Among other differences, it rejects unexpected header values, which Firefox Send ignores, and an empty file still produces a final record, so a stream cut after its header fails to decrypt instead of producing an empty file.
 
-The one finding that touched key material, F20, was a mismatch between the documents and the code. The specification said the server stores only a verifier of the download authentication key. It actually stores the key itself, as Firefox Send does, so a copy of the database could sign download challenges and spend download counts. It still could not decrypt anything, since that needs the secret in the link. The documents were corrected. An asymmetric verifier would close the gap, at the cost of a protocol change.
+The only finding filed under Cryptographic Failures (A04:2025), F20, was a mismatch between the documents and the code. The specification said the server stores only a verifier of the download authentication key. It actually stores the key itself, as Firefox Send does, so a copy of the database could sign download challenges and spend download counts. It still could not decrypt anything, since that needs the secret in the link. The documents were corrected. An asymmetric verifier would close the gap, at the cost of a protocol change.
 
 ## Limits
 
 - **Self-assessed.** The findings come from the project's own milestone reviews, adversarial re-checks of fixes, and a test pass against the OWASP Top 10:2025. No external audit has been done, and an outside reviewer may well find problems of a different kind, cryptographic ones included.
 - **Severity is the project's own.** Each rating follows the impact on the project's own threat model. A different model would rank some of them differently.
 - **No cryptographic findings.** None was found, which does not show that none exists. The RFC test vectors show the record format is implemented as specified; they say nothing about side channels or about how the keys are used beyond the file format.
-- **Scanner results say little here.** gosec, govulncheck, npm audit and Semgrep report 0 issues on the source at commit a277b92, which predates the fixes for F26 to F46; govulncheck on the Caddy binary reports 4 advisories, accepted as F22. Nothing here shows whether the scanners would have caught the findings above.
+- **Scanner results say little here.** gosec, govulncheck, npm audit and Semgrep report 0 issues on the source at commit a277b92; govulncheck on the Caddy binary reports 4 advisories, accepted as F22. Nothing here shows whether the scanners would have caught the findings above.
 - **Known gaps remain.** A compromised server can serve JavaScript that steals keys, as with every web-based encryption tool, and the server sees each file's size and access times.
 
 ## When this does not hold

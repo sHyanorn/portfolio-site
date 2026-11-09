@@ -17,7 +17,7 @@ All paths are in github.com/sHyanorn/local-ledger at commit ae08641.
 | Auto-lock 1, 5, 15 or 30 minutes, default 5, cannot be turned off; screen lock, sleep, window close | docs/SECURITY_DESIGN.md:43 |
 | PID helpers | tests/e2e/fixtures.ts:40-63 (`rendererPid`, `expectExited`) |
 | Nine call sites of `expectExited`, and the scenarios they cover | tests/e2e/vault.spec.ts:66, 107, 122, 138, 169, 191, 334; tests/e2e/import.spec.ts:224; tests/e2e/transactions.spec.ts:247 |
-| Heap snapshot test with control string and marker; cannot see Buffers or freed memory | tests/e2e/transactions.spec.ts:223-258; docs/SECURITY_DESIGN.md:57 |
+| Heap snapshot tests of the main process: transactions with control string and marker, import and export text; none checks the password; cannot see Buffers or freed memory | tests/e2e/transactions.spec.ts:223-258; tests/e2e/import.spec.ts:182-232; tests/e2e/export.spec.ts:229-231; docs/SECURITY_DESIGN.md:57 |
 | Freed memory not overwritten | docs/SECURITY_DESIGN.md:63 |
 | Decrypted rows as strings in the main process | docs/SECURITY_DESIGN.md:64 |
 | 16 MB SQLite page cache; secure memory option off | docs/SECURITY_DESIGN.md:65 |

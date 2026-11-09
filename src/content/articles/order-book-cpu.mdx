@@ -6,7 +6,7 @@ summary: "The matching core applies a command in 144 to 198 ns, but end to end t
 math: false
 ---
 
-The order book's data structure in matching-engine was chosen by benchmark, and end to end it barely shows up. On its own, the matching core applies a command in 144 to 198 ns. Under load the full engine spends 39 to 95 µs of CPU per request, and in CPU profiles of the running engine `Book.Apply` accounts for 1.4% to 2% of that. The two changes that improved latency were a faster check of JSON keys and moving an fsync onto another goroutine, and neither of them touched the book.
+The order book's data structure in matching-engine was chosen by benchmark, and end to end it barely shows up. On its own, the matching core applies a command in 144 to 198 ns. Under load the full engine spends 39 to 95 µs of CPU per request, and in CPU profiles of the running engine `Book.Apply` accounts for 1.4% to 2% of the engine's CPU. The two changes that improved latency were a faster check of JSON keys and moving an fsync onto another goroutine, and neither of them touched the book.
 
 ## The order book
 
@@ -29,7 +29,7 @@ The CPU profiles were taken during the optimization work, which ran on a differe
 - garbage collection: about 10%
 - the matching goroutine, book included: about 10%
 
-`Book.Apply` on its own was 1.4% to 2% of the engine's CPU. The book allocates 0.6 times per command, so pooling its nodes would be the usual next step. The benchmark notes explain why it was not done: at that share, the saving would not show end to end.
+Across this profile and the one taken after both changes, `Book.Apply` on its own was 1.4% to 2% of the engine's CPU. The book allocates 0.6 times per command, so pooling its nodes would be the usual next step. The benchmark notes explain why it was not done: at that share, the saving would not show end to end.
 
 ## The two changes that helped
 
@@ -39,7 +39,7 @@ Both were measured on the slower VM, with a full sweep for each step.
 
 **Running the fsync beside the matching goroutine (D031).** The command log is fsynced every 10 ms. At first the symbol's goroutine did this itself and stopped for about 0.8 ms on average, sometimes for tens of milliseconds, while every queued command waited. A helper goroutine now runs the fsync, which is also how Redis, Kafka and PostgreSQL handle their logs. At 10k/s, p90 fell from 0.91 to 0.57 ms and p99 from 5.32 to 3.82 ms. At 25k/s the three runs' p99 went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. CPU per request rose by up to 3%. The crash window also grew: a machine crash can now lose up to one interval of commands, plus any taken while an fsync was still running.
 
-On the faster VM, the current code reaches a p99 from order to trade push of 1.76 ms at 10k requests/s and 41.1 ms at 50k/s.
+On the faster VM, the headline end-to-end runs reached a p99 from order to trade push of 1.76 ms at 10k requests/s and 41.1 ms at 50k/s.
 
 ## Limits
 

@@ -19,7 +19,7 @@ Binary secrets are easier, because the app can zero a buffer it owns. The data k
 
 ## Replacing the page process
 
-D016 hosts the page in a `WebContentsView`. On every unlock, lock and committed password change, the main process loads the page in a new view and closes the old one, whose renderer process then exits. Two views of the same origin get separate processes, so the new page does not inherit the old one's heap. A lock replaces the page even when the vault is already locked, which means a password typed into the unlock screen but never submitted does not survive it either.
+D016 hosts the page in a `WebContentsView`. On every unlock, lock and committed password change, the main process loads the page in a new view and closes the old one, whose renderer process then exits. Two views of the same origin get separate processes. A lock replaces the page even when the vault is already locked, which means a password typed into the unlock screen but never submitted does not survive it either.
 
 Key derivation follows the same rule. D015 runs Argon2id (64 MiB of memory, 3 passes, 4 lanes) in a worker thread that ends after each derivation, releasing its 64 MiB. The worker also keeps the window responsive. On the one machine measured (Electron 45, a 2.1 GHz Xeon with 4 cores), a derivation takes 321 ms; on the main thread it blocked the event loop for 281 ms, and in the worker for 7 ms.
 
@@ -27,15 +27,15 @@ The steps that run at lock time need the vault to lock, so it also locks on its 
 
 ## Tests
 
-What memory holds is hard to test directly, so the end-to-end suite tests the processes instead. One helper reads the operating system process ID of the page currently shown, and another polls until that process no longer exists. The suite records the renderer's PID before an action that should replace the page and waits for it to exit afterwards, in nine places across the vault, import and transaction tests. They cover creating a vault, unlocking after a wrong password, locking, closing the window, a lock that arrives while an unlock is still deriving its key, a password typed but not submitted, and a password change.
+What memory holds is hard to test directly, so the end-to-end suite tests the processes instead. One helper reads the operating system process ID of the page currently shown, and another polls until that process no longer exists. The suite records the renderer's PID before an action that should end the page's process and waits for it to exit afterwards, in nine places across the vault, import and transaction tests. They cover creating a vault, unlocking after a wrong password, locking, closing the window, a lock that arrives while an unlock is still deriving its key, a password typed but not submitted, and a password change.
 
-A second test looks at the main process, which does not restart. It plants a known control string in the main process, adds a transaction with a random marker in its description, locks, and takes a heap snapshot. A heap snapshot collects garbage first, so it contains only what is still reachable. The test requires the control string to be found, which shows the snapshot can see such strings, and requires the marker to be absent, which shows that no data handler kept a reference to the row. A heap snapshot cannot see the contents of Buffers or memory already freed.
+Heap snapshot tests look at the main process, which does not restart. The one for transactions plants a known control string in the main process, adds a transaction with a random marker in its description, locks, and takes a heap snapshot. A heap snapshot collects garbage first, so it contains only what is still reachable. The test requires the control string to be found, which shows the snapshot can see such strings, and requires the marker to be absent, which shows that no data handler kept a reference to the row. A heap snapshot cannot see the contents of Buffers or memory already freed.
 
 ## Limits
 
 These come from the project's own security design, which lists what the app does not claim.
 
-- **The main process keeps strings until garbage collection.** The password crosses IPC into the main process, and decrypted rows become strings there. The main process lives as long as the app, so ending renderers does nothing for these copies. The heap snapshot test shows they are unreachable; it does not show that their memory was overwritten.
+- **The main process keeps strings until garbage collection.** The password crosses IPC into the main process, and decrypted rows become strings there. The main process lives as long as the app, so ending renderers does nothing for these copies. The heap snapshot tests show that row, import and export text is unreachable after a lock; no test checks the password, and none shows that memory was overwritten.
 - **Freed memory is not overwritten.** Memory released by a worker or a renderer goes back to the operating system as it is. The app does not scrub it.
 - **SQLite's cache.** While unlocked, SQLite keeps up to 16 MB of decrypted pages in the main process. Closing the database frees them without overwriting, since this build leaves SQLite3 Multiple Ciphers' secure memory option off.
 - **Swap and hibernation.** The operating system may write any of this memory to disk. The app does not lock pages in memory.

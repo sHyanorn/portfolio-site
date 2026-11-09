@@ -47,7 +47,7 @@ Running CSCV again on the long-only half alone:
 | PBO, whole grid (registered) | 0.05 | 0.12 |
 | PBO, long-only half | 0.42 (64 settings) | 0.72 (17 settings) |
 
-Inside the long-only half, picking the in-sample best is close to a coin flip for the moving average and worse than one for momentum.
+Inside the long-only half, picking the in-sample best is no better than a coin flip for either strategy.
 
 ## Reading the higher PBO
 
@@ -62,7 +62,7 @@ The within-half deflated Sharpe ratio of about 1.00 also needs care. Counting ev
 - **Post hoc.** The long-only split was chosen after the registered results were in, to explain them. It is kept out of the credibility reports and labelled post hoc wherever it appears (D029).
 - **One instrument.** Everything is on SPY. The gap between long and short reflects one market's history with a strong upward drift.
 - **No cost of shorting or return on cash.** Cash earns nothing and shorts pay no borrow fee (D015), which shifts the long/short comparison.
-- **Coarse ranks.** S = 16 blocks and, for momentum's long-only half, 17 settings. With few settings, ranks are coarse and PBO moves in large steps.
+- **Coarse ranks.** S = 16 blocks and, for momentum's long-only half, 17 settings. With few settings, ranks are coarse.
 - **Same data for both questions.** The halves were defined on the same data the PBO was computed on, so the two PBO values are not independent tests.
 
 ## When this does not hold

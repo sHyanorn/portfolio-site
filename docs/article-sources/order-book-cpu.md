@@ -13,7 +13,7 @@ All paths are in github.com/sHyanorn/matching-engine at commit 1097d29.
 | Profile at 25k/s: 19% syscalls, 14% decoding, 9% key check, ~10% GC, ~10% matching goroutine | docs/BENCHMARKS.md:76, 80 |
 | Profiles from the slower VM | docs/BENCHMARKS.md:76; bench-results/m5-opt/cpu-before.pprof and cpu-after.pprof, whose `Time` headers (2026-11-05 10:17 UTC) fall between the slower-VM sweeps (78c4715, 10:16:40) and the report (f61a60d, 10:21:12) |
 | Valid run: 99% of rate sent, no failed request, every trade pushed once in order | docs/BENCHMARKS.md:30 |
-| `Book.Apply` 1.4% to 2%; 0.6 allocations per command; pooling not done | docs/BENCHMARKS.md:113 |
+| `Book.Apply` 1.4% to 2% of the engine's CPU across the profiles before and after both changes; 0.6 allocations per command; pooling not done | docs/BENCHMARKS.md:76, 109, 113 |
 | One goroutine per symbol (D003) | docs/DECISIONS.md:19 |
 | Three prototypes: red-black tree, skip list, sorted slice; same model tests and benchmarks | bench-results/d004/README.md:12-13, 30; docs/DECISIONS.md:26 (D004) |
 | D004 prototypes on a separate VM of the same type | bench-results/d004/README.md:5 |
@@ -29,7 +29,7 @@ All paths are in github.com/sHyanorn/matching-engine at commit 1097d29.
 | CPU per request up to +3% | docs/BENCHMARKS.md:107 |
 | 25k/s p99 20.0, 36.4, 215 → 19.6, 19.8, 28.7 ms | docs/BENCHMARKS.md:106 |
 | Crash window: one interval plus an fsync in progress | docs/DECISIONS.md:187 (D031) |
-| p99 1.76 ms at 10k/s, 41.1 ms at 50k/s | docs/BENCHMARKS.md:38, 44 |
+| p99 1.76 ms at 10k/s, 41.1 ms at 50k/s in the headline end-to-end runs | docs/BENCHMARKS.md:5, 38, 44 |
 | 64 keep-alive connections | docs/BENCHMARKS.md:28 |
 | One symbol per run | docs/BENCHMARKS.md:30 |
 | One 4 vCPU VM; the load generator and the engine share the 4 vCPUs | docs/BENCHMARKS.md:5 |

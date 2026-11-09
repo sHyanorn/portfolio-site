@@ -24,12 +24,13 @@ const projects = defineCollection({
         poster: image(),
         caption: text,
       }),
-      // 3. Key metrics, linked to where they were measured
+      // 3. Key metrics, the conditions they were measured under, and the report
       metrics: z.strictObject({
         items: z
           .array(z.strictObject({ value: text, label: text }))
           .min(2)
           .max(6),
+        note: text,
         source: z.url(),
       }),
       // 4. Problem and goals, one entry per paragraph

@@ -1,0 +1,176 @@
+{
+  "title": "matching-engine",
+  "summary": {
+    "en": "A limit order book matching engine in Go: price-time priority, REST and WebSocket APIs, and a command log that replays to the same book.",
+    "zh": "用 Go 写的限价订单簿撮合引擎：价格优先、时间优先，提供 REST 和 WebSocket 接口，重放命令日志能还原出同一本订单簿。"
+  },
+  "tags": [
+    { "en": "Go", "zh": "Go" },
+    { "en": "Order book", "zh": "订单簿" },
+    { "en": "WebSocket", "zh": "WebSocket" },
+    { "en": "Write-ahead log", "zh": "预写日志" },
+    { "en": "Load testing", "zh": "压测" }
+  ],
+  "demo": {
+    "video": "projects/matching-engine/demo.mp4",
+    "poster": "./matching-engine/demo-poster.png",
+    "caption": {
+      "en": "The engine's order book page following BTC-USD while `cmd/loadgen` sends 2,000 requests per second.",
+      "zh": "`cmd/loadgen` 每秒发送 2,000 个请求，引擎自带的订单簿页面实时显示 BTC-USD。"
+    }
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": { "en": "5.05M–6.95M", "zh": "505 万–695 万" },
+        "label": {
+          "en": "commands per second through the matching core",
+          "zh": "撮合核心每秒处理的命令数"
+        }
+      },
+      {
+        "value": { "en": "1.76 ms", "zh": "1.76 ms" },
+        "label": {
+          "en": "p99 from order to trade push at 10k requests/s; 41.1 ms at 50k",
+          "zh": "每秒 1 万个请求时，从下单到收到成交推送的 p99 延迟；每秒 5 万个时为 41.1 ms"
+        }
+      },
+      {
+        "value": { "en": "128 MiB", "zh": "128 MiB" },
+        "label": {
+          "en": "matching core heap with 1M resting orders",
+          "zh": "挂单 100 万笔时撮合核心的堆内存"
+        }
+      },
+      {
+        "value": { "en": "92%", "zh": "92%" },
+        "label": {
+          "en": "of statements covered by tests",
+          "zh": "语句测试覆盖率"
+        }
+      }
+    ],
+    "note": {
+      "en": "Measured on one 4 vCPU cloud VM; in the end-to-end runs the engine shares it with the load generator.",
+      "zh": "均在一台 4 vCPU 的云虚拟机上测得；端到端测试时，引擎和压测程序共用这台机器。"
+    },
+    "source": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/BENCHMARKS.md"
+  },
+  "problem": [
+    {
+      "en": "A matching engine takes orders and cancels, matches them by price and then by time, and streams the results to clients. Matching is sequential, every result has to be reproducible from the log, and an acknowledged order must survive a crash of the process.",
+      "zh": "撮合引擎接收下单和撤单，先按价格、再按时间撮合，并把结果实时推给客户端。撮合本身是顺序的，每个结果都要能从日志重放出来，已确认的订单在进程崩溃后也不能丢。"
+    },
+    {
+      "en": "The project set three targets: more than 1M operations per second in the core on one symbol, a p99 under 5 ms from a REST order to its trade push at 50,000 orders per second, and a measurement of memory use with 1M resting orders.",
+      "zh": "项目定了三个目标：撮合核心在单个交易对上每秒超过 100 万次操作；每秒 5 万笔订单时，从 REST 下单到收到成交推送的 p99 延迟低于 5 ms；测出挂单 100 万笔时的内存占用。"
+    },
+    {
+      "en": "The core meets its target 5 to 7 times over. The end-to-end target, about 71k requests/s in this order flow, is out of reach on the 4 vCPU test machine, where the p99 stays under 5 ms up to 15k requests/s.",
+      "zh": "撮合核心的吞吐是目标的 5 到 7 倍。端到端目标折合这套订单流约每秒 7.1 万个请求，在这台 4 vCPU 的测试机上达不到；每秒 1.5 万个请求以内，p99 延迟都低于 5 ms。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "clients": { "en": "clients", "zh": "客户端" },
+      "engine": { "en": "engine", "zh": "引擎进程" },
+      "api": { "en": "HTTP and WebSocket API", "zh": "HTTP 与 WebSocket API" },
+      "symbol": { "en": "each symbol", "zh": "每个交易对" },
+      "queue": { "en": "bounded queue", "zh": "有界队列" },
+      "market": { "en": "market goroutine", "zh": "撮合 goroutine" },
+      "book": { "en": "order book", "zh": "订单簿" },
+      "log": { "en": "command log", "zh": "命令日志" },
+      "requests": {
+        "en": "orders, cancels, queries",
+        "zh": "下单、撤单、查询"
+      },
+      "pushes": { "en": "snapshots, deltas, trades", "zh": "快照、增量、成交" },
+      "apply": { "en": "apply", "zh": "执行" },
+      "writeAhead": { "en": "write ahead", "zh": "先写日志" },
+      "events": { "en": "events", "zh": "事件" }
+    },
+    "description": {
+      "en": "Clients send orders, cancels and queries to the HTTP and WebSocket API. Each symbol has a bounded queue feeding one market goroutine, which writes each batch of commands to the command log before applying it to the order book. Its events return through the API, which pushes snapshots, deltas and trades to clients.",
+      "zh": "客户端通过 HTTP 和 WebSocket API 下单、撤单和查询。每个交易对有一个有界队列，后面接一个撮合 goroutine：它先把每批命令写进命令日志，再交给订单簿执行。产生的事件回到 API，再以快照、增量和成交的形式推给客户端。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D003",
+        "title": {
+          "en": "One goroutine per symbol",
+          "zh": "每个交易对一个 goroutine"
+        },
+        "body": {
+          "en": "Matching is sequential, so each symbol's book and log belong to one goroutine. The book needs no locks, and replaying the log rebuilds exactly the same book. Requests reach the goroutine through a bounded queue; when it is full, orders and cancels get a 503 at once instead of piling up latency.",
+          "zh": "撮合本身是顺序的，所以每个交易对的订单簿和日志都归一个 goroutine 独占。订单簿因此不需要锁，重放日志能得到完全相同的订单簿。请求经有界队列进入这个 goroutine；队列满时，下单和撤单立刻收到 503，延迟不会越积越高。"
+        }
+      },
+      {
+        "id": "D004",
+        "title": {
+          "en": "A red-black tree, chosen by benchmark",
+          "zh": "用基准测试选定红黑树"
+        },
+        "body": {
+          "en": "A red-black tree and a skip list ran the same model tests and benchmarks. At 10,000 price levels, removing one level and adding one near the top took 250 ns in the tree against 405 ns in the skip list, and across sizes the skip list's writes were 26% to 101% slower. The tree also has a guaranteed worst case and needs no random seed: in testing, prices chosen by someone who knew the skip list's seed raised its average lookup steps near the top of the book from 18 to 517.",
+          "zh": "红黑树和跳表跑的是同一套模型测试和基准测试。10,000 个价位时，删除一个价位、再在盘口附近新增一个，红黑树用 250 ns，跳表用 405 ns；在测过的各个规模上，跳表的写入都要慢 26% 到 101%。红黑树还有最坏情况的保证，也用不着随机种子。测试中，知道跳表种子的人专门挑选价格，就能让盘口附近的平均查找步数从 18 涨到 517。"
+        }
+      },
+      {
+        "id": "D017",
+        "title": {
+          "en": "Write ahead, fsync every 10 ms",
+          "zh": "先写日志，每 10 ms 刷一次盘"
+        },
+        "body": {
+          "en": "Each batch of commands is written to the log before it is applied, and the log is fsynced every 10 ms. A process crash loses no acknowledged command, which a test checks by killing the engine under load; a machine crash can lose the last interval and the commands taken during an fsync in progress. Syncing before every reply was measured too: it raised the p99 by 1 to 10 ms up to 30k requests/s.",
+          "zh": "每批命令先写进日志再执行，日志每 10 ms fsync 一次。进程崩溃不会丢失已确认的命令，有一个测试专门在压测中杀掉引擎来验证；机器崩溃则可能丢掉最后一个间隔内的命令，以及 fsync 进行期间收到的命令。每次回复前都 fsync 的做法也实测过：每秒 3 万个请求以内，p99 延迟会高出 1 到 10 ms。"
+        }
+      },
+      {
+        "id": "D030",
+        "title": { "en": "Open-loop load testing", "zh": "开环压测" },
+        "body": {
+          "en": "`cmd/loadgen` schedules request i for t0 + i/rate whatever the replies, sends it over one of 64 keep-alive connections, and counts latency from that due time, so a stall is charged to every request it delays. A closed-loop generator waits for replies and quietly sends less, so its p99 can look met while the rate falls short.",
+          "zh": "`cmd/loadgen` 给第 i 个请求定好应发时刻 t0 + i/rate，不等前面的回复，经 64 条长连接之一发出；延迟从这个应发时刻算起，一次卡顿会计入它拖慢的每一个请求。闭环压测要等到回复才发下一个，会悄悄少发，p99 看上去达标，实际速率却不够。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "The order book was not the bottleneck",
+        "zh": "瓶颈不在订单簿"
+      },
+      "body": {
+        "en": "A CPU profile at 25k requests/s put the matching goroutine, book included, at about 10%, against about 19% for HTTP system calls and 14% for decoding request bodies, 9 points of which went to checking their keys. Checking the keys in one scan instead of through a `json.Decoder` took the check from 5.79 µs and 79 allocations to 0.51 µs and none, and cut the engine's CPU per request by 5% to 8%. `Book.Apply` is 1.4% to 2% of the engine's CPU, so its nodes are not pooled.",
+        "zh": "在每秒 2.5 万个请求下做 CPU 剖析，撮合 goroutine 连同订单簿只占约 10%，HTTP 的系统调用约占 19%，解析请求体占 14%，其中检查字段名就占了 9 个百分点。改为一次扫描检查字段名，不再经过 `json.Decoder`，这项检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配，引擎处理每个请求的 CPU 时间减少 5% 到 8%。`Book.Apply` 只占引擎 CPU 的 1.4% 到 2%，所以没有给它的节点做对象池。"
+      }
+    },
+    {
+      "title": {
+        "en": "An fsync stalled every command",
+        "zh": "一次 fsync 拖住所有命令"
+      },
+      "body": {
+        "en": "Every 10 ms the symbol's goroutine stopped for its fsync, 0.8 ms on average and tens of milliseconds at times, and every command waited. A helper goroutine now runs the fsync, as Redis, Kafka and PostgreSQL flush their logs on a background thread (D031). The median p99 at 10k requests/s fell from 5.32 to 3.82 ms, and the three runs at 25k/s went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. These sweeps ran at earlier commits on a slower VM of the same type, so they compare with each other, not with the metrics above.",
+        "zh": "原先交易对的 goroutine 每 10 ms 停下来 fsync 一次，平均 0.8 ms，有时几十毫秒，所有命令都得等着。现在 fsync 交给一个辅助 goroutine，Redis、Kafka 和 PostgreSQL 也都在后台线程刷日志（D031）。每秒 1 万个请求时，三次运行的 p99 延迟中位数从 5.32 ms 降到 3.82 ms；每秒 2.5 万个请求的三次运行从 20.0、36.4、215 ms 降到 19.6、19.8、28.7 ms。这几轮测试用的是更早的提交和同型号但更慢的一台虚拟机，只能互相比较，不能和上面的指标对比。"
+      }
+    },
+    {
+      "title": {
+        "en": "Proving every trade arrives",
+        "zh": "确认每笔成交都送到"
+      },
+      "body": {
+        "en": "A run counts only if every trade reaches the client once and in order. `loadgen` checks that the trade stream's sequence numbers run without gaps, that the pushes, the trades in REST replies and the engine's trade counter agree in number, and that the pushes and replies agree in content by a sum of 64-bit hashes (D036). The run must also send 99% of the target rate with no failed request.",
+        "zh": "每笔成交都按顺序、恰好一次送到客户端，这次压测才算数。`loadgen` 检查成交推送的序号没有缺口，核对推送、REST 回复里的成交和引擎的成交计数器三者数量一致，再用 64 位哈希之和比对推送和回复的内容（D036）。此外，一次运行至少要发出目标速率的 99%，并且没有失败的请求。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/matching-engine"
+}

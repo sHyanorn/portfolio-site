@@ -54,7 +54,10 @@ const shots =
             src={shot.src}
             alt={shot.alt[lang]}
             format="avif"
-            widths={[358, 720, 1440].filter((w) => w <= shot.src.width)}
+            widths={[
+              ...[358, 720].filter((w) => w < shot.src.width),
+              Math.min(shot.src.width, 1440),
+            ]}
             sizes="(min-width: 768px) 720px, 100vw"
             loading={i === 0 ? 'eager' : 'lazy'}
           />

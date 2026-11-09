@@ -16,7 +16,7 @@ Aaron's personal website: a restrained design, an animated background written in
 Fixed structure:
 
 1. One-line summary and tags
-2. Demo: live link, GIF or video
+2. Demo: live link, GIF or video; a GIF or screenshots when the project has no public demo
 3. Key metrics (e.g. matching throughput, test coverage)
 4. Problem and goals
 5. Architecture diagram
@@ -42,7 +42,8 @@ Fixed structure:
 - Astro + TypeScript with static output (D003); React only for two islands, the GLSL background and the language toggle
 - Articles in MDX, rendered at build time (D005): Shiki highlighting with light and dark themes through CSS variables; math through remark-math and rehype-katex, only in articles marked `math: true`, which alone load the KaTeX stylesheet; reading time counted at 230 words per minute. Articles add no client JS
 - Raw WebGL2, with shaders in `src/gl/shaders/*.glsl`
-- English and Chinese: English by default, with a button that switches the whole site to Chinese and back
+- Diagrams are SVG, rendered at build time or drawn by hand; Mermaid never runs in the browser, since its runtime alone exceeds the JS budget
+- English and Chinese: English by default, with a button that switches the whole site to Chinese and back. Project content files hold both languages for every field a page shows
 - Deploy to GitHub Pages or Vercel, with a custom domain (optional)
 
 ## 4. Design guidelines

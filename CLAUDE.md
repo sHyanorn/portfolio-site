@@ -12,7 +12,7 @@ This repository is Aaron Yang's personal website, with a hand-written WebGL2 and
 
 - Write a plan before starting each milestone; for visual changes, provide screenshots first
 - One commit per task, using Conventional Commits in English
-- All project content lives in `src/content/projects/*.json` (or MDX); pages only render it
+- All project content lives in `src/content/projects/*.json` (or MDX) and articles in `src/content/articles/*.mdx`; pages only render them
 - Everything committed to GitHub (code, comments, docs, commit messages) is in English and concise: say what changed and why, not the step-by-step process. Commit messages use Conventional Commits with a short subject and at most a brief body.
 
 ## Common commands

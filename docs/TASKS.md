@@ -27,7 +27,7 @@
 
 ## M4 Polish and launch
 - [ ] Performance and accessibility optimization, Lighthouse 95 or higher
-- [ ] SEO and social share images
+- [ ] SEO and social share images for project and article pages
 - [ ] Launch, with screenshots and Lighthouse results in the README
 
 ## Ongoing

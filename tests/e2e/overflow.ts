@@ -22,6 +22,17 @@ export function measureOverflow(): OverflowReport {
     (el.id ? `#${el.id}` : '') +
     [...el.classList].map((c) => `.${c}`).join('')
 
+  // Text kept for screen readers only, such as KaTeX's MathML, sits in a
+  // 1 px box clipped to nothing; nothing in it shows.
+  const visuallyHidden = (el: HTMLElement) => {
+    for (let e: HTMLElement | null = el; e; e = e.parentElement) {
+      const s = getComputedStyle(e)
+      if (s.clipPath === 'inset(50%)' || s.clip === 'rect(0px, 0px, 0px, 0px)')
+        return true
+    }
+    return false
+  }
+
   const rows: OverflowRow[] = []
   for (const el of document.body.querySelectorAll<HTMLElement>('*')) {
     if (el.closest('[aria-hidden="true"]')) continue
@@ -30,6 +41,7 @@ export function measureOverflow(): OverflowReport {
     const scrolls = style.overflowX === 'auto' || style.overflowX === 'scroll'
     const overflows = el.scrollWidth > el.clientWidth + 1
     if (!scrolls && !overflows) continue
+    if (visuallyHidden(el)) continue
     rows.push({
       element: describe(el),
       kind: scrolls

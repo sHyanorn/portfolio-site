@@ -26,3 +26,8 @@
 - Rationale: none of these needs work in the browser, so an article page ships no more JS than any other page
 - Alternatives: Prism or highlight.js in the browser; MathJax or KaTeX auto-render in the browser (client JS for static content)
 - Amendment 2026-11-09: since Astro 7, `.md` and `.mdx` go through Sätteri by default, which runs only its own mdast and hast plugins. The site keeps the unified pipeline: `@astrojs/markdown-remark` is installed and `markdown.processor` is `unified({ remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] })`, which MDX inherits, with `shikiConfig` at the top level of `markdown`. Source: docs.astro.build as of 2026-11-09, which documents Astro 7 ("Since Astro v7, Sätteri is the default Markdown processor"; `unified()` added in `@astrojs/markdown-remark` 7.2.0). A test build with Astro 7.4.7, `@astrojs/mdx` 8.1.3 and `@astrojs/markdown-remark` 7.3.6 rendered the math article and dual-theme code blocks with these settings
+
+## D006 HTML whitespace follows HTML rules
+- Date: 2026-11-09
+- Decision: `compressHTML: true`, the behaviour before Astro 7, instead of Astro 7's default `'jsx'`
+- Rationale: under `'jsx'`, whitespace that contains a line break is removed, so inline elements on separate lines render with no space between them. Prettier formats `.astro` files by HTML whitespace rules and moves inline elements onto separate lines, so the two together would drop spaces from the text

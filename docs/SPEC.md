@@ -56,4 +56,4 @@ Fixed structure:
 ## 5. Deliverables
 
 - The live website
-- Lighthouse report screenshots in the README
+- Screenshots and the live site's Lighthouse scores in the README (D019)

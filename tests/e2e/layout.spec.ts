@@ -87,22 +87,24 @@ test.describe('1920x1080', () => {
   test.use({ viewport: { width: 1920, height: 1080 } })
 
   for (const p of pages)
-    test(`${p.name}: paragraphs within 36em`, async ({ page }) => {
+    test(`${p.name}: paragraphs and captions within 36em`, async ({ page }) => {
       await page.goto(p.path)
-      const over = await page.locator('main p').evaluateAll((ps) =>
-        ps
-          .map((el) => {
-            // The widest line, which a short paragraph's box can exceed.
-            const range = document.createRange()
-            range.selectNodeContents(el)
-            const size = parseFloat(getComputedStyle(el).fontSize)
-            return [
-              el.textContent!.trim().slice(0, 40),
-              range.getBoundingClientRect().width / size,
-            ]
-          })
-          .filter(([, ems]) => (ems as number) > 36.01),
-      )
+      const over = await page
+        .locator('main p, main figcaption')
+        .evaluateAll((ps) =>
+          ps
+            .map((el) => {
+              // The widest line, which a short paragraph's box can exceed.
+              const range = document.createRange()
+              range.selectNodeContents(el)
+              const size = parseFloat(getComputedStyle(el).fontSize)
+              return [
+                el.textContent!.trim().slice(0, 40),
+                range.getBoundingClientRect().width / size,
+              ]
+            })
+            .filter(([, ems]) => (ems as number) > 36.01),
+        )
       expect(over).toEqual([])
     })
 

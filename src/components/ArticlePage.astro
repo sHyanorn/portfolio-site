@@ -138,9 +138,17 @@ const sections = headings.filter((h) => h.depth === 2)
     line-height: 1.4;
   }
 
+  /* Taller to tap, within the gap between items. */
   .toc a {
+    position: relative;
     text-decoration: none;
     transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .toc a::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--space-1) / -2) 0;
   }
 
   .toc a:hover {

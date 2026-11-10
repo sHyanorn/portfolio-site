@@ -21,9 +21,9 @@ const projects = defineCollection({
       // 1. Summary and tags
       summary: text,
       tags: z.array(text).min(1),
-      // 2. Demo: an MP4 under public/ with a poster of the same size, or two
-      // to four screenshots for a project with no browser demo, each with an
-      // optional dark-theme copy of the same size (D013)
+      // 2. Demo: an MP4 under public/ with a poster of the same size, or
+      // three screenshots for a project with no browser demo, each with an
+      // optional dark-theme copy of the same size (D013, D020)
       demo: z.union([
         z.strictObject({
           video: z.string().regex(/^[\w/-]+\.mp4$/),
@@ -42,16 +42,16 @@ const projects = defineCollection({
                 caption: text,
               }),
             )
-            .min(2)
-            .max(4),
+            // The first beside the intro, the other two a row under it.
+            .length(3),
         }),
       ]),
       // 3. Key metrics, the conditions they were measured under, and the report
       metrics: z.strictObject({
         items: z
           .array(z.strictObject({ value: text, label: text }))
-          .min(2)
-          .max(6),
+          // Two a row, or one row of four on a wide screen.
+          .length(4),
         note: text,
         /** The report the numbers come from, named as the project names it. */
         source: z.strictObject({ label: text, url: z.url() }),

@@ -70,6 +70,12 @@ function check(result: Awaited<ReturnType<typeof sample>>) {
     expect(Math.min(...b.opacity), `block at ${b.top}`).toBeLessThan(1)
   const start = visible.map((b) => at(b, (o) => o > 0.02))
   const done = visible.map((b) => at(b, (o) => o > 0.98))
+  // Above the bottom strip, where a block may rest partly faded, every
+  // block finishes its entrance.
+  visible.forEach((b, i) => {
+    if (b.top < height - 96)
+      expect(done[i], `block at ${b.top} ends`).toBeLessThan(Infinity)
+  })
   // The header paints first; the first block follows within a few frames.
   expect(start[0] - paint, 'wait before the first block').toBeLessThan(150)
   for (let i = 1; i < visible.length; i++) {

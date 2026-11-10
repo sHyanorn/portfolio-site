@@ -52,7 +52,7 @@ for (const width of [1024, 1100, 1200, 1280, 1440])
       expect(over).toEqual([])
     })
 
-// The wide diagram shows wherever the column is at least 680 px, including
+// The wide diagram shows wherever the column is at least 664 px, including
 // the narrowest two-column widths; the narrow one is for phones.
 for (const width of [768, 1024, 1056])
   for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))

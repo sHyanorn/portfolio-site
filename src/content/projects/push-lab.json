@@ -2,7 +2,7 @@
   "title": "push-lab",
   "order": 5,
   "summary": {
-    "en": "An offline lab for push notification recommendation on public data, from recall and ranking to send volume and timing, with every result labeled by how far it can be trusted without live traffic. Copy selection is tested only in a simulator that does not read the text.",
+    "en": "An offline lab for push notification recommendation on public data, from recall and ranking to send volume and timing, with every result labelled by how far it can be trusted without live traffic. Copy selection is tested only in a simulator that does not read the text.",
     "zh": "一个推送通知推荐的离线实验室，基于公开数据，覆盖召回、排序、发送量和发送时段；没有线上流量，所以每个结果都标明它可信到什么程度。文案选择只在一个不读取文案内容的模拟器里测试过。"
   },
   "tags": [
@@ -32,7 +32,7 @@
           "zh": "报告中标为事后分析的折线图，标题为“No pushes minus one a day, active-day share”。真值从厌烦程度为 0 时的约 −0.007 升到 0.1 时的约 +0.031，在 0 到 0.025 之间穿过零点；按天计算的 DR 估计值则一直平在零下方，介于 −0.005 和 −0.004 之间。"
         },
         "caption": {
-          "en": "Not pushing against one push a day: above a small amount of annoyance the truth favors not pushing, while the estimate keeps favoring the push.",
+          "en": "Not pushing against one push a day: above a small amount of annoyance the truth favours not pushing, while the estimate keeps favouring the push.",
           "zh": "不发送与每天一条推送的对比：厌烦程度稍高一点，真值就倾向于不发送，而估计值始终倾向于发送。"
         }
       },
@@ -99,7 +99,7 @@
       "zh": "项目的核心叙事在模拟开始前就作为假设登记下来：每天给所有人推送排第一的内容，第一周点击最多，到第四周却会因厌烦和退订流失用户；只在预测增益够高时才发送、并受发送量预算约束的策略，能留住更多活跃用户。所有比较都预先定好，结果如实报告，叙事中没有成立的部分也照样报告。"
     },
     {
-      "en": "No public dataset links push sends to what users then do in an app, so the end-to-end story is a simulation built on video feed data, and the uplift trials are e-mail and ads. Each result is therefore labeled Tier A when it rests on randomized real data, Tier B when it is an off-policy estimate from an estimator validated against a known answer, and Tier C when it comes from the simulator with a sensitivity sweep.",
+      "en": "No public dataset links push sends to what users then do in an app, so the end-to-end story is a simulation built on video feed data, and the uplift trials are e-mail and ads. Each result is therefore labelled Tier A when it rests on randomized real data, Tier B when it is an off-policy estimate from an estimator validated against a known answer, and Tier C when it comes from the simulator with a sensitivity sweep.",
       "zh": "没有任何公开数据集把推送和用户随后在应用里的行为连起来，所以端到端的叙事只能是基于短视频推荐数据的仿真，增益实验用的也是邮件和广告数据。因此每个结果都标了证据等级：基于随机化真实数据的为 A 级；由先经已知答案验证过的估计器给出的离策略估计为 B 级；来自模拟器并附有敏感性扫描的为 C 级。"
     }
   ],

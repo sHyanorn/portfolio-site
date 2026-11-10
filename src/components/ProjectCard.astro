@@ -63,7 +63,6 @@ const thumbs = themeCopies(first)
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-3);
     background: var(--color-bg);
@@ -78,11 +77,14 @@ const thumbs = themeCopies(first)
   }
 
   /* The whole picture, framed on the card's surface: a crop could cut the
-     part of a chart or table that tells what it shows. */
+     part of a chart or table that tells what it shows. The frame clips the
+     picture to the card's corners, so the card itself need not clip and the
+     focus ring outside it shows. */
   .thumb {
     position: relative;
     aspect-ratio: 16 / 10;
     overflow: hidden;
+    border-radius: calc(var(--radius-3) - 1px) calc(var(--radius-3) - 1px) 0 0;
     border-bottom: 1px solid var(--color-line);
     background: var(--color-surface);
   }
@@ -183,6 +185,7 @@ const thumbs = themeCopies(first)
       order: 2;
       aspect-ratio: auto;
       min-height: 22rem;
+      border-radius: 0 calc(var(--radius-3) - 1px) calc(var(--radius-3) - 1px) 0;
       border-bottom: 0;
       border-left: 1px solid var(--color-line);
     }

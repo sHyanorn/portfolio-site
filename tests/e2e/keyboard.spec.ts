@@ -3,7 +3,8 @@
 // draws a focus ring until the walk reaches the footer, and no element
 // changes the tab order with a positive tabindex.
 import { expect, test } from '@playwright/test'
-import { pages } from './site'
+import sharp from 'sharp'
+import { BASE, pages } from './site'
 
 for (const { name, path } of pages)
   test(`${name}: keyboard walk`, async ({ page }) => {
@@ -67,3 +68,66 @@ for (const { name, path } of pages)
     }
     expect(end, 'the walk reaches the footer').toBe(true)
   })
+
+// A card's ring is drawn by its title link's ::after, so reading the computed
+// outline cannot tell whether the card clips it: compare the pixels around
+// each edge with the card focused and blurred.
+for (const width of [1024, 1440])
+  for (const colorScheme of ['light', 'dark'] as const)
+    test(`${width} ${colorScheme}: home cards show the focus ring on every side`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
+      await page.goto(BASE)
+      const cards = page.locator('#projects .card')
+      for (let i = 0; i < Math.min(2, await cards.count()); i++) {
+        const card = cards.nth(i)
+        await page.keyboard.press('Tab')
+        await card.locator('h3 a').focus()
+        await card.evaluate((el) => el.scrollIntoView({ block: 'center' }))
+        const box = (await card.boundingBox())!
+        const pad = 6
+        const clip = {
+          x: box.x - pad,
+          y: box.y - pad,
+          width: box.width + 2 * pad,
+          height: box.height + 2 * pad,
+        }
+        const shot = async () =>
+          sharp(await page.screenshot({ clip }))
+            .removeAlpha()
+            .raw()
+            .toBuffer({ resolveWithObject: true })
+        const on = await shot()
+        await card.locator('h3 a').blur()
+        const off = await shot()
+        const { width: w, height: h } = on.info
+        const changed = (x: number, y: number) => {
+          const o = (y * w + x) * 3
+          return [0, 1, 2].some(
+            (c) => Math.abs(on.data[o + c]! - off.data[o + c]!) > 40,
+          )
+        }
+        // Each side: the share of points along the edge, past the rounded
+        // corners, where some pixel within 5 px either side of it changed.
+        const along = (n: number, hit: (t: number, d: number) => boolean) => {
+          let seen = 0
+          for (let t = 20; t < n - 20; t++)
+            for (let d = 1; d <= 2 * pad - 1; d++)
+              if (hit(t, d)) {
+                seen++
+                break
+              }
+          return seen / (n - 40)
+        }
+        const sides = {
+          top: along(w, (x, d) => changed(x, d)),
+          bottom: along(w, (x, d) => changed(x, h - 1 - d)),
+          left: along(h, (y, d) => changed(d, y)),
+          right: along(h, (y, d) => changed(w - 1 - d, y)),
+        }
+        for (const [side, share] of Object.entries(sides))
+          expect(share, `card ${i + 1} ${side}`).toBeGreaterThan(0.95)
+      }
+    })

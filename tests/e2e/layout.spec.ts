@@ -17,6 +17,32 @@ for (const width of [1024, 1440, 1920, 2560])
       expect(width - (last.x + last.width)).toBeCloseTo(margin, 0)
     })
 
+// Every metric's value and label fit inside its cell, in both languages, from
+// the narrowest wide-screen width up.
+for (const width of [1024, 1100, 1200, 1280, 1440])
+  for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))
+    test(`${width} ${p.name}: metrics fit their cells`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto(p.path)
+      const over = await page.locator('.metrics div').evaluateAll((cells) =>
+        cells.flatMap((cell) => {
+          const box = cell.getBoundingClientRect()
+          const pad = parseFloat(getComputedStyle(cell).paddingRight)
+          return [...cell.children].flatMap((el) => {
+            const range = document.createRange()
+            range.selectNodeContents(el)
+            const right = range.getBoundingClientRect().right
+            return right > box.right - pad + 0.5
+              ? [
+                  `${el.textContent}: ${(right - box.right + pad).toFixed(1)} px`,
+                ]
+              : []
+          })
+        }),
+      )
+      expect(over).toEqual([])
+    })
+
 test.describe('1920x1080', () => {
   test.use({ viewport: { width: 1920, height: 1080 } })
 

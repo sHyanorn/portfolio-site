@@ -322,8 +322,8 @@ const labels = Object.fromEntries(
     }
   }
 
-  /* A wide screen puts the intro beside the first demo, the metrics in one
-     row, and each section's title in a column of its own beside it. The
+  /* A wide screen puts the intro beside the first demo and each section's
+     title in a column of its own beside it. The
      first demo then sits below the header alone, so it may take all but
      the header, the page padding and a line to spare. */
   @media (min-width: 64rem) {
@@ -337,10 +337,6 @@ const labels = Object.fromEntries(
 
     .hero .demo {
       margin-top: var(--space-4);
-    }
-
-    .metrics {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .row {
@@ -365,6 +361,14 @@ const labels = Object.fromEntries(
 
     .links .body {
       grid-column: 2;
+    }
+  }
+
+  /* The metrics take one row once the container is at its full width;
+     below it, the longest values do not fit a quarter of the column. */
+  @media (min-width: 80rem) {
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

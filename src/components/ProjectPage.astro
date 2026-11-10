@@ -366,8 +366,8 @@ const labels = Object.fromEntries(
     }
   }
 
-  /* The metrics take one row once the container is at its full width;
-     below it, the longest values do not fit a quarter of the column. */
+  /* The metrics take one row from 80rem; below it, the longest values do
+     not fit a quarter of the column. */
   @media (min-width: 80rem) {
     .metrics {
       grid-template-columns: repeat(4, minmax(0, 1fr));

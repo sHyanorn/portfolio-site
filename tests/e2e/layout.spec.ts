@@ -1,20 +1,28 @@
 // The wide-screen layout (D020) at the widths where it changes: the header
-// on the page margin, metrics, diagrams and the gallery on project pages, the
+// on the content edge or the page margin, metrics, diagrams and the gallery on project pages, the
 // 36em measure and the contents list of an article.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
-for (const width of [1024, 1440, 1920, 2560])
+// The header's ends sit on the content's edges while the content fills the
+// page; once the content is centred at its full width with more room beside
+// it than the page margin, they sit on the page margin instead.
+for (const width of [800, 1024, 1280, 1340, 1440, 1920, 2560])
   for (const path of [BASE, `${BASE}zh/`])
-    test(`${width} ${path}: header on the page margin`, async ({ page }) => {
+    test(`${width} ${path}: header on the content edge or page margin`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width, height: 900 })
       await page.goto(path)
       // clamp(1rem, 3vw, 3rem) at a 16 px root size.
       const margin = Math.min(48, Math.max(16, 0.03 * width))
+      const main = (await page.locator('main').boundingBox())!
+      const centred = main.width > 1279.5
+      const edge = centred ? Math.min(margin, main.x) : main.x
       const name = (await page.locator('header .name').boundingBox())!
       const last = (await page.locator('header .links a').last().boundingBox())!
-      expect(name.x).toBeCloseTo(margin, 0)
-      expect(width - (last.x + last.width)).toBeCloseTo(margin, 0)
+      expect(name.x).toBeCloseTo(edge, 0)
+      expect(width - (last.x + last.width)).toBeCloseTo(edge, 0)
     })
 
 // Every metric's value and label fit inside its cell, in both languages, from

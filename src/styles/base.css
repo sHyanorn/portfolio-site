@@ -89,9 +89,14 @@ video {
   margin-inline: auto;
 }
 
-/* Full width, inset by the page margin: the header and the footer. */
+/* Full width, the header and the footer: on the content's edges while the
+   content fills the page, and on the page margin once there is more room
+   beside the centred container than that. */
 .bleed {
-  padding-inline: var(--margin);
+  padding-inline: max(
+    var(--gutter),
+    min(var(--margin), (100% - var(--width-page)) / 2)
+  );
 }
 
 code {

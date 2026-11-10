@@ -169,3 +169,14 @@ for (const width of [1440, 1920])
         }
       })
   })
+
+// Captions and metric labels avoid a last line of one word or character.
+for (const path of [BASE, `${BASE}zh/`, `${BASE}zh/projects/backtest-lab/`])
+  test(`${path}: captions and terms wrap pretty`, async ({ page }) => {
+    await page.goto(path)
+    const styles = await page
+      .locator('figcaption, dt')
+      .evaluateAll((els) => els.map((e) => getComputedStyle(e).textWrapStyle))
+    expect(styles.length).toBeGreaterThan(0)
+    expect(new Set(styles)).toEqual(new Set(['pretty']))
+  })

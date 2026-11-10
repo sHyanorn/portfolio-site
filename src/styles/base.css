@@ -60,7 +60,9 @@ h2:lang(en) {
 
 p,
 li,
-dd {
+dd,
+dt,
+figcaption {
   text-wrap: pretty;
 }
 

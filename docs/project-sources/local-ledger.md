@@ -15,7 +15,8 @@ All paths are in github.com/sHyanorn/local-ledger at commit 4c28d63.
 | Malware as the same user: memory while unlocked, password at the next unlock | docs/SECURITY_DESIGN.md:15 |
 | Unsigned releases warn at first launch; trust rests on the checksum and attestation check | README.md:29; docs/SECURITY_DESIGN.md:148 |
 | Demo: three screenshots from the repository, each in the light and dark theme, made-up data | docs/screenshots/overview-light.png, transactions-light.png, reports-light.png and their -dark copies; README.md:5-14 |
-| Transfers between own accounts paired and left out of income and spending | README.md:20 |
+| Overview alt text: November 2026, income $3,850.00, spending $3,898.72, Dining Out and Coffee over budget, five recent transactions, four accounts | docs/screenshots/overview-light.png |
+| Transactions alt text and caption: search, category and period filters, 1,496 transactions, the most recent on 10 November 2026 and first | docs/screenshots/transactions-light.png; docs/SPEC.md:31; src/main/ledger/transactions.ts:91 |
 | 0 network requests; net log read by the e2e suite and the package check | README.md:3; docs/DECISIONS.md:49 (D009) |
 | 321 ms; Argon2id 64 MiB, t=3, p=4; worker thread | docs/DECISIONS.md:87-88 (D015) |
 | 7 ms in the worker against 281 ms on the main thread | docs/DECISIONS.md:88 (D015) |

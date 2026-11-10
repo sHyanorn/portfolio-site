@@ -18,8 +18,8 @@
         "src": "./local-ledger/overview-light.png",
         "dark": "./local-ledger/overview-dark.png",
         "alt": {
-          "en": "The Overview for November 2026: income of $3,850.00 and spending of $3,765.82, four budget bars with Dining Out and Coffee over budget, and the five most recent transactions, beside a sidebar listing four accounts.",
-          "zh": "2026 年 11 月的概览页：收入 3,850.00 澳元，支出 3,765.82 澳元；四条预算进度条，其中外出就餐和咖啡已超支；下方是最近五笔交易，左侧边栏列出四个账户。"
+          "en": "The Overview for November 2026: income of $3,850.00 and spending of $3,898.72, four budget bars with Dining Out and Coffee over budget, and the five most recent transactions, beside a sidebar listing four accounts.",
+          "zh": "2026 年 11 月的概览页：收入 3,850.00 澳元，支出 3,898.72 澳元；四条预算进度条，其中外出就餐和咖啡已超支；下方是最近五笔交易，左侧边栏列出四个账户。"
         },
         "caption": {
           "en": "The Overview: the month's income and spending, budget progress and recent transactions.",
@@ -30,12 +30,12 @@
         "src": "./local-ledger/transactions-light.png",
         "dark": "./local-ledger/transactions-dark.png",
         "alt": {
-          "en": "All Transactions: a search box, category and period filters, a total of 1,496 transactions, and rows with date, description, category, account and amount, ending with a transfer from Everyday to Savings.",
-          "zh": "全部交易页：搜索框、类别和时间筛选，共 1,496 笔交易；每行列出日期、描述、类别、账户和金额，最后一行是从 Everyday 转入 Savings 的一笔转账。"
+          "en": "All Transactions: a search box, category and period filters, a total of 1,496 transactions, and rows with date, description, category, account and amount, the most recent on 10 November 2026.",
+          "zh": "全部交易页：搜索框、类别和时间筛选，共 1,496 笔交易；每行列出日期、描述、类别、账户和金额，最新一笔在 2026 年 11 月 10 日。"
         },
         "caption": {
-          "en": "Transactions with search and filters; a transfer between your own accounts is marked as one and left out of income and spending.",
-          "zh": "交易列表，可搜索和筛选；自己账户之间的转账会标注出来，不计入收入和支出。"
+          "en": "Transactions with search and filters, the most recent first.",
+          "zh": "交易列表，可搜索和筛选，最新的排在最前。"
         }
       },
       {
@@ -89,7 +89,7 @@
     },
     "source": {
       "label": { "en": "Design decisions", "zh": "设计决策" },
-      "url": "https://github.com/sHyanorn/local-ledger/blob/ae0864182b3fc5076dfc844476c1a9e382f59112/docs/DECISIONS.md"
+      "url": "https://github.com/sHyanorn/local-ledger/blob/4c28d63e45dd7775b73bf11bfb1f180b24479aea/docs/DECISIONS.md"
     }
   },
   "problem": [
@@ -194,7 +194,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/local-ledger/blob/ae0864182b3fc5076dfc844476c1a9e382f59112/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/local-ledger/blob/4c28d63e45dd7775b73bf11bfb1f180b24479aea/docs/DECISIONS.md"
   },
   "challenges": [
     {

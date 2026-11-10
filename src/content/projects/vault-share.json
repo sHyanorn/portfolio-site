@@ -26,7 +26,7 @@
         "value": { "en": "0 of 16", "zh": "0 / 16" },
         "label": {
           "en": "requests carrying the link secret, a decryption key, the file name or plaintext in one share and download",
-          "zh": "一次分享和下载中，带有链接密钥、解密密钥、文件名或明文的请求"
+          "zh": "一次分享和下载中，带有链接里的秘密值、解密密钥、文件名或明文的请求"
         }
       },
       {
@@ -104,7 +104,7 @@
     },
     "description": {
       "en": "The sender's browser encrypts the file and its name and uploads the ciphertext with an auth key derived from the link's secret, getting back the file id and a delete token. The sender passes the share link, `/f/id#secret`, to the recipient, and browsers never send the part after the #. On the server, Caddy terminates TLS and passes every request to vaultd, a Go service on chi, which keeps the encrypted names, token hashes and auth keys in SQLite and the ciphertext on local disk or in an S3 bucket. The recipient's browser derives the same keys from the link and signs the server's challenge with the auth key; vaultd checks the signature, counts one download and issues a one-time token, and the browser fetches the ciphertext and decrypts it, straight to disk in Chromium-based browsers.",
-      "zh": "发送方浏览器加密文件和文件名，把密文连同由链接密钥派生出的认证密钥一起上传，拿回文件 ID 和删除令牌。发送方把分享链接 `/f/id#secret` 交给接收方，浏览器不会发送 # 之后的部分。服务器上，Caddy 负责 TLS，把所有请求转发给 vaultd；vaultd 是基于 chi 的 Go 服务，把加密的文件名、令牌哈希和认证密钥存在 SQLite 里，密文存在本地磁盘或 S3 存储桶中。接收方浏览器从链接派生出同样的密钥，用认证密钥签名服务器给出的挑战值；vaultd 校验签名、扣减一次下载次数并发放一次性令牌，浏览器随后取回密文并解密，Chromium 系浏览器直接写入磁盘。"
+      "zh": "发送方浏览器加密文件和文件名，把密文连同由链接里的秘密值派生出的认证密钥一起上传，拿回文件 ID 和删除令牌。发送方把分享链接 `/f/id#secret` 交给接收方，浏览器不会发送 # 之后的部分。服务器上，Caddy 负责 TLS，把所有请求转发给 vaultd；vaultd 是基于 chi 的 Go 服务，把加密的文件名、令牌哈希和认证密钥存在 SQLite 里，密文存在本地磁盘或 S3 存储桶中。接收方浏览器从链接派生出同样的密钥，用认证密钥签名服务器给出的挑战值；vaultd 校验签名、扣减一次下载次数并发放一次性令牌，浏览器随后取回密文并解密，Chromium 系浏览器直接写入磁盘。"
     }
   },
   "decisions": {
@@ -135,11 +135,11 @@
         "id": "D019",
         "title": {
           "en": "The password wraps the secret in the link",
-          "zh": "密码包装链接里的密钥"
+          "zh": "密码包装链接里的秘密值"
         },
         "body": {
           "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and does not know whether a password exists. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
-          "zh": "设了密码时，链接里放的是包装过的 16 字节密钥：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密原来的密钥。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
+          "zh": "设了密码时，链接里放的是包装过的 16 字节秘密值：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密这个秘密值。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
         }
       },
       {
@@ -150,7 +150,7 @@
         },
         "body": {
           "en": "The account password never leaves the browser. Argon2id turns it into a master key, from which HKDF derives the secret sent at sign-in, which the server hashes again with Argon2id, and a key that seals a random 256-bit account key. Each file shared while signed in gets an entry under the account key, bound to the file id, holding its secret, link key and delete token, so the server lists the files but only the browser opens their names. The split follows Bitwarden. A forgotten password loses the account, while the links it shared keep working.",
-          "zh": "账号密码不出浏览器。Argon2id 把它变成主密钥，再由 HKDF 派生出登录时发送的认证值和一把包装密钥：认证值到了服务器会再用 Argon2id 哈希一次才保存，包装密钥用来加密随机生成的 256 位账号密钥。登录后分享的每个文件都有一条用账号密钥加密、绑定文件 ID 的记录，里面是分享密钥、链接密钥和删除令牌，所以服务器能列出这些文件，文件名却只有浏览器能解开。这种拆分参照了 Bitwarden。忘了密码就会失去账号，已经分享出去的链接仍然有效。"
+          "zh": "账号密码不出浏览器。Argon2id 把它变成主密钥，再由 HKDF 派生出登录时发送的认证值和一把包装密钥：认证值到了服务器会再用 Argon2id 哈希一次才保存，包装密钥用来加密随机生成的 256 位账号密钥。登录后分享的每个文件都有一条用账号密钥加密、绑定文件 ID 的记录，里面是秘密值、链接密钥和删除令牌，所以服务器能列出这些文件，文件名却只有浏览器能解开。这种拆分参照了 Bitwarden。忘了密码就会失去账号，已经分享出去的链接仍然有效。"
         }
       },
       {
@@ -195,7 +195,7 @@
       },
       "body": {
         "en": "A browser check records every request Chromium sends while a plain share is uploaded, downloaded and reopened, and searches each one, bodies included, for the fragment, the secret, the file and metadata keys, the file name and a slice of the plaintext: raw, as hex, as base64 at every alignment, percent-encoded and form-encoded. None appeared in the 16 requests; the auth key appears once, in the create request, by design. The assessment also found that the specification claimed the server keeps only a verifier of that key, while it keeps the key itself, as Firefox Send did, so a copy of the database can spend download counts, though not decrypt. The documents now say so (F20).",
-        "zh": "一项浏览器检查会记录 Chromium 在上传、下载和重新打开一个普通分享时发出的每个请求，连同请求体一起，搜索其中有没有链接片段、链接密钥、文件密钥、元数据密钥、文件名和一段明文，形式包括原文、十六进制、各种对齐位置的 base64、百分号编码和表单编码。16 个请求里一样都没有出现；认证密钥按设计在创建请求里出现一次。评估还发现，规格声称服务器只保存这把密钥的验证值，实际保存的是密钥本身，Firefox Send 也是这样，因此拿到数据库副本的人可以消耗下载次数，但解不开文件。文档现在已如实写明（F20）。"
+        "zh": "一项浏览器检查会记录 Chromium 在上传、下载和重新打开一个普通分享时发出的每个请求，连同请求体一起，搜索其中有没有链接片段、秘密值、文件密钥、元数据密钥、文件名和一段明文，形式包括原文、十六进制、各种对齐位置的 base64、百分号编码和表单编码。16 个请求里一样都没有出现；认证密钥按设计在创建请求里出现一次。评估还发现，规格声称服务器只保存这把密钥的验证值，实际保存的是密钥本身，Firefox Send 也是这样，因此拿到数据库副本的人可以消耗下载次数，但解不开文件。文档现在已如实写明（F20）。"
       }
     }
   ],

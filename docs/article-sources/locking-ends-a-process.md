@@ -8,7 +8,7 @@ All paths are in github.com/sHyanorn/local-ledger at commit ae08641.
 |---|---|
 | Page replaced on unlock, lock and committed password change; old renderer exits; separate processes per view | docs/DECISIONS.md:94-95 (D016) |
 | Lock replaces the page even when already locked | docs/DECISIONS.md:94 (D016); docs/SECURITY_DESIGN.md:42 |
-| SQLite3 Multiple Ciphers, SQLCipher format | docs/SECURITY_DESIGN.md:33 |
+| SQLite3 Multiple Ciphers, SQLCipher 4 format | docs/SECURITY_DESIGN.md:33 (`cipher=sqlcipher`, `legacy=4`) |
 | Data key sealed under a key Argon2id derives from the master password | docs/SECURITY_DESIGN.md:26-27 |
 | Strings immutable; password in input value, React state, main process after IPC; V8 copies | docs/SECURITY_DESIGN.md:62 |
 | Buffers zeroed after use; only copy of the data key inside SQLite | docs/SECURITY_DESIGN.md:53 |

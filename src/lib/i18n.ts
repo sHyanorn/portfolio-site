@@ -27,8 +27,8 @@ export function pagePath(
 /** Interface text; page content lives in the content collections. */
 const ui = {
   description: {
-    en: 'Aaron Yang: backend systems, security, recommender systems and quantitative research.',
-    zh: 'Aaron Yang：后端系统、安全、推荐系统和量化研究。',
+    en: 'Aaron Yang: backend systems, security engineering, quantitative research and recommender systems.',
+    zh: 'Aaron Yang：后端系统、安全工程、量化研究与推荐系统。',
   },
   skip: { en: 'Skip to content', zh: '跳到正文' },
   projects: { en: 'Projects', zh: '项目' },

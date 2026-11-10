@@ -34,7 +34,7 @@
         },
         {
           "en": "Price levels in a red-black tree chosen by benchmark over a skip list and a sorted slice (250 ns against 405 ns at 10,000 levels).",
-          "zh": "价格档位用红黑树，经基准测试与跳表、有序切片比较后选定（1 万个档位时 250 ns 对 405 ns）。"
+          "zh": "价位用红黑树，经基准测试与跳表、有序切片比较后选定（1 万个价位时 250 ns 对 405 ns）。"
         },
         {
           "en": "Open-loop load generation with scheduled send times, so a stalled server is charged the delay; a run counts only if every trade reaches the client once and in order, checked by sequence numbers and 64-bit hash sums.",
@@ -42,7 +42,7 @@
         },
         {
           "en": "CPU profiling that moved the work away from the book: a JSON key check from 5.79 µs and 79 allocations to 0.51 µs and none.",
-          "zh": "用 CPU 剖析找到真正的开销：JSON 键检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配。"
+          "zh": "CPU 剖析把优化的重点从订单簿移开：JSON 键检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配。"
         }
       ],
       "projects": ["matching-engine"]
@@ -59,7 +59,7 @@
         },
         {
           "en": "Password protection and accounts with Argon2id key derivation and HKDF, where the server never sees the password.",
-          "zh": "密码保护和账户体系用 Argon2id 派生密钥并配合 HKDF，服务端始终看不到密码。"
+          "zh": "密码保护和账号体系用 Argon2id 派生密钥并配合 HKDF，服务端始终看不到密码。"
         },
         {
           "en": "Download counts decremented in one conditional SQL UPDATE, so concurrent requests cannot over-issue; stateless HMAC challenges.",
@@ -96,11 +96,11 @@
         },
         {
           "en": "Reproducible reports: registered results frozen with SHA-256 sums checked in CI.",
-          "zh": "结果可复现：注册结果冻结后，CI 校验其 SHA-256。"
+          "zh": "结果可复现：预注册结果冻结后，CI 校验其 SHA-256。"
         },
         {
           "en": "Data pipeline on yfinance and FRED into Parquet and DuckDB, refreshed by a weekly GitHub Actions workflow.",
-          "zh": "数据管道从 yfinance 和 FRED 取数，存为 Parquet 并用 DuckDB 查询，每周由 GitHub Actions 更新。"
+          "zh": "数据管线从 yfinance 和 FRED 取数，存为 Parquet 并用 DuckDB 查询，每周由 GitHub Actions 更新。"
         }
       ],
       "projects": ["backtest-lab"]
@@ -117,7 +117,7 @@
         },
         {
           "en": "Off-policy evaluation (IPS, DR) checked against a known answer on the Open Bandit Dataset; on the full campaign no estimator passed, so the project reports no result that rests on one.",
-          "zh": "离线策略评估（IPS、DR）先在 Open Bandit 数据集上对照已知答案检验；在完整活动数据上没有估计器通过，因此项目不报告依赖它的结果。"
+          "zh": "离策略评估（IPS、DR）先在 Open Bandit 数据集上对照已知答案检验；在完整活动数据上没有估计器通过，因此项目不报告依赖它的结果。"
         },
         {
           "en": "A simulator fitted on KuaiRand random exposures for effects no public dataset records, with results labelled by evidence tier (A real data, B checked estimator, C simulator only).",
@@ -125,7 +125,7 @@
         },
         {
           "en": "Comparisons registered before the simulations and reported as they came out, including a pre-registered ranking result that went the other way.",
-          "zh": "比较方案在模拟之前登记，结果原样报告，包括一个与预期方向相反的预注册排序结果。"
+          "zh": "比较方案在模拟之前预注册，结果原样报告，包括一个与预期方向相反的预注册排序结果。"
         }
       ],
       "projects": ["push-lab"]

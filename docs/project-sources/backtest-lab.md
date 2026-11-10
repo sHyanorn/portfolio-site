@@ -24,6 +24,7 @@ All paths are in github.com/sHyanorn/backtest-lab at commit 883c7ab.
 | 89.5% of 200 null searches above 0.30; mean 0.488; red line fixed before real data | docs/DECISIONS.md:132, 137 (D022) |
 | Sharpe 0.80 against 0.64; volatility 12.5% against 18.7% | README.md:13, 22; docs/DEMO.md:11, 67 |
 | SPY January 1993 to October 2026; fixed before any strategy ran on real data; 1 bp fees and 5 bps slippage per side | README.md:9; docs/DEMO.md:3; docs/DECISIONS.md:120 |
+| Each report's sample starts once every setting in its grid has a signal; January 1994 for the moving average | docs/DEMO.md:3, 72 |
 | Post hoc figures labelled, no confirmatory weight | docs/DEMO.md:34; docs/DECISIONS.md:187 (D029) |
 | Diagram: weekly workflow fetches, checks, caches; nothing committed | docs/DECISIONS.md:55 (D012); .github/workflows/data.yml |
 | Diagram: Parquet and DuckDB | docs/SPEC.md:33, 76 |

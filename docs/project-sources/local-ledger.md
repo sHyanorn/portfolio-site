@@ -25,6 +25,7 @@ All paths are in github.com/sHyanorn/local-ledger at commit 4c28d63.
 | Diagram: sandboxed page, no Node.js, `app://local-ledger`, CSP | docs/SECURITY_DESIGN.md:127; docs/SPEC.md:51-54 |
 | Diagram: typed `window.ledger` API from preload; sender check and zod in every handler | docs/SPEC.md:53-55; docs/SECURITY_DESIGN.md:130 |
 | Diagram: Argon2id in a worker unseals the data key in `vault.json`; `ledger-<generation>.db` encrypted page by page | docs/SECURITY_DESIGN.md:26-33, 75 |
+| Every page encrypted by SQLite3 Multiple Ciphers in the SQLCipher 4 format | docs/SECURITY_DESIGN.md:29, 33 (`cipher=sqlcipher`, `legacy=4`); package.json:33 |
 | Diagram: file in only through the open dialog; export only where the save dialog picks, not encrypted; backup is the encrypted database with a sealed header | docs/SECURITY_DESIGN.md:104, 111, 119 |
 | Diagram paths | src/renderer, src/preload, src/main, src/main/vault, src/main/import |
 | D013: 32-byte data key sealed with AES-256-GCM; header binds generation and settings | docs/DECISIONS.md:71 |

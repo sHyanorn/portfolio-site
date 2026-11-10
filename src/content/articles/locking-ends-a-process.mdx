@@ -11,7 +11,7 @@ In an Electron app, clearing state on lock leaves the master password in memory.
 
 ## Why clearing state is not enough
 
-Local Ledger is a personal finance desktop app. Its data sits in a database encrypted with SQLite3 Multiple Ciphers in the SQLCipher format, whose key is sealed under a key that Argon2id derives from the master password. The natural way to implement "lock" in a React app is to close the database, clear the store and show the password screen.
+Local Ledger is a personal finance desktop app. Its data sits in a database encrypted with SQLite3 Multiple Ciphers in the SQLCipher 4 format, whose key is sealed under a key that Argon2id derives from the master password. The natural way to implement "lock" in a React app is to close the database, clear the store and show the password screen.
 
 That leaves the password where it was typed. It was the value of an input element, then React state, then an argument passed over IPC. Each of those is a JavaScript string, and strings cannot be wiped. Assigning an empty string to a variable drops one reference and leaves the characters in the heap until garbage collection reclaims them, and V8 may also have copied the string while compacting the heap. Clearing a store changes only what the app can reach.
 

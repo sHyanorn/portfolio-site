@@ -88,7 +88,7 @@
       "zh": "耗时在 2.1 GHz、4 核的 Xeon 上用 Electron 45 测得。解锁不限制尝试次数，因为复制走文件的攻击者根本不受这种限制；拖慢猜测靠的是 Argon2id 的计算代价。"
     },
     "source": {
-      "label": { "en": "Design decisions", "zh": "设计决策" },
+      "label": { "en": "Decision log", "zh": "决策记录" },
       "url": "https://github.com/sHyanorn/local-ledger/blob/4c28d63e45dd7775b73bf11bfb1f180b24479aea/docs/DECISIONS.md"
     }
   },
@@ -108,7 +108,7 @@
   ],
   "architecture": {
     "labels": {
-      "page": { "en": "sandboxed page", "zh": "沙盒中的页面" },
+      "page": { "en": "sandboxed page", "zh": "沙箱中的页面" },
       "ui": { "en": "React, Zustand", "zh": "React、Zustand" },
       "preload": { "en": "preload", "zh": "预加载脚本" },
       "api": { "en": "typed window.ledger", "zh": "带类型的 window.ledger" },
@@ -132,8 +132,8 @@
       "exportEdge": { "en": "export", "zh": "导出" }
     },
     "description": {
-      "en": "The page runs in Chromium's sandbox with no Node.js and is served from `app://local-ledger` under a strict content security policy. It reaches the main process only through the typed `window.ledger` API that the preload script exposes, and every handler checks that the sender is the app's own page and validates the payload with zod. In the main process, the vault derives a key from the master password with Argon2id in a worker thread and unseals the data key kept in `vault.json`; the data key opens the database, `ledger-<n>.db`, every page of which is encrypted with SQLCipher. Import, export and backups also run in the main process: a CSV file comes in only through the system open dialog, an export goes out only where the user picks in the system save dialog and is not encrypted, and a backup is the encrypted database with a sealed header.",
-      "zh": "页面运行在 Chromium 的沙盒里，没有 Node.js，由 `app://local-ledger` 提供，带严格的内容安全策略。它只能通过预加载脚本暴露的带类型的 `window.ledger` 接口与主进程通信，每个处理器都会核对发送方是否为应用自己的页面，并用 zod 校验参数。在主进程中，保险库在工作线程里用 Argon2id 从主密码派生出密钥，解开 `vault.json` 里封存的数据密钥；数据密钥再打开数据库 `ledger-<n>.db`，它的每一页都由 SQLCipher 加密。导入、导出和备份也在主进程中进行：CSV 文件只能经系统的打开对话框进来，导出文件只写到用户在系统保存对话框里选定的位置，并且不加密；备份就是加密的数据库本身，外加一个封存的文件头。"
+      "en": "The page runs in Chromium's sandbox with no Node.js and is served from `app://local-ledger` under a strict content security policy. It reaches the main process only through the typed `window.ledger` API that the preload script exposes, and every handler checks that the sender is the app's own page and validates the payload with zod. In the main process, the vault derives a key from the master password with Argon2id in a worker thread and unseals the data key kept in `vault.json`; the data key opens the database, `ledger-<n>.db`, every page of which is encrypted by SQLite3 Multiple Ciphers in the SQLCipher 4 format. Import, export and backups also run in the main process: a CSV file comes in only through the system open dialog, an export goes out only where the user picks in the system save dialog and is not encrypted, and a backup is the encrypted database with a sealed header.",
+      "zh": "页面运行在 Chromium 的沙箱里，没有 Node.js，由 `app://local-ledger` 提供，带严格的内容安全策略。它只能通过预加载脚本暴露的带类型的 `window.ledger` 接口与主进程通信，每个处理器都会核对发送方是否为应用自己的页面，并用 zod 校验参数。在主进程中，保险库在工作线程里用 Argon2id 从主密码派生出密钥，解开 `vault.json` 里封存的数据密钥；数据密钥再打开数据库 `ledger-<n>.db`，它的每一页都由 SQLite3 Multiple Ciphers 按 SQLCipher 4 格式加密。导入、导出和备份也在主进程中进行：CSV 文件只能经系统的打开对话框进来，导出文件只写到用户在系统保存对话框里选定的位置，并且不加密；备份就是加密的数据库本身，外加一个封存的文件头。"
     }
   },
   "decisions": {

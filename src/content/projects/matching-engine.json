@@ -56,8 +56,8 @@
       "zh": "均在一台 4 vCPU 的云虚拟机上测得；端到端测试时，引擎和压测程序共用这台机器。"
     },
     "source": {
-      "label": { "en": "Benchmark report", "zh": "压测报告" },
-      "url": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/BENCHMARKS.md"
+      "label": { "en": "Benchmark report", "zh": "基准测试报告" },
+      "url": "https://github.com/sHyanorn/matching-engine/blob/26ff70555ee5de5e8962e1bdb7bfb397198a919e/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -118,8 +118,8 @@
           "zh": "用基准测试选定红黑树"
         },
         "body": {
-          "en": "A red-black tree and a skip list ran the same model tests and benchmarks. At 10,000 price levels, removing one level and adding one near the top took 250 ns in the tree against 405 ns in the skip list, and across sizes the skip list's writes were 26% to 101% slower. The tree also has a guaranteed worst case and needs no random seed: in testing, prices chosen by someone who knew the skip list's seed raised its average lookup steps near the top of the book from 18 to 517.",
-          "zh": "红黑树和跳表跑的是同一套模型测试和基准测试。10,000 个价位时，删除一个价位、再在盘口附近新增一个，红黑树用 250 ns，跳表用 405 ns；在测过的各个规模上，跳表的写入都要慢 26% 到 101%。红黑树还有最坏情况的保证，也用不着随机种子。测试中，知道跳表种子的人专门挑选价格，就能让盘口附近的平均查找步数从 18 涨到 517。"
+          "en": "A red-black tree, a skip list and a sorted slice ran the same model tests and benchmarks. At 10,000 price levels, removing one level and adding one near the top took 250 ns in the tree against 405 ns in the skip list, and across sizes the skip list's writes were 26% to 101% slower. The tree also has a guaranteed worst case and needs no random seed: in testing, prices chosen by someone who knew the skip list's seed raised its average lookup steps near the top of the book from 18 to 517.",
+          "zh": "红黑树、跳表和有序切片跑的是同一套模型测试和基准测试。10,000 个价位时，删除一个价位、再在盘口附近新增一个，红黑树用 250 ns，跳表用 405 ns；在测过的各个规模上，跳表的写入都要慢 26% 到 101%。红黑树还有最坏情况的保证，也用不着随机种子。测试中，知道跳表种子的人专门挑选价格，就能让盘口附近的平均查找步数从 18 涨到 517。"
         }
       },
       {
@@ -142,7 +142,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/matching-engine/blob/1d50110678c58a7e0ebf2e159ce2ae24bc8978d7/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/matching-engine/blob/26ff70555ee5de5e8962e1bdb7bfb397198a919e/docs/DECISIONS.md"
   },
   "challenges": [
     {

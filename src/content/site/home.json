@@ -45,7 +45,7 @@
       },
       "body": {
         "en": "Two-tower recall, gradient-boosted ranking, uplift models and off-policy evaluation, labelled by evidence tier.",
-        "zh": "双塔召回、梯度提升排序、增益模型和离线策略评估，结果按证据等级标注。"
+        "zh": "双塔召回、梯度提升排序、增益模型和离策略评估，结果按证据等级标注。"
       }
     }
   ]

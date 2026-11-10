@@ -108,8 +108,8 @@
       }
     ],
     "note": {
-      "en": "Three searches on SPY from January 1993 to October 2026, fixed before any strategy was run on real data, with returns net of 1 bp fees and 5 bps slippage per side. Post hoc figures are labelled as such and carry no confirmatory weight.",
-      "zh": "三次搜索都在 SPY 1993 年 1 月到 2026 年 10 月的数据上进行，配置在任何策略接触真实数据之前就已固定，收益已扣除单边 1 个基点的费用和 5 个基点的滑点。事后分析的数字都单独标明，不作为确证依据。"
+      "en": "Three searches on SPY from January 1993 to October 2026, fixed before any strategy was run on real data, with returns net of 1 bp fees and 5 bps slippage per side; each report's sample starts once every setting in its grid has a signal, in January 1994 for the moving-average search. Post hoc figures are labelled as such and carry no confirmatory weight.",
+      "zh": "三次搜索都在 SPY 1993 年 1 月到 2026 年 10 月的数据上进行，配置在任何策略接触真实数据之前就已固定，收益已扣除单边 1 个基点的费用和 5 个基点的滑点；每份报告的样本从网格里每组参数都有信号时开始，均线交叉搜索是 1994 年 1 月。事后分析的数字都单独标明，不作为确证依据。"
     },
     "source": {
       "label": {
@@ -223,7 +223,7 @@
         "id": "D021",
         "title": {
           "en": "A demo registered in advance",
-          "zh": "事先登记的演示"
+          "zh": "预注册的演示"
         },
         "body": {
           "en": "The three demo searches were fixed before any strategy ran on real data: SPY from January 1993 to October 2026 at default costs, a moving-average crossover over 128 settings, time-series momentum over 34, and a random-signal control over 100 seeds, with every check's settings fixed as well. SPY buy and hold is reported beside each winner but takes no part in any verdict: with a zero risk-free rate and the equity premium, a long-biased strategy can look significant just by holding the market. The configuration was not changed after the results were seen.",
@@ -238,7 +238,7 @@
         },
         "body": {
           "en": "The verdict thresholds were fixed before any real-data run, so they could not be fitted to the demo. The red line for PBO came from searches with no skill: over 200 simulated ones, PBO averaged 0.488 and 89.5% were above 0.30, so such a search is red about nine times in ten. Green, up to 0.10, follows the paper's remark on investors sensitive to a PBO below 1/10. The overall verdict is the worst of the eight. A later rule withholds a green or yellow PBO or deflated Sharpe ratio when fewer than 10 trials are effectively independent; it was adopted after the registered results were seen, and the registered reports keep their verdicts.",
-          "zh": "结论阈值在用真实数据跑任何东西之前就已定下，没法反过来迁就演示结果。PBO 的红线取自毫无预测能力的搜索：200 次模拟中，PBO 平均为 0.488，89.5% 高于 0.30，所以这样的搜索大约十次里有九次判红。绿档上限 0.10，依据是原论文提到有些投资者只接受低于 1/10 的 PBO。总体结论取八项中最差的一项。后来加的一条规则是：有效独立的试验少于 10 个时，本该是绿色或黄色的 PBO 和折减夏普比率不给结论；这条规则是看到登记结果之后才定的，已登记的报告保持原结论。"
+          "zh": "结论阈值在用真实数据跑任何东西之前就已定下，没法反过来迁就演示结果。PBO 的红线取自毫无预测能力的搜索：200 次模拟中，PBO 平均为 0.488，89.5% 高于 0.30，所以这样的搜索大约十次里有九次判红。绿档上限 0.10，依据是原论文提到有些投资者只接受低于 1/10 的 PBO。总体结论取八项中最差的一项。后来加的一条规则是：有效独立的试验少于 10 个时，本该是绿色或黄色的 PBO 和紧缩夏普比率不给结论；这条规则是看到预注册结果之后才定的，已预注册的报告保持原结论。"
         }
       },
       {

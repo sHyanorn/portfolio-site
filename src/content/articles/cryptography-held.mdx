@@ -2,20 +2,20 @@
 title: "The cryptography was the part that held"
 project: vault-share
 date: 2026-11-09
-summary: "A self-assessment of an end-to-end encrypted file sharing service: none of its four High findings involved cryptography; all four came from the upload lifecycle under concurrency, retries and deletes."
+summary: "A self-assessment of an end-to-end encrypted file sharing service: none of its five High findings involved cryptography; four came from the upload lifecycle under concurrency, retries and deletes, and the fifth from cleanup when the database and the storage disagreed."
 math: false
 draft: false
 ---
 
 **This is a self-assessment.** Every finding below comes from the project's own reviews and tests. Where the findings log says "independent review", it means a separate review pass within the project. No outside party has audited vault-share.
 
-vault-share is an end-to-end encrypted file sharing service. The browser encrypts a file before upload, and the key travels only in the part of the link after the `#`, which browsers never send. In a project like this, the cryptography is the obvious place to look for security bugs. The findings log holds 46 entries, and none of the four rated High involves a cipher, a key derivation or a nonce. All four are about the lifecycle of an upload: what happens when it races a delete, a retry, a timeout or another upload. A second group of findings had a common shape, a limit that was checked before an attempt and counted after it, which concurrent requests could slip past.
+vault-share is an end-to-end encrypted file sharing service. The browser encrypts a file before upload, and the key travels only in the part of the link after the `#`, which browsers never send. In a project like this, the cryptography is the obvious place to look for security bugs. The findings log holds 55 entries, and none of the five rated High involves a cipher, a key derivation or a nonce. Four are about the lifecycle of an upload: what happens when it races a delete, a retry, a timeout or another upload. The fifth came from cleanup when the database and the storage disagreed. A second group of findings had a common shape, a limit that was checked before an attempt and counted after it, which concurrent requests could slip past.
 
 ## How the findings were found
 
-The log records the source of each finding. Most came from independent reviews of milestones M2 to M7 or from an adversarial re-check of the fixes for earlier findings. Others came from a pass against the OWASP Top 10:2025 using black-box and browser test scripts, two from a simplification review, and one came up while fixing another finding. Fixes such as those for F26, F38 and F39 record tests or measurements from before and after.
+The log records the source of each finding. Most came from independent reviews of milestones M2 to M7 or from an adversarial re-check of the fixes for earlier findings. Others came from a pass against the OWASP Top 10:2025 using black-box and browser test scripts, a production readiness review and a code review, two from a simplification review, and one came up while fixing another finding. Fixes such as those for F26, F38 and F39 record tests or measurements from before and after.
 
-## The four High findings
+## Four High findings in the upload path
 
 - **F1, orphaned ciphertext.** The upload handler published the blob before marking the record. If the record had been deleted or purged in between, the blob stayed on disk with nothing pointing to it, outside every cleanup rule. Each repetition could leak up to the file size limit.
 - **F2, concurrent uploads replaced acknowledged content.** A second PUT with the same owner token overwrote the stored blob, and a bad body on a late PUT deleted the blob of an earlier successful one.
@@ -23,6 +23,10 @@ The log records the source of each finding. Most came from independent reviews o
 - **F26, concurrent uploads to one file.** Nothing stopped an owner from running many uploads to one record at once. The S3 store buffered each in memory, and 40 uploads to one record took the server from 18 to 341 MiB. On disk, six uploads to one 64 MiB record held 360 MiB, beyond a quota that counted records only. After the fix a file takes one upload at a time, so six uploads to one record left one temp file and five 409 replies. The S3 store now streams each body instead of buffering it, and ten uploads to ten records moved the server from 19 to 20 MiB; streaming caps files on S3 at 5 GiB.
 
 F2 and F3 are connected: the timeout in F3 caused retries, and through F2 those retries could replace or delete data the server had already acknowledged.
+
+## The fifth High finding
+
+F47 came from a later production readiness review. It involves no cryptography either, and it has nothing to do with uploads. vaultd created its database when the file was missing, and the cleanup at startup then deleted every stored object that had no record, as an orphan. A lost or replaced data volume, a restore that left the database out, or a second instance pointed at the same bucket therefore emptied the storage within seconds: 300 blobs on disk and 30 objects in an S3 bucket in the reproduction. No request can trigger it, but the loss is every shared file. vaultd now refuses to start when the database is new and the storage already holds content, runs its first cleanup an hour after the start, and deletes at most 100 objects in one run (D032). An existing database pointed at another instance's storage still loses that content, 100 objects an hour, so the bucket must belong to vaultd alone.
 
 ## Limits that were checked before they were counted
 
@@ -42,16 +46,16 @@ The only finding filed under Cryptographic Failures (A04:2025), F20, was a misma
 
 ## Limits
 
-- **Self-assessed.** The findings come from the project's own milestone reviews, adversarial re-checks of fixes, and a test pass against the OWASP Top 10:2025. No external audit has been done, and an outside reviewer may well find problems of a different kind, cryptographic ones included.
+- **Self-assessed.** The findings come from the project's own milestone reviews, adversarial re-checks of fixes, a test pass against the OWASP Top 10:2025, a production readiness review and a code review. No external audit has been done, and an outside reviewer may well find problems of a different kind, cryptographic ones included.
 - **Severity is the project's own.** Each rating follows the impact on the project's own threat model. A different model would rank some of them differently.
 - **No cryptographic findings.** None was found, which does not show that none exists. The RFC test vectors show the record format is implemented as specified; they say nothing about side channels or about how the keys are used beyond the file format.
 - **Scanner results say little here.** gosec, govulncheck, npm audit and Semgrep report 0 issues on the source at commit a277b92; govulncheck on the Caddy binary reports 4 advisories, accepted as F22. Nothing here shows whether the scanners would have caught the findings above.
-- **Known gaps remain.** A compromised server can serve JavaScript that steals keys, as with every web-based encryption tool, and the server sees each file's size and access times.
+- **Known gaps remain.** A compromised server can serve JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and access times.
 
 ## When this does not hold
 
 The pattern depends on two choices made at the start: standard primitives, and an existing, reviewed format with test vectors. A project that designs its own record format, manages nonces by hand, or composes primitives into a new protocol moves the risk back into the cryptography, and review effort should follow it there.
 
-It also depends on the kind of server. vault-share's server never sees plaintext, so most of its work is storage bookkeeping under concurrency, and that is where its High findings were. A service whose core logic is cryptographic, such as a key server or a signing service, will have a different distribution.
+It also depends on the kind of server. vault-share's server never sees plaintext, so most of its work is storage bookkeeping, under concurrency or when the database and the storage disagree, and that is where its High findings were. A service whose core logic is cryptographic, such as a key server or a signing service, will have a different distribution.
 
-For a project shaped like this one, I would spend most review time on the upload state machine, the retry paths and any limit that is checked in one place and counted in another. A borrowed, reviewed format keeps the cipher code small and testable, which makes those parts the most likely to be wrong.
+For a project shaped like this one, I would spend most review time on the upload state machine, the retry paths, any cleanup that deletes what the database does not list, and any limit that is checked in one place and counted in another. A borrowed, reviewed format keeps the cipher code small and testable, which makes those parts the most likely to be wrong.

@@ -8,6 +8,14 @@ const SIZES = {
   rest: '(min-width: 80rem) 616px, (min-width: 48rem) 50vw, 100vw',
 }
 
+/** The widths to offer of a picture: those below its source width, then
+ * the source width itself, up to the largest, so no candidate is enlarged
+ * and the source is not passed over. */
+export function widthsFor(widths: number[], source: number) {
+  const largest = Math.min(source, Math.max(...widths))
+  return [...widths.filter((w) => w < largest), largest]
+}
+
 /** A demo screenshot as AVIF in 358, 720 and 1440 px widths, the largest
  * capped at the source width (D013). The page and its preload use the same
  * options, so they ask for the same files. */
@@ -17,10 +25,7 @@ export const shotImage = (
 ) => ({
   src,
   format: 'avif' as const,
-  widths: [
-    ...[358, 720].filter((w) => w < src.width),
-    Math.min(src.width, 1440),
-  ],
+  widths: widthsFor([358, 720, 1440], src.width),
   sizes: SIZES[part],
 })
 

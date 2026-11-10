@@ -16,3 +16,31 @@ for (const path of [BASE, `${BASE}zh/`])
     await page.goto(path)
     await expect(page.locator('#projects h3')).toHaveText(titles)
   })
+
+// A card picture offers its source width when that is under the largest
+// size, so a wide card never enlarges a smaller candidate (the img's width
+// attribute is the source width).
+for (const path of [BASE, `${BASE}zh/`])
+  test(`${path}: card pictures offer up to their source width`, async ({
+    page,
+  }) => {
+    await page.goto(path)
+    const rows = await page
+      .locator('#projects .thumb img')
+      .evaluateAll((imgs) =>
+        imgs.map((img) => {
+          const widths = img
+            .getAttribute('srcset')!
+            .split(',')
+            .map((c) => parseInt(c.trim().split(/\s+/)[1]!))
+          return [
+            img.getAttribute('src'),
+            Math.max(...widths),
+            Number(img.getAttribute('width')),
+          ]
+        }),
+      )
+    expect(rows.length).toBeGreaterThan(0)
+    for (const [src, largest, source] of rows)
+      expect(largest, String(src)).toBe(Math.min(source as number, 1080))
+  })

@@ -4,7 +4,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n'
 import type { ImageMetadata } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import type { Lang } from '../lib/i18n'
-import { themeCopies } from '../lib/shots'
+import { themeCopies, widthsFor } from '../lib/shots'
 import Tags from './Tags.astro'
 import Text from './Text.astro'
 
@@ -32,7 +32,7 @@ const thumbs = themeCopies(first)
         class={v.theme}
         alt=""
         format="avif"
-        widths={[360, 720, 1080].filter((w) => w <= v.src.width)}
+        widths={widthsFor([360, 720, 1080], v.src.width)}
         sizes={
           featured
             ? '(min-width: 64rem) 760px, 100vw'

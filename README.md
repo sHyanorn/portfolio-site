@@ -6,12 +6,12 @@ Live at [shyanorn.github.io/portfolio-site](https://shyanorn.github.io/portfolio
 
 ## Pages
 
-- Home: a headline, a one-sentence introduction and the four areas of the work, over the WebGL2 background ([D015](docs/DECISIONS.md), [D017](docs/DECISIONS.md)), then the projects as picture cards, the first one full width ([D020](docs/DECISIONS.md))
+- Home: a headline, a two-sentence introduction and the four areas of the work, over the WebGL2 background ([D015](docs/DECISIONS.md), [D017](docs/DECISIONS.md)), then the projects as picture cards, the first one full width ([D020](docs/DECISIONS.md))
 - `/projects/<slug>/`: one page per project, from `src/content/projects/<slug>.json` ([D012](docs/DECISIONS.md), [D013](docs/DECISIONS.md)); each project's numbers are traced to its repository in `docs/project-sources/<slug>.md`
 - `/articles/` and `/articles/<slug>/`: articles about the projects, in MDX ([D005](docs/DECISIONS.md)), and the full-text feed at `/rss.xml` ([D016](docs/DECISIONS.md))
 - `/about/`: education, the four areas with what each project built and measured, and the tools, from `src/content/site/about.json` ([D017](docs/DECISIONS.md)); each statement is traced in `docs/project-sources/about.md`
 
-Every page but the 404 page also exists in Chinese under `/zh/` ([D011](docs/DECISIONS.md)). From 1024 px up the pages use a 1280 px container with side columns; below that, one column ([D020](docs/DECISIONS.md)).
+Every page but the 404 page also exists in Chinese under `/zh/` ([D011](docs/DECISIONS.md)). The pages sit in a 1280 px container: from 768 px the home page sets its areas and cards two a row and About puts its headings beside the text, from 1024 px project and article pages add side columns, and below about 736 px every page is one column, apart from the metrics ([D020](docs/DECISIONS.md)).
 
 ## Screenshots
 

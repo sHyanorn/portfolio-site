@@ -7,7 +7,7 @@ Aaron's personal website: a restrained design, an animated background written in
 ## 2. Pages
 
 ### Home
-- Short self-introduction and four focus tags: backend systems, security, recommender systems, quantitative research
+- A headline naming the four areas of the work (backend systems, security engineering, quantitative research, recommender systems), a short introduction, and each area with one sentence of evidence
 - GLSL background: a subtle flowing gradient or noise field that responds slightly to the mouse
 - Featured project cards that link to detail pages
 - Contact details: email and GitHub

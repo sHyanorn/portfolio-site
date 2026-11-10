@@ -167,3 +167,16 @@ Where each tool appears: site project tags first, then the repositories.
 | GitHub Actions | site:src/content/projects/backtest-lab.json:143; backtest-lab docs/SPEC.md:35; .github/workflows/data.yml:3-4 |
 | This site: Astro | site:docs/SPEC.md:41; site:docs/DECISIONS.md:11-16 (D003); site:README.md:3 |
 | This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 100-102 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
+
+### Where the work sits
+
+Aaron's own paragraph, unchanged from the earlier About page and approved on 2026-11-10. The three questions are the ones the three projects named below take up; vault-share and local-ledger take up none of them.
+
+| Number or claim | Source |
+|---|---|
+| Where economics, finance and technology meet | Aaron, 2026-11-10. site:docs/SPEC.md:37; the same paragraph at site:src/lib/i18n.ts@b5c04e0:61-62 |
+| Commerce | The Education rows above |
+| How markets match orders: matching-engine | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
+| How a strategy can look good by chance: backtest-lab | backtest-lab README.md:3, 30-33 |
+| How to judge a decision without live data: push-lab | push-lab README.md:3; docs/DECISIONS.md:73 (D002: no live traffic) |
+| Numbers that trace back to their repositories | site:docs/project-sources/, one file per project |

@@ -100,6 +100,10 @@ test.describe('1920x1080', () => {
   for (const p of pages)
     test(`${p.name}: paragraphs and captions within 36em`, async ({ page }) => {
       await page.goto(p.path)
+      // KaTeX keeps a MathML copy of each formula for screen readers, clipped
+      // to 1 px. Its boxes still count in a range's rect, past the end of a
+      // line when the formula sits there, so it is left out.
+      await page.addStyleTag({ content: '.katex-mathml { display: none }' })
       const over = await page
         .locator('main p, main figcaption')
         .evaluateAll((ps) =>

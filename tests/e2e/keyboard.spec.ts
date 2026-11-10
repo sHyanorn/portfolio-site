@@ -8,6 +8,9 @@ import { BASE, pages } from './site'
 
 for (const { name, path } of pages)
   test(`${name}: keyboard walk`, async ({ page }) => {
+    // Each stop is measured as soon as it has focus, and with motion on the
+    // page would still be scrolling to it (D014).
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto(path)
     expect(
       await page

@@ -10,7 +10,22 @@
   }
 }
 
+@keyframes hold-scroll {
+  from {
+    --scroll: auto;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  /* A link within the page scrolls to its target instead of jumping. Not in
+     the page's first second, so a page opened at a fragment starts there
+     without scrolling down from the top: `scroll-behavior` cannot be
+     animated, a custom property can. */
+  html {
+    scroll-behavior: var(--scroll, smooth);
+    animation: hold-scroll 0s 1s backwards;
+  }
+
   .rise {
     animation: enter var(--duration) var(--ease-out) both;
     animation-delay: calc(var(--rise, 0) * 90ms);

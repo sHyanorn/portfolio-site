@@ -96,6 +96,8 @@
 - Borrowed: the scroll-driven entry effect and its `@supports` guard from Chrome's guide to scroll-driven animations; the staggered first-screen fade from antfu.me
 - Amendment 2026-11-09: slower and softer. One decelerating curve, `cubic-bezier(0, 0, 0.2, 1)`, now drives the entrances, the scroll reveal and the hover feedback; the previous `cubic-bezier(0.16, 1, 0.3, 1)` covered two thirds of its movement in the first sixth of its time, and the reveal was linear. The first screen fades in over 500 ms, the top of the SPEC range, instead of 400 ms; both entrances rise 8 px instead of 10 and 16; hover feedback takes 240 ms instead of 150 ms with the browser's default curve, while focus rings still appear at once; the canvas fades in over 1 s instead of 600 ms. The stagger stays at 90 ms. Nothing overshoots, and each element runs one animation at a time
 - Borrowed (amendment): values read from the stylesheets of large product marketing sites in November 2026, where fades and rises take 0.4 to 0.5 s on `cubic-bezier(0, 0, 0.2, 1)`, elements rise 4 to 8 px, and colour changes on hover take 0.24 to 0.32 s
+- Amendment 2026-11-10: a link within a page scrolls to its target instead of jumping: `scroll-behavior: smooth` on the root, only when motion is allowed. Smooth scrolling starts a second after the page opens, because Chrome would scroll a page opened at a fragment down from the top. `scroll-behavior` cannot be animated, so a keyframe holds a custom property that it reads at `auto` for that second
+- Alternatives (amendment): `html:focus-within { scroll-behavior: smooth }` (Chrome takes focus off a followed link before it scrolls, so nothing scrolled smoothly)
 
 ## D015 Home page background in raw WebGL2
 - Date: 2026-11-09

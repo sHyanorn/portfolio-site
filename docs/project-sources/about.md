@@ -2,7 +2,7 @@
 
 Content: `src/content/site/home.json` and `src/content/site/about.json`. Each row covers one fact from the English text. The Chinese text states the same facts.
 
-Repositories at: matching-engine 1d50110, vault-share 96159bb, backtest-lab 024e743, local-ledger ae08641, push-lab 5dfcc47. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
+Repositories at: matching-engine 1d50110, vault-share 96159bb, backtest-lab 024e743, local-ledger ae08641, push-lab acab86b. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
 
 ## Home
 
@@ -136,7 +136,7 @@ All paths are in push-lab.
 | The delivery policy decides whether to send, the slot and the copy | docs/SPEC.md:35, 53-62, 159-160 |
 | Off-policy estimators include IPS and DR | docs/SPEC.md:64; docs/DECISIONS.md:396 (D042: IPS and DR are primary) |
 | Checked against a known answer on the Open Bandit Dataset | docs/SPEC.md:65; docs/DECISIONS.md:387 (D041), 396 (D042) |
-| On the full campaign no estimator passed (IPS 0.891, DR 0.896 of the on-policy value) | docs/DECISIONS.md:454, 456 (D046); README.md:55 |
+| On the full campaign no estimator passed (IPS 0.891, DR 0.897 of the on-policy value) | docs/DECISIONS.md:454, 456 (D046); README.md:55 |
 | No Tier B result; 0 Tier B claims | README.md:15, 18; docs/SPEC.md:95; docs/DECISIONS.md:456 (D046) |
 | Simulator response model fitted on KuaiRand random exposures | docs/SPEC.md:50, 182 |
 | No public dataset links push sends to later behaviour | docs/METHODS.md:267; docs/SPEC.md:216; docs/DECISIONS.md:87 |

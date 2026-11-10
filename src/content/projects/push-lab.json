@@ -54,8 +54,8 @@
       {
         "value": { "en": "0.891", "zh": "0.891" },
         "label": {
-          "en": "of the known click rate, as estimated by IPS on the full Open Bandit campaign, with an interval of 0.810 to 0.969 that excludes it: no estimator passed",
-          "zh": "IPS 在 Open Bandit 完整活动上估出的点击率与已知真值之比，区间为 0.810 到 0.969，不含真值：没有一个估计器通过检验"
+          "en": "of the known click rate, as estimated by IPS on the full Open Bandit campaign, with an interval of 0.815 to 0.966 that excludes it: no estimator passed",
+          "zh": "IPS 在 Open Bandit 完整活动上估出的点击率与已知真值之比，区间为 0.815 到 0.966，不含真值：没有一个估计器通过检验"
         }
       },
       {
@@ -86,7 +86,7 @@
     },
     "source": {
       "label": { "en": "Results summary", "zh": "结果摘要" },
-      "url": "https://github.com/sHyanorn/push-lab/blob/5dfcc476a483ac5dd3dbd9c980e52b53984186d5/README.md"
+      "url": "https://github.com/sHyanorn/push-lab/blob/acab86b4b173fb2396142acd301a4823dfd35b0a/README.md"
     }
   },
   "problem": [
@@ -197,7 +197,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/push-lab/blob/5dfcc476a483ac5dd3dbd9c980e52b53984186d5/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/push-lab/blob/acab86b4b173fb2396142acd301a4823dfd35b0a/docs/DECISIONS.md"
   },
   "challenges": [
     {
@@ -216,8 +216,8 @@
         "zh": "数据太少时通过的检验"
       },
       "body": {
-        "en": "Tier B needed an estimator that recovers a known policy value on real logs. On the small Open Bandit sample, with 46 clicks in the random logs, IPS and DR passed the registered rule. The full Men's campaign has 50 times the clicks, and there no estimator passes: IPS estimates 0.891 of the known click rate and DR 0.896, with intervals that exclude it, so the project has no Tier B result. Part of the gap is a target mismatch: the deployed policy was not the fixed prior the target assumes, and re-weighting to its logged frequencies moves IPS to 0.917, still short. Along the way the bootstrap was moved from rows to impressions, since each impression fills three rows.",
-        "zh": "要得到 B 级结果，需要一个估计器能在真实日志上还原已知的策略价值。在 Open Bandit 的小样本上，随机日志里只有 46 次点击，IPS 和 DR 通过了登记的判定规则。完整的男装活动有 50 倍的点击，在那里没有一个估计器通过：IPS 估出已知点击率的 0.891，DR 估出 0.896，区间都不含真值，所以项目没有 B 级结果。差距的一部分来自目标不匹配：实际部署的策略并不是目标所假定的固定先验，按日志中的实际频率重新加权后，IPS 升到 0.917，仍然不够。在这个过程中，bootstrap 的重抽样单位也从行改成了曝光，因为每次曝光占三行。"
+        "en": "Tier B needed an estimator that recovers a known policy value on real logs. On the small Open Bandit sample, with 46 clicks in the random logs, IPS and DR passed the registered rule. The full Men's campaign has 50 times the clicks, and there no estimator passes: IPS estimates 0.891 of the known click rate and DR 0.897, with intervals that exclude it, so the project has no Tier B result. The deployed policy was not the fixed prior the target assumes; re-weighting to its logged frequencies moves IPS to 0.917, a change of +0.026 whose interval (−0.004 to 0.059) includes zero, so these data do not show where the gap comes from. Along the way the bootstrap was moved from rows to impressions, since each impression fills three rows.",
+        "zh": "要得到 B 级结果，需要一个估计器能在真实日志上还原已知的策略价值。在 Open Bandit 的小样本上，随机日志里只有 46 次点击，IPS 和 DR 通过了登记的判定规则。完整的男装活动有 50 倍的点击，在那里没有一个估计器通过：IPS 估出已知点击率的 0.891，DR 估出 0.897，区间都不含真值，所以项目没有 B 级结果。实际部署的策略并不是目标所假定的固定先验；按日志中的实际频率重新加权后，IPS 升到 0.917，变化为 +0.026，区间（−0.004 到 0.059）包含 0，所以这份数据无法说明差距来自哪里。在这个过程中，bootstrap 的重抽样单位也从行改成了曝光，因为每次曝光占三行。"
       }
     },
     {

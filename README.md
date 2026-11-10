@@ -1,8 +1,8 @@
-# portfolio-site
+# sHyanorn.github.io
 
 Personal website of Aaron Yang. Built with Astro and TypeScript, with a hand-written WebGL2 and GLSL background.
 
-Live at [shyanorn.github.io/portfolio-site](https://shyanorn.github.io/portfolio-site/).
+Live at [shyanorn.github.io](https://shyanorn.github.io/).
 
 ## Pages
 
@@ -77,7 +77,7 @@ node scripts/site-image.ts             # after a build: the site's share images,
 `SITE_URL` and `BASE_PATH` set the origin and base path ([D007](docs/DECISIONS.md)). Deploys take both from the GitHub Pages settings, and local builds serve from the root. To check a build under a base path, set `BASE_PATH` for both the build and the checks:
 
 ```bash
-export BASE_PATH=/portfolio-site
+export BASE_PATH=/ci-base
 npm run build && npm run e2e
 ```
 

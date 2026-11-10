@@ -6,10 +6,10 @@ describe('withBase', () => {
     ['/', '/', '/'],
     ['/', 'rss.xml', '/rss.xml'],
     ['/', '/articles/', '/articles/'],
-    ['/portfolio-site/', '', '/portfolio-site/'],
-    ['/portfolio-site/', '/', '/portfolio-site/'],
-    ['/portfolio-site', 'articles/', '/portfolio-site/articles/'],
-    ['/portfolio-site/', '/favicon.svg', '/portfolio-site/favicon.svg'],
+    ['/ci-base/', '', '/ci-base/'],
+    ['/ci-base/', '/', '/ci-base/'],
+    ['/ci-base', 'articles/', '/ci-base/articles/'],
+    ['/ci-base/', '/favicon.svg', '/ci-base/favicon.svg'],
   ])('base %s + %s = %s', (base, path, expected) => {
     expect(withBase(path, base)).toBe(expected)
   })

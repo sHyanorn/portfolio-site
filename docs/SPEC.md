@@ -1,4 +1,4 @@
-# portfolio-site Specification
+# sHyanorn.github.io Specification
 
 ## 1. Summary
 

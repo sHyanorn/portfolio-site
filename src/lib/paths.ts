@@ -1,4 +1,4 @@
-/** Prefixes a site-root path with the configured base: `withBase('rss.xml')` gives `/portfolio-site/rss.xml`. */
+/** Prefixes a site-root path with the configured base: `withBase('rss.xml')` gives `/ci-base/rss.xml`. */
 export function withBase(
   path: string,
   base: string = import.meta.env.BASE_URL,

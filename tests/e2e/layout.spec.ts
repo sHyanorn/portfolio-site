@@ -28,9 +28,9 @@ for (const width of [480, 600, 800, 1024, 1280, 1340, 1440, 1920, 2560])
       expect(width - (last.x + last.width)).toBeCloseTo(edge, 0)
     })
 
-// Every metric's value and label fit inside its cell, in both languages, from
-// the narrowest wide-screen width up.
-for (const width of [1024, 1100, 1200, 1280, 1440])
+// Every metric's value and label fit inside its cell, in both languages, on
+// each side of the widths where the columns change.
+for (const width of [484, 520, 560, 576, 580, 1024, 1100, 1200, 1280, 1440])
   for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))
     test(`${width} ${p.name}: metrics fit their cells`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })

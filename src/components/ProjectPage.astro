@@ -318,7 +318,8 @@ const labels = Object.fromEntries(
     line-height: 1.4;
   }
 
-  @media (max-width: 30rem) {
+  /* Two a row once the longest values fit half the column. */
+  @media (max-width: 36rem) {
     .metrics {
       grid-template-columns: minmax(0, 1fr);
     }

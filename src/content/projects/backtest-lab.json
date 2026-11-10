@@ -108,7 +108,7 @@
       }
     ],
     "note": {
-      "en": "Three searches on SPY from January 1993 to October 2026, fixed before any strategy was run on real data, with returns net of 1 bp fees and 5 bps slippage per side; each report's sample starts once every setting in its grid has a signal, in January 1994 for the moving-average search. Post hoc figures are labelled as such and carry no confirmatory weight.",
+      "en": "Three searches on SPY from January 1993 to October 2026, fixed before any strategy was run on real data, with returns net of 1 bp fees and 5 bps slippage per side; each report's sample starts once every setting in its grid has a signal, in January 1994 for the moving-average search. Post hoc figures are labelled as such and carry no confirmatory weight.",
       "zh": "三次搜索都在 SPY 1993 年 1 月到 2026 年 10 月的数据上进行，配置在任何策略接触真实数据之前就已固定，收益已扣除单边 1 个基点的费用和 5 个基点的滑点；每份报告的样本从网格里每组参数都有信号时开始，均线交叉搜索是 1994 年 1 月。事后分析的数字都单独标明，不作为确证依据。"
     },
     "source": {
@@ -270,8 +270,8 @@
           "zh": "用 d3-scale 和 d3-shape 画图"
         },
         "body": {
-          "en": "The dashboard's four chart forms are small React components that draw SVG with d3-scale and d3-shape, coloured with CSS variables so both themes come from one stylesheet. Measured as the gzipped size of a minimal line chart: ECharts 6 with tree-shaken imports 176 kB, Recharts 3 71 kB, visx 45 kB, uPlot 23 kB with no heat map, and d3-scale with d3-shape 16 kB. Every chart can be focused from the keyboard, gives a spoken readout and has a data table beside it.",
-          "zh": "仪表盘的四类图表都是小型 React 组件，用 d3-scale 和 d3-shape 画 SVG，颜色取自 CSS 变量，明暗两套主题共用一份样式表。以一张最简折线图打包后 gzip 的体积来比较：按需引入的 ECharts 6 为 176 kB，Recharts 3 为 71 kB，visx 为 45 kB，uPlot 为 23 kB 但没有热力图，d3-scale 加 d3-shape 只有 16 kB。每张图都能用键盘聚焦，有可朗读的数值说明，旁边还配有数据表。"
+          "en": "The dashboard's four chart forms are small React components that draw SVG with d3-scale and d3-shape, coloured with CSS variables so both themes come from one stylesheet. Measured as the gzipped size of a minimal line chart: ECharts 6 with tree-shaken imports 176 kB, Recharts 3 71 kB, visx 45 kB, uPlot 23 kB with no heat map, and d3-scale with d3-shape 16 kB. Every chart can be focused from the keyboard, gives a spoken readout and has a data table beside it.",
+          "zh": "仪表盘的四类图表都是小型 React 组件，用 d3-scale 和 d3-shape 画 SVG，颜色取自 CSS 变量，明暗两套主题共用一份样式表。以一张最简折线图打包后 gzip 的体积来比较：按需引入的 ECharts 6 为 176 kB，Recharts 3 为 71 kB，visx 为 45 kB，uPlot 为 23 kB 但没有热力图，d3-scale 加 d3-shape 只有 16 kB。每张图都能用键盘聚焦，有可朗读的数值说明，旁边还配有数据表。"
         }
       }
     ],

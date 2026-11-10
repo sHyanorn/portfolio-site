@@ -21,7 +21,7 @@ Binary secrets are easier, because the app can zero a buffer it owns. The data k
 
 D016 hosts the page in a `WebContentsView`. On every unlock, lock and committed password change, the main process loads the page in a new view and closes the old one, whose renderer process then exits. Two views of the same origin get separate processes. A lock replaces the page even when the vault is already locked, which means a password typed into the unlock screen but never submitted does not survive it either.
 
-Key derivation follows the same rule. D015 runs Argon2id (64 MiB of memory, 3 passes, 4 lanes) in a worker thread that ends after each derivation, releasing its 64 MiB. The worker also keeps the window responsive. On the one machine measured (Electron 45, a 2.1 GHz Xeon with 4 cores), a derivation takes 321 ms; on the main thread it blocked the event loop for 281 ms, and in the worker for 7 ms.
+Key derivation follows the same rule. D015 runs Argon2id (64 MiB of memory, 3 passes, 4 lanes) in a worker thread that ends after each derivation, releasing its 64 MiB. The worker also keeps the window responsive. On the one machine measured (Electron 45, a 2.1 GHz Xeon with 4 cores), a derivation takes 321 ms; on the main thread it blocked the event loop for 281 ms, and in the worker for 7 ms.
 
 The steps that run at lock time need the vault to lock, so it also locks on its own: after a set idle time (1, 5, 15 or 30 minutes, 5 by default, with no option to turn it off), when the screen locks, when the computer sleeps and when the window closes.
 
@@ -37,7 +37,7 @@ These come from the project's own security design, which lists what the app does
 
 - **The main process keeps strings until garbage collection.** The password crosses IPC into the main process, and decrypted rows become strings there. The main process lives as long as the app, so ending renderers does nothing for these copies. The heap snapshot tests show that row, import and export text is unreachable after a lock; no test checks the password, and none shows that memory was overwritten.
 - **Freed memory is not overwritten.** Memory released by a worker or a renderer goes back to the operating system as it is. The app does not scrub it.
-- **SQLite's cache.** While unlocked, SQLite keeps up to 16 MB of decrypted pages in the main process. Closing the database frees them without overwriting, since this build leaves SQLite3 Multiple Ciphers' secure memory option off.
+- **SQLite's cache.** While unlocked, SQLite keeps up to 16 MB of decrypted pages in the main process. Closing the database frees them without overwriting, since this build leaves SQLite3 Multiple Ciphers' secure memory option off.
 - **Swap and hibernation.** The operating system may write any of this memory to disk. The app does not lock pages in memory.
 - **Same-user malware is out of scope.** While the vault is unlocked, such malware can read process memory or the screen; while it is locked, it can record the password at the next unlock.
 - **A failed password change keeps its page.** It needs to report the failure, so it clears its fields, but the typed passwords stay in that renderer as strings until the next lock ends it.

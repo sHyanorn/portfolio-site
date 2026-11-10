@@ -66,12 +66,12 @@
       "zh": "vault-share 是一个文件分享服务，存放文件的服务器读不到文件内容。文件和文件名在上传前就在浏览器里加密，密钥只放在链接中 `#` 之后的部分，浏览器不会发送这一部分。链接可以设为 1 小时、1 天或 7 天后过期，允许下载 1 到 100 次，也可以阅后即焚。"
     },
     {
-      "en": "The specification asked for files up to 1 GB, encrypted in streamed chunks instead of loaded into memory at once; an optional password the server never sees; an optional account that lists the files you shared without the server reading them; and a threat model and a self-assessment against the OWASP Top 10, written up as a report.",
-      "zh": "规格定下的要求有：支持最大 1 GB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
+      "en": "The specification asked for files up to 1 GB, encrypted in streamed chunks instead of loaded into memory at once; an optional password the server never sees; an optional account that lists the files you shared without the server reading them; and a threat model and a self-assessment against the OWASP Top 10, written up as a report.",
+      "zh": "规格定下的要求有：支持最大 1 GB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
     },
     {
-      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. On download, Chromium-based browsers write the decrypted file straight to disk; other browsers hold it in browser storage until the download is complete. A compromised server could still send JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and when it is uploaded and downloaded. Monitoring and backups are left to the operator: the health check covers the database, the storage and free disk space but not the database's integrity, and nothing alerts or backs up automatically.",
-      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。下载时，Chromium 系浏览器把解密后的文件直接写入磁盘，其他浏览器先把它放在浏览器存储里，下载完成后再保存。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，大多数网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。监控和备份由运维者负责：健康检查覆盖数据库、存储和剩余磁盘空间，不检查数据库完整性，也没有告警和自动备份。"
+      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. On download, Chromium-based browsers write the decrypted file straight to disk; other browsers hold it in browser storage until the download is complete. A compromised server could still send JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and when it is uploaded and downloaded. Monitoring and backups are left to the operator: the health check covers the database, the storage and free disk space but not the database's integrity, and nothing alerts or backs up automatically.",
+      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。下载时，Chromium 系浏览器把解密后的文件直接写入磁盘，其他浏览器先把它放在浏览器存储里，下载完成后再保存。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，大多数网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。监控和备份由运维者负责：健康检查覆盖数据库、存储和剩余磁盘空间，不检查数据库完整性，也没有告警和自动备份。"
     }
   ],
   "architecture": {
@@ -116,8 +116,8 @@
           "zh": "沿用公开的记录格式"
         },
         "body": {
-          "en": "Files are encrypted in the record format of RFC 8188, the `aes128gcm` content encoding that Firefox Send used, with a 256-bit key: 64 KiB records, each sealed with AES-256-GCM, and a marked last record, so a changed, reordered or cut file fails to decrypt. Keeping the layout lets the RFC's section 3.1 test vector, with its 128-bit key, run unchanged. Where vault-share differs from Firefox Send it is stricter: it rejects a header with another record size or a key id, and an empty file still ends with a last record.",
-          "zh": "文件按 RFC 8188 的记录格式加密，也就是 Firefox Send 用过的 `aes128gcm` 内容编码，只是密钥为 256 位：每条记录 64 KiB，各自用 AES-256-GCM 加密，最后一条带结束标记，文件被改动、调换顺序或截断都会解密失败。沿用这种布局，RFC 第 3.1 节的测试向量（128 位密钥）可以原样跑通。和 Firefox Send 不同的地方都更严格：头部的记录大小不对或带了密钥 ID 都直接拒绝，空文件也照样以一条结束记录收尾。"
+          "en": "Files are encrypted in the record format of RFC 8188, the `aes128gcm` content encoding that Firefox Send used, with a 256-bit key: 64 KiB records, each sealed with AES-256-GCM, and a marked last record, so a changed, reordered or cut file fails to decrypt. Keeping the layout lets the RFC's section 3.1 test vector, with its 128-bit key, run unchanged. Where vault-share differs from Firefox Send it is stricter: it rejects a header with another record size or a key id, and an empty file still ends with a last record.",
+          "zh": "文件按 RFC 8188 的记录格式加密，也就是 Firefox Send 用过的 `aes128gcm` 内容编码，只是密钥为 256 位：每条记录 64 KiB，各自用 AES-256-GCM 加密，最后一条带结束标记，文件被改动、调换顺序或截断都会解密失败。沿用这种布局，RFC 第 3.1 节的测试向量（128 位密钥）可以原样跑通。和 Firefox Send 不同的地方都更严格：头部的记录大小不对或带了密钥 ID 都直接拒绝，空文件也照样以一条结束记录收尾。"
         }
       },
       {
@@ -138,8 +138,8 @@
           "zh": "密码包装链接里的秘密值"
         },
         "body": {
-          "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and does not know whether a password exists. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
-          "zh": "设了密码时，链接里放的是包装过的 16 字节秘密值：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密这个秘密值。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
+          "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and does not know whether a password exists. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
+          "zh": "设了密码时，链接里放的是包装过的 16 字节秘密值：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密这个秘密值。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
         }
       },
       {
@@ -174,8 +174,8 @@
         "zh": "五个高危问题有四个出在上传流程"
       },
       "body": {
-        "en": "Four of the five High findings were about uploads (F1, F2, F3, F26); the fifth came from a later production readiness review, where a new database started over existing storage made cleanup delete every stored file (F47). The server's 60-second write timeout cut long uploads off before the reply reached the client (F3), which retried, and a second upload with the same owner token could overwrite the stored file, or delete it with a bad body (F2). Now stored content is never replaced, each transfer gets deadlines from its size, and a file takes one upload at a time. Before that rule, 40 uploads to one file took the server from 18 to 341 MiB on S3; with S3 uploads streamed instead of buffered, ten uploads to ten files moved it from 19 to 20 MiB (F26).",
-        "zh": "五个高危问题中有四个和上传有关（F1、F2、F3、F26）；第五个来自之后的生产就绪评审：在已有存储上新建数据库，清理会把所有已存文件删掉（F47）。服务器 60 秒的写超时会在回复送达客户端之前切断较长的上传（F3），客户端于是重试；用同一个所有者令牌发起的第二次上传可能覆盖已经存好的文件，请求体出错时还会把它删掉（F2）。现在已存储的内容不会被替换，每次传输按文件大小设定时限，一个文件同一时间只接受一次上传。有这条规则之前，在 S3 上向同一个文件并发上传 40 次，服务器内存从 18 MiB 涨到 341 MiB；S3 上传改为流式、不再缓冲之后，向 10 个文件各上传一次，内存只从 19 MiB 升到 20 MiB（F26）。"
+        "en": "Four of the five High findings were about uploads (F1, F2, F3, F26); the fifth came from a later production readiness review, where a new database started over existing storage made cleanup delete every stored file (F47). The server's 60-second write timeout cut long uploads off before the reply reached the client (F3), which retried, and a second upload with the same owner token could overwrite the stored file, or delete it with a bad body (F2). Now stored content is never replaced, each transfer gets deadlines from its size, and a file takes one upload at a time. Before that rule, 40 uploads to one file took the server from 18 to 341 MiB on S3; with S3 uploads streamed instead of buffered, ten uploads to ten files moved it from 19 to 20 MiB (F26).",
+        "zh": "五个高危问题中有四个和上传有关（F1、F2、F3、F26）；第五个来自之后的生产就绪评审：在已有存储上新建数据库，清理会把所有已存文件删掉（F47）。服务器 60 秒的写超时会在回复送达客户端之前切断较长的上传（F3），客户端于是重试；用同一个所有者令牌发起的第二次上传可能覆盖已经存好的文件，请求体出错时还会把它删掉（F2）。现在已存储的内容不会被替换，每次传输按文件大小设定时限，一个文件同一时间只接受一次上传。有这条规则之前，在 S3 上向同一个文件并发上传 40 次，服务器内存从 18 MiB 涨到 341 MiB；S3 上传改为流式、不再缓冲之后，向 10 个文件各上传一次，内存只从 19 MiB 升到 20 MiB（F26）。"
       }
     },
     {

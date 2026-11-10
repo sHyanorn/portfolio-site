@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import type { SchemaContext } from 'astro:content'
 import { z } from 'astro/zod'
 import { describe, expect, it } from 'vitest'
@@ -34,5 +34,26 @@ describe('project schema', () => {
         `${n} screenshots`,
       ).toBe(false)
     }
+  })
+})
+
+describe('content text', () => {
+  it('keeps numbers on the same line as their units', () => {
+    const unit =
+      /(?<![\w.])\d[\d.,]* (?:ms|µs|ns|s|MiB|KiB|GiB|kB|MB|GB|GHz|bps?|vCPUs?|px|万)(?![A-Za-z0-9])/g
+    const files = readdirSync('src/content', {
+      recursive: true,
+      encoding: 'utf8',
+    })
+      .filter((f) => /\.(json|mdx)$/.test(f))
+      .map((f) => `src/content/${f}`)
+    const split = files.flatMap((f) =>
+      (
+        readFileSync(f, 'utf8')
+          .replace(/```[\s\S]*?```|`[^`\n]*`/g, '')
+          .match(unit) ?? []
+      ).map((m) => `${f}: ${m}`),
+    )
+    expect(split).toEqual([])
   })
 })

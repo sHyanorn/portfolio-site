@@ -62,16 +62,16 @@
         }
       },
       {
-        "value": { "en": "321 ms", "zh": "321 ms" },
+        "value": { "en": "321 ms", "zh": "321 ms" },
         "label": {
-          "en": "to derive the key with Argon2id at 64 MiB, 3 passes and 4 lanes, in a worker thread",
-          "zh": "用 Argon2id 派生密钥的耗时，参数为 64 MiB 内存、3 轮、4 条并行通道，在工作线程中运行"
+          "en": "to derive the key with Argon2id at 64 MiB, 3 passes and 4 lanes, in a worker thread",
+          "zh": "用 Argon2id 派生密钥的耗时，参数为 64 MiB 内存、3 轮、4 条并行通道，在工作线程中运行"
         }
       },
       {
-        "value": { "en": "7 ms", "zh": "7 ms" },
+        "value": { "en": "7 ms", "zh": "7 ms" },
         "label": {
-          "en": "of event loop blocked by that derivation in the worker, against 281 ms on the main thread",
+          "en": "of event loop blocked by that derivation in the worker, against 281 ms on the main thread",
           "zh": "这次派生在工作线程中运行时阻塞事件循环的时长；放在主线程上则是 281 ms"
         }
       },
@@ -84,8 +84,8 @@
       }
     ],
     "note": {
-      "en": "Timings measured with Electron 45 on a 2.1 GHz Xeon with 4 cores. Unlocking has no attempt limit, since an attacker who copies the files is not subject to one; the cost of Argon2id is what slows guessing.",
-      "zh": "耗时在 2.1 GHz、4 核的 Xeon 上用 Electron 45 测得。解锁不限制尝试次数，因为复制走文件的攻击者根本不受这种限制；拖慢猜测靠的是 Argon2id 的计算代价。"
+      "en": "Timings measured with Electron 45 on a 2.1 GHz Xeon with 4 cores. Unlocking has no attempt limit, since an attacker who copies the files is not subject to one; the cost of Argon2id is what slows guessing.",
+      "zh": "耗时在 2.1 GHz、4 核的 Xeon 上用 Electron 45 测得。解锁不限制尝试次数，因为复制走文件的攻击者根本不受这种限制；拖慢猜测靠的是 Argon2id 的计算代价。"
     },
     "source": {
       "label": { "en": "Decision log", "zh": "决策记录" },
@@ -145,7 +145,7 @@
           "zh": "封存的数据密钥与数据库代次"
         },
         "body": {
-          "en": "The database is encrypted with a random 32-byte data key, which a key derived from the master password seals with AES-256-GCM; the authenticated header binds the generation and the key derivation settings. A wrong password therefore fails the GCM check before the database is touched, which tells it apart from a damaged database. A password change draws a new data key, re-encrypts a copy of the database, checks it, and renames it to the next generation, and renaming the new `vault.json` over the old one is the single commit point: a crash before it leaves the old password working, after it the new one. The cost is a rewrite of the whole database, which took 7 ms for 20,000 rows.",
+          "en": "The database is encrypted with a random 32-byte data key, which a key derived from the master password seals with AES-256-GCM; the authenticated header binds the generation and the key derivation settings. A wrong password therefore fails the GCM check before the database is touched, which tells it apart from a damaged database. A password change draws a new data key, re-encrypts a copy of the database, checks it, and renames it to the next generation, and renaming the new `vault.json` over the old one is the single commit point: a crash before it leaves the old password working, after it the new one. The cost is a rewrite of the whole database, which took 7 ms for 20,000 rows.",
           "zh": "数据库用随机生成的 32 字节数据密钥加密；由主密码派生出的密钥再用 AES-256-GCM 封存这把数据密钥，经过认证的文件头绑定了代次和密钥派生参数。因此密码输错时，GCM 校验在碰到数据库之前就会失败，可以和数据库损坏区分开。修改密码时生成新的数据密钥，把数据库复制一份重新加密、校验之后，重命名为下一代；用新的 `vault.json` 覆盖旧文件是唯一的提交点：在此之前崩溃，旧密码照常可用，之后则以新密码为准。代价是要重写整个数据库，20,000 行用时 7 ms。"
         }
       },
@@ -213,7 +213,7 @@
         "zh": "预览五万行"
       },
       "body": {
-        "en": "An import may hold up to 50,000 rows, and drawing them all made the preview take about 4 s, with a checkbox taking up to 1 s to respond. The preview now draws only the rows in view and twenty on each side, with spacers for the rest; every row is fixed at 35 px, so a row's place follows from the scroll position, rows are memoized, and a checkbox changes only its own row. The preview went to about 0.2 s and a checkbox to about 15 ms. A virtual list library would add a dependency for about 60 lines, and CSS `content-visibility` alone skips layout and paint but not React's work.",
+        "en": "An import may hold up to 50,000 rows, and drawing them all made the preview take about 4 s, with a checkbox taking up to 1 s to respond. The preview now draws only the rows in view and twenty on each side, with spacers for the rest; every row is fixed at 35 px, so a row's place follows from the scroll position, rows are memoized, and a checkbox changes only its own row. The preview went to about 0.2 s and a checkbox to about 15 ms. A virtual list library would add a dependency for about 60 lines, and CSS `content-visibility` alone skips layout and paint but not React's work.",
         "zh": "一次导入最多可达 50,000 行，全部绘制时预览大约要 4 秒，点一个复选框最长要 1 秒才有反应。现在预览只绘制可见的行和上下各二十行，其余用占位元素撑开；每行固定 35 像素高，所以行的位置可以由滚动位置直接算出，各行做了记忆化，点复选框只会重绘它所在的那一行。预览降到约 0.2 秒，复选框约 15 ms。用虚拟列表库要为大约 60 行代码多引入一个依赖；只用 CSS 的 `content-visibility` 能跳过布局和绘制，却省不掉 React 的计算。"
       }
     },

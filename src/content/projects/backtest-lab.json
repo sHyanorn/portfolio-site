@@ -116,7 +116,7 @@
         "en": "Demo results",
         "zh": "演示结果"
       },
-      "url": "https://github.com/sHyanorn/backtest-lab/blob/024e74384aee8b2bd661252ae2242400e93fbead/docs/DEMO.md"
+      "url": "https://github.com/sHyanorn/backtest-lab/blob/883c7ab5b544469c620d8c33864482c3fcd7495e/docs/DEMO.md"
     }
   },
   "problem": [
@@ -129,8 +129,8 @@
       "zh": "规格定下的要求有：日线价格取自 yfinance，宏观数据取自 FRED，存为 Parquet、用 DuckDB 查询，配有数据质量检查，并由 GitHub Actions 每周更新；回测引擎按日频运行，支持多资产和多空，计入交易成本和滑点；网格搜索保留每一次试验，多重检验校正需要这些记录；另有一个 React 仪表盘。所有公式都先写进方法文档，然后才开始实现。"
     },
     {
-      "en": "The demo trades SPY only; the individual stocks in the data were chosen because they exist today, which is survivorship bias. Cash earns nothing and shorts pay no borrow fee, and macro data is the latest revised vintage. Passing the checks says a result is unlikely to come from the search alone; whether it beats the market is a separate question, which each report answers apart.",
-      "zh": "演示只交易 SPY；数据里的个股是因为今天仍然存在才被选中的，带有幸存者偏差。现金没有利息，做空不付借券费，宏观数据用的是最新修订版。通过这些检验，只说明结果不太可能仅仅来自参数搜索；能否跑赢市场是另一个问题，每份报告都把两者分开回答。"
+      "en": "The demo trades SPY only; the individual stocks in the data were chosen because they exist today, which is survivorship bias. Cash earns nothing and shorts pay no borrow fee, and macro data is the latest revised vintage. The momentum search is a simplified time-series momentum, without the volatility scaling, excess returns and monthly rebalancing of the original. Passing the checks says the selected Sharpe ratio is above zero and unlikely to be a product of the search alone. The checks do not test timing ability, and no check tests whether a result beats buy and hold: each report shows that comparison as descriptive figures, outside the verdict.",
+      "zh": "演示只交易 SPY；数据里的个股是因为今天仍然存在才被选中的，带有幸存者偏差。现金没有利息，做空不付借券费，宏观数据用的是最新修订版。动量搜索用的是简化版的时间序列动量，没有原始方法里的波动率缩放、超额收益和月度再平衡。通过这些检验，只说明所选的夏普比率大于零，且不太可能仅仅来自参数搜索。这些检验不测择时能力，也没有哪一项检验去测能否跑赢买入持有：每份报告把这项比较列为描述性数字，不计入结论。"
     }
   ],
   "architecture": {
@@ -237,8 +237,8 @@
           "zh": "由零假设定下的阈值"
         },
         "body": {
-          "en": "The verdict thresholds were fixed before any real-data run, so they could not be fitted to the demo. The red line for PBO came from searches with no skill: over 200 simulated ones, PBO averaged 0.488 and 89.5% were above 0.30, so such a search is red about nine times in ten. Green, up to 0.10, follows the paper's remark on investors sensitive to a PBO below 1/10. The overall verdict is the worst of the eight.",
-          "zh": "结论阈值在用真实数据跑任何东西之前就已定下，没法反过来迁就演示结果。PBO 的红线取自毫无预测能力的搜索：200 次模拟中，PBO 平均为 0.488，89.5% 高于 0.30，所以这样的搜索大约十次里有九次判红。绿档上限 0.10，依据是原论文提到有些投资者只接受低于 1/10 的 PBO。总体结论取八项中最差的一项。"
+          "en": "The verdict thresholds were fixed before any real-data run, so they could not be fitted to the demo. The red line for PBO came from searches with no skill: over 200 simulated ones, PBO averaged 0.488 and 89.5% were above 0.30, so such a search is red about nine times in ten. Green, up to 0.10, follows the paper's remark on investors sensitive to a PBO below 1/10. The overall verdict is the worst of the eight. A later rule withholds a green or yellow PBO or deflated Sharpe ratio when fewer than 10 trials are effectively independent; it was adopted after the registered results were seen, and the registered reports keep their verdicts.",
+          "zh": "结论阈值在用真实数据跑任何东西之前就已定下，没法反过来迁就演示结果。PBO 的红线取自毫无预测能力的搜索：200 次模拟中，PBO 平均为 0.488，89.5% 高于 0.30，所以这样的搜索大约十次里有九次判红。绿档上限 0.10，依据是原论文提到有些投资者只接受低于 1/10 的 PBO。总体结论取八项中最差的一项。后来加的一条规则是：有效独立的试验少于 10 个时，本该是绿色或黄色的 PBO 和折减夏普比率不给结论；这条规则是看到登记结果之后才定的，已登记的报告保持原结论。"
         }
       },
       {
@@ -275,7 +275,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/backtest-lab/blob/024e74384aee8b2bd661252ae2242400e93fbead/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/backtest-lab/blob/883c7ab5b544469c620d8c33864482c3fcd7495e/docs/DECISIONS.md"
   },
   "challenges": [
     {

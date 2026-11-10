@@ -1,6 +1,6 @@
-// The wide-screen layout (D020): the header sits on the page margin, no
-// paragraph runs wider than the 36em measure, and an article's contents
-// list names each of its sections and links to it.
+// The wide-screen layout (D020) at the widths where it changes: the header
+// on the page margin, metrics, diagrams and the gallery on project pages, the
+// 36em measure and the contents list of an article.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
@@ -104,6 +104,11 @@ test.describe('1920x1080', () => {
         .locator('.prose h2')
         .evaluateAll((hs) => hs.map((h) => [`#${h.id}`, h.textContent]))
       const toc = page.locator('.toc a')
+      // An article with one section or none has no contents list.
+      if (sections.length <= 1) {
+        await expect(page.locator('.toc')).toHaveCount(0)
+        return
+      }
       await expect(toc.first()).toBeVisible()
       expect(
         await toc.evaluateAll((as) =>

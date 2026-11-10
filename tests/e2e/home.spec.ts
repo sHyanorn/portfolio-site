@@ -1,4 +1,5 @@
-// The home pages list every project, in the order its content file gives.
+// The home pages: every project in the order its content file gives, and
+// the card pictures' sizes, loading and theme.
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
@@ -43,4 +44,30 @@ for (const path of [BASE, `${BASE}zh/`])
     expect(rows.length).toBeGreaterThan(0)
     for (const [src, largest, source] of rows)
       expect(largest, String(src)).toBe(Math.min(source as number, 1080))
+  })
+
+// A card whose picture has a dark copy shows that copy under the dark theme,
+// and the light one otherwise; only the copy shown loads.
+for (const colorScheme of ['light', 'dark'] as const)
+  test(`${colorScheme}: card pictures follow the theme`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme })
+    await page.goto(BASE)
+    const thumbs = page.locator('#projects .thumb:has(img.dark)')
+    expect(await thumbs.count(), 'cards with a dark copy').toBeGreaterThan(0)
+    const other = colorScheme === 'dark' ? 'light' : 'dark'
+    for (const thumb of await thumbs.all()) {
+      await thumb.scrollIntoViewIfNeeded()
+      const shown = thumb.locator(`img.${colorScheme}`)
+      await expect(shown).toBeVisible()
+      await expect(thumb.locator(`img.${other}`)).toBeHidden()
+      await expect
+        .poll(() => shown.evaluate((img: HTMLImageElement) => img.complete))
+        .toBe(true)
+      expect(
+        await thumb
+          .locator(`img.${other}`)
+          .evaluate((img: HTMLImageElement) => img.currentSrc),
+        `the ${other} copy does not load`,
+      ).toBe('')
+    }
   })

@@ -1,6 +1,7 @@
 // The wide-screen layout (D020) at the widths where it changes: the header
-// on the content edge or the page margin, metrics, diagrams and the gallery on project pages, the
-// 36em measure and the contents list of an article.
+// on the content edge or the page margin; the metrics, diagram and gallery
+// of a project page; the 36em measure; and an article's contents list,
+// centred body and left column that stays in view.
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
@@ -127,3 +128,27 @@ test.describe('1920x1080', () => {
         expect(href, 'section id').toMatch(/^#[\w-]+$/)
     })
 })
+
+// An article's body sits in the middle of the page, and the column on its
+// left stays in view while the body scrolls past.
+for (const width of [1440, 1920])
+  test.describe(`${width}x900 articles`, () => {
+    test.use({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })
+
+    for (const p of pages.filter((p) => /(^|-)articles-[^/]/.test(p.name)))
+      test(`${p.name}: body centred, column in view`, async ({ page }) => {
+        await page.goto(p.path)
+        const prose = (await page.locator('.prose').boundingBox())!
+        expect(prose.x + prose.width / 2).toBeCloseTo(width / 2, 0)
+
+        const aside = page.locator('.aside')
+        const top = await aside.evaluate((el) =>
+          parseFloat(getComputedStyle(el).top),
+        )
+        const end = prose.y + prose.height - 900
+        for (const y of [end / 2, end]) {
+          await page.evaluate((y) => scrollTo(0, y), y)
+          expect((await aside.boundingBox())!.y, `at ${y}`).toBeCloseTo(top, 0)
+        }
+      })
+  })

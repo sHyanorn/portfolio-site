@@ -1,7 +1,8 @@
 ---
 // Architecture of backtest-lab, drawn by hand in two variants: a wide one drawn
-// at 720 px, the page column, for containers that wide, and a narrow one drawn
-// at 358 px for narrower ones, both shown at their drawn size.
+// at 720 px and scaled to fit containers from 680 px up, where its smallest
+// text is still above 11 px, and a narrow one drawn at 358 px for narrower
+// ones.
 interface Props {
   labels: Record<string, string>
   /** Prefix for the arrowhead marker ids, unique on the page. */
@@ -233,7 +234,7 @@ const storeV = cylinder(0, 224, 214, 80)
     display: none;
   }
 
-  @container (min-width: 720px) {
+  @container (min-width: 680px) {
     .wide {
       display: block;
       width: 100%;

@@ -43,6 +43,17 @@ for (const width of [1024, 1100, 1200, 1280, 1440])
       expect(over).toEqual([])
     })
 
+// The wide diagram shows wherever the column is at least 680 px, including
+// the narrowest two-column widths; the narrow one is for phones.
+for (const width of [768, 1024, 1056])
+  for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))
+    test(`${width} ${p.name}: the wide diagram shows`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto(p.path)
+      await expect(page.locator('.diagram svg.wide')).toBeVisible()
+      await expect(page.locator('.diagram svg.narrow')).toBeHidden()
+    })
+
 test.describe('1920x1080', () => {
   test.use({ viewport: { width: 1920, height: 1080 } })
 

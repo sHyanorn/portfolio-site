@@ -66,8 +66,8 @@
           "zh": "下载次数在一条带条件的 SQL UPDATE 里扣减，并发请求不会超发；挑战值无状态，用 HMAC 签名。"
         },
         {
-          "en": "A threat model and an OWASP Top 10:2025 self-assessment: 170 black-box checks, 30 browser checks, 46 findings, 4 of them High, 44 fixed.",
-          "zh": "威胁模型和 OWASP Top 10:2025 自评：170 项黑盒检查、30 项浏览器检查，46 项发现，其中高危 4 项，已修复 44 项。"
+          "en": "A threat model and an OWASP Top 10:2025 self-assessment: 170 black-box checks, 30 browser checks, 55 findings, 5 of them High, 49 fixed.",
+          "zh": "威胁模型和 OWASP Top 10:2025 自评：170 项黑盒检查、30 项浏览器检查，55 项发现，其中高危 5 项，已修复 49 项。"
         },
         {
           "en": "Electron hardening: sandboxed renderer without Node.js, a custom protocol with a content security policy, typed IPC validated with zod, no network requests (checked by the e2e suite's net log), and a renderer process replaced on every lock.",

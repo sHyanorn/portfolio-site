@@ -2,7 +2,7 @@
 
 Content: `src/content/site/home.json` and `src/content/site/about.json`. Each row covers one fact from the English text. The Chinese text states the same facts.
 
-Repositories at: matching-engine 1d50110, vault-share 96159bb, backtest-lab 024e743, local-ledger ae08641, push-lab acab86b. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
+Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab acab86b. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
 
 ## Home
 
@@ -11,7 +11,7 @@ The intro's two sentences, then one sentence for each area.
 | Number or claim | Source |
 |---|---|
 | Commerce student at the University of Melbourne | site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts:38; site:src/lib/i18n.ts@b5c04e0:35, 47 |
-| Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:376-380; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81 |
+| Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:377-381; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81 |
 | Each project below has a decision log in its repository | docs/DECISIONS.md:1 in all five repositories |
 | Backend: Go limit order book | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
 | Backend: write-ahead command log | matching-engine README.md:3, 42; docs/DECISIONS.md:101-103 (D017) |
@@ -84,15 +84,15 @@ Rows 1 to 16 are in vault-share; the rest are in local-ledger.
 | AES-256-GCM | vault-share docs/DECISIONS.md:63 (D012); README.md:18 |
 | Key in the URL fragment, which browsers never send | vault-share README.md:3, 21; docs/DECISIONS.md:12-14 (D003) |
 | File password: the secret is wrapped under a key that Argon2id derives from the password | vault-share docs/DECISIONS.md:112 (D019); README.md:31 |
-| Accounts: an Argon2id master key, from which HKDF derives the auth secret and the wrapping key | vault-share docs/DECISIONS.md:161 (D026); README.md:41 |
-| The server never sees the password | vault-share docs/DECISIONS.md:161, 164 (D026), 112 (D019: the server does not know a password exists); README.md:31, 41 |
-| Download counts decremented in one conditional SQL UPDATE. Concurrent requests cannot over-issue, which rests on that statement's own condition | vault-share docs/DECISIONS.md:79 (D014); server/internal/store/store.go:263-271 |
+| Accounts: an Argon2id master key, from which HKDF derives the auth secret and the wrapping key | vault-share docs/DECISIONS.md:162 (D026); README.md:41 |
+| The server never sees the password | vault-share docs/DECISIONS.md:162, 165 (D026), 112 (D019: the server does not know a password exists); README.md:31, 41 |
+| Download counts decremented in one conditional SQL UPDATE. Concurrent requests cannot over-issue, which rests on that statement's own condition | vault-share docs/DECISIONS.md:79 (D014); server/internal/store/store.go:273-285 |
 | Stateless challenges carrying an HMAC-SHA256 tag | vault-share docs/DECISIONS.md:80 (D014); docs/security/FINDINGS.md:14 (F8) |
 | Threat model | vault-share docs/security/THREAT_MODEL.md:1-3; README.md:55 |
 | Self-assessment against the OWASP Top 10:2025 | vault-share docs/security/TEST_REPORT.md:3 |
-| 170 black-box checks; 30 browser checks | vault-share docs/security/TEST_REPORT.md:376-377 |
-| 46 findings; 4 High (F1, F2, F3, F26) | vault-share docs/security/FINDINGS.md:7-52; 7-9, 32 |
-| 44 fixed, F20 in documentation; 2 accepted (F22, F40) | vault-share docs/security/FINDINGS.md:5-52 (rows 26; 28, 46) |
+| 170 black-box checks; 30 browser checks | vault-share docs/security/TEST_REPORT.md:377-378 |
+| 55 findings; 5 High (F1, F2, F3, F26, F47) | vault-share docs/security/FINDINGS.md:7-61; 7-9, 32, 53 |
+| 49 fixed, F20 in documentation; 2 accepted (F22, F40) | vault-share docs/security/FINDINGS.md:5-61 (rows 26; 28, 46) |
 | Sandboxed renderer | local-ledger docs/DECISIONS.md:53-55 (D010); docs/SECURITY_DESIGN.md:93; docs/SPEC.md:51 |
 | No Node.js in the renderer | local-ledger docs/SECURITY_DESIGN.md:11, 93 |
 | Custom protocol `app://local-ledger` with a CSP on every response | local-ledger docs/DECISIONS.md:48 (D009); docs/SECURITY_DESIGN.md:93 |

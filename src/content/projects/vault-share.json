@@ -30,10 +30,10 @@
         }
       },
       {
-        "value": { "en": "46", "zh": "46" },
+        "value": { "en": "55", "zh": "55" },
         "label": {
-          "en": "security findings logged during development, 4 of them High; all fixed but 2 accepted",
-          "zh": "开发过程中记录的安全问题，其中 4 个高危；2 个评估后接受，其余均已修复"
+          "en": "security findings logged during development, a production readiness review and a code review, 5 of them High; 49 fixed, 2 accepted, 4 open at Low or below",
+          "zh": "开发过程、生产就绪评审和代码评审中记录的安全问题，其中 5 个高危；49 个已修复，2 个评估后接受，4 个尚未修复，最高为低危"
         }
       },
       {
@@ -44,10 +44,10 @@
         }
       },
       {
-        "value": { "en": "143", "zh": "143" },
+        "value": { "en": "161", "zh": "161" },
         "label": {
-          "en": "Go tests passing under the race detector, and 107 Vitest tests",
-          "zh": "开启竞态检测后通过的 Go 测试；另有 107 个 Vitest 测试通过"
+          "en": "Go tests passing under the race detector, S3 tests included, and 108 Vitest tests",
+          "zh": "开启竞态检测后通过的 Go 测试，含 S3 测试；另有 108 个 Vitest 测试通过"
         }
       }
     ],
@@ -57,7 +57,7 @@
     },
     "source": {
       "label": { "en": "Security test report", "zh": "安全测试报告" },
-      "url": "https://github.com/sHyanorn/vault-share/blob/96159bbc83595650ac4fc8d396c868d785de3e4b/docs/security/TEST_REPORT.md"
+      "url": "https://github.com/sHyanorn/vault-share/blob/d5f69e6d8cd251412b3c7786f87216ca5bd5e066/docs/security/TEST_REPORT.md"
     }
   },
   "problem": [
@@ -70,8 +70,8 @@
       "zh": "规格定下的要求有：支持最大 1 GB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
     },
     {
-      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. A compromised server could still send JavaScript that steals keys, as with every web-based encryption tool, and the server sees each file's size and when it is uploaded and downloaded.",
-      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，所有网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。"
+      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. On download, Chromium-based browsers write the decrypted file straight to disk; other browsers hold it in browser storage until the download is complete. A compromised server could still send JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and when it is uploaded and downloaded. Monitoring and backups are left to the operator: the health check covers the database, the storage and free disk space but not the database's integrity, and nothing alerts or backs up automatically.",
+      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。下载时，Chromium 系浏览器把解密后的文件直接写入磁盘，其他浏览器先把它放在浏览器存储里，下载完成后再保存。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，大多数网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。监控和备份由运维者负责：健康检查覆盖数据库、存储和剩余磁盘空间，不检查数据库完整性，也没有告警和自动备份。"
     }
   ],
   "architecture": {
@@ -79,7 +79,7 @@
       "sender": { "en": "sender's browser", "zh": "发送方浏览器" },
       "encrypts": { "en": "encrypts file and name", "zh": "加密文件和文件名" },
       "recipient": { "en": "recipient's browser", "zh": "接收方浏览器" },
-      "decrypts": { "en": "signs, decrypts to disk", "zh": "签名，解密后存盘" },
+      "decrypts": { "en": "signs, decrypts", "zh": "签名，解密" },
       "link": { "en": "share link", "zh": "分享链接" },
       "fragment": {
         "en": "browsers never send the part after #",
@@ -103,8 +103,8 @@
       "blobs": { "en": "disk or S3", "zh": "磁盘或 S3" }
     },
     "description": {
-      "en": "The sender's browser encrypts the file and its name and uploads the ciphertext with an auth key derived from the link's secret, getting back the file id and a delete token. The sender passes the share link, `/f/id#secret`, to the recipient, and browsers never send the part after the #. On the server, Caddy terminates TLS and passes every request to vaultd, a Go service on chi, which keeps the encrypted names, token hashes and auth keys in SQLite and the ciphertext on local disk or in an S3 bucket. The recipient's browser derives the same keys from the link and signs the server's challenge with the auth key; vaultd checks the signature, counts one download and issues a one-time token, and the browser fetches the ciphertext and decrypts it to disk.",
-      "zh": "发送方浏览器加密文件和文件名，把密文连同由链接密钥派生出的认证密钥一起上传，拿回文件 ID 和删除令牌。发送方把分享链接 `/f/id#secret` 交给接收方，浏览器不会发送 # 之后的部分。服务器上，Caddy 负责 TLS，把所有请求转发给 vaultd；vaultd 是基于 chi 的 Go 服务，把加密的文件名、令牌哈希和认证密钥存在 SQLite 里，密文存在本地磁盘或 S3 存储桶中。接收方浏览器从链接派生出同样的密钥，用认证密钥签名服务器给出的挑战值；vaultd 校验签名、扣减一次下载次数并发放一次性令牌，浏览器随后取回密文，解密后写入磁盘。"
+      "en": "The sender's browser encrypts the file and its name and uploads the ciphertext with an auth key derived from the link's secret, getting back the file id and a delete token. The sender passes the share link, `/f/id#secret`, to the recipient, and browsers never send the part after the #. On the server, Caddy terminates TLS and passes every request to vaultd, a Go service on chi, which keeps the encrypted names, token hashes and auth keys in SQLite and the ciphertext on local disk or in an S3 bucket. The recipient's browser derives the same keys from the link and signs the server's challenge with the auth key; vaultd checks the signature, counts one download and issues a one-time token, and the browser fetches the ciphertext and decrypts it, straight to disk in Chromium-based browsers.",
+      "zh": "发送方浏览器加密文件和文件名，把密文连同由链接密钥派生出的认证密钥一起上传，拿回文件 ID 和删除令牌。发送方把分享链接 `/f/id#secret` 交给接收方，浏览器不会发送 # 之后的部分。服务器上，Caddy 负责 TLS，把所有请求转发给 vaultd；vaultd 是基于 chi 的 Go 服务，把加密的文件名、令牌哈希和认证密钥存在 SQLite 里，密文存在本地磁盘或 S3 存储桶中。接收方浏览器从链接派生出同样的密钥，用认证密钥签名服务器给出的挑战值；vaultd 校验签名、扣减一次下载次数并发放一次性令牌，浏览器随后取回密文并解密，Chromium 系浏览器直接写入磁盘。"
     }
   },
   "decisions": {
@@ -127,8 +127,8 @@
           "zh": "发放令牌时就扣下载次数"
         },
         "body": {
-          "en": "A download is counted when a signed challenge is accepted and a one-time token issued, in a single conditional UPDATE; the token is valid for 5 minutes and one use. Firefox Send counted a download when the stream finished and without atomicity, so parallel requests could exceed the limit and an aborted download cost nothing. In exchange, a download cut off by the network still uses a count. Challenges are stateless, 32 bytes with an HMAC tag under a key drawn at startup, so a flood of metadata requests has nothing to evict.",
-          "zh": "服务器接受签名、发放一次性令牌时扣减下载次数，用一条带条件的 UPDATE 完成；令牌 5 分钟内有效，只能用一次。Firefox Send 在下载流结束时才计数，也不保证原子性，并发请求可以超出次数上限，中途放弃的下载也不扣次数。相应的代价是，被网络打断的下载同样会用掉一次。挑战值不在服务器上保存状态，是 32 字节的数据，带有用启动时生成的密钥算出的 HMAC 标签，所以大量元数据请求也挤不掉别人待用的挑战值。"
+          "en": "A download is counted when a signed challenge is accepted and a one-time token issued, with a conditional UPDATE and the token insert in one transaction; the token is valid for 5 minutes and one use. Firefox Send counted a download when the stream finished and without atomicity, so parallel requests could exceed the limit and an aborted download cost nothing. In exchange, a download cut off by the network still uses a count. Challenges are stateless, 32 bytes with an HMAC tag under a key drawn at startup, so a flood of metadata requests has nothing to evict.",
+          "zh": "服务器接受签名、发放一次性令牌时扣减下载次数，带条件的 UPDATE 和令牌写入在同一个事务里完成；令牌 5 分钟内有效，只能用一次。Firefox Send 在下载流结束时才计数，也不保证原子性，并发请求可以超出次数上限，中途放弃的下载也不扣次数。相应的代价是，被网络打断的下载同样会用掉一次。挑战值不在服务器上保存状态，是 32 字节的数据，带有用启动时生成的密钥算出的 HMAC 标签，所以大量元数据请求也挤不掉别人待用的挑战值。"
         }
       },
       {
@@ -165,17 +165,17 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/vault-share/blob/96159bbc83595650ac4fc8d396c868d785de3e4b/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/vault-share/blob/d5f69e6d8cd251412b3c7786f87216ca5bd5e066/docs/DECISIONS.md"
   },
   "challenges": [
     {
       "title": {
-        "en": "The High findings were in the upload path",
-        "zh": "高危问题都出在上传流程"
+        "en": "Four of the five High findings were in the upload path",
+        "zh": "五个高危问题有四个出在上传流程"
       },
       "body": {
-        "en": "All four High findings were about uploads (F1, F2, F3, F26). The server's 60-second write timeout cut long uploads off before the reply reached the client (F3), which retried, and a second upload with the same owner token could overwrite the stored file, or delete it with a bad body (F2). Now stored content is never replaced, each transfer gets deadlines from its size, and a file takes one upload at a time. Before that rule, 40 uploads to one file took the server from 18 to 341 MiB on S3; with S3 uploads streamed instead of buffered, ten uploads to ten files moved it from 19 to 20 MiB (F26).",
-        "zh": "四个高危问题全都和上传有关（F1、F2、F3、F26）。服务器 60 秒的写超时会在回复送达客户端之前切断较长的上传（F3），客户端于是重试；用同一个所有者令牌发起的第二次上传可能覆盖已经存好的文件，请求体出错时还会把它删掉（F2）。现在已存储的内容不会被替换，每次传输按文件大小设定时限，一个文件同一时间只接受一次上传。有这条规则之前，在 S3 上向同一个文件并发上传 40 次，服务器内存从 18 MiB 涨到 341 MiB；S3 上传改为流式、不再缓冲之后，向 10 个文件各上传一次，内存只从 19 MiB 升到 20 MiB（F26）。"
+        "en": "Four of the five High findings were about uploads (F1, F2, F3, F26); the fifth came from a later production readiness review, where a new database started over existing storage made cleanup delete every stored file (F47). The server's 60-second write timeout cut long uploads off before the reply reached the client (F3), which retried, and a second upload with the same owner token could overwrite the stored file, or delete it with a bad body (F2). Now stored content is never replaced, each transfer gets deadlines from its size, and a file takes one upload at a time. Before that rule, 40 uploads to one file took the server from 18 to 341 MiB on S3; with S3 uploads streamed instead of buffered, ten uploads to ten files moved it from 19 to 20 MiB (F26).",
+        "zh": "五个高危问题中有四个和上传有关（F1、F2、F3、F26）；第五个来自之后的生产就绪评审：在已有存储上新建数据库，清理会把所有已存文件删掉（F47）。服务器 60 秒的写超时会在回复送达客户端之前切断较长的上传（F3），客户端于是重试；用同一个所有者令牌发起的第二次上传可能覆盖已经存好的文件，请求体出错时还会把它删掉（F2）。现在已存储的内容不会被替换，每次传输按文件大小设定时限，一个文件同一时间只接受一次上传。有这条规则之前，在 S3 上向同一个文件并发上传 40 次，服务器内存从 18 MiB 涨到 341 MiB；S3 上传改为流式、不再缓冲之后，向 10 个文件各上传一次，内存只从 19 MiB 升到 20 MiB（F26）。"
       }
     },
     {

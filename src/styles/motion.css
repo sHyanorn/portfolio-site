@@ -1,8 +1,10 @@
 /* Entrances (D014). Nothing moves when the reader asks for reduced motion.
-   Both rise 8 px as they fade in. `.rise` fades the first screen in on load,
-   one step of 90 ms per `--rise`; `.reveal` fades a block in as its top
-   scrolls through the bottom 96 px of the viewport, so a block is never
-   caught half-faded in the reading area. */
+   Every entering block fades in and rises 8 px once it is on screen. On
+   load, the blocks in view enter from the top down, each waiting in
+   proportion to how far its top sits below the header, so the first block
+   in view never waits for blocks out of view. Further down, a block enters
+   as its top scrolls through the bottom 96 px of the viewport, so it is
+   never caught half-faded in the reading area. */
 @keyframes enter {
   from {
     opacity: 0;
@@ -16,6 +18,75 @@
   }
 }
 
+/* Each timeline drives a number of its own, and the entrance is their
+   product. The initial values are the end state, so a block shows in full
+   wherever the animations do not run: reduced motion, print, or a browser
+   without view timelines. */
+@property --enter-clock {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --enter-depth {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --enter-view {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --enter-rest {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --enter {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
+/* Inherited, so a link target inside an entering block knows how far the
+   block still has to rise. */
+@property --lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@keyframes enter-clock {
+  from {
+    --enter-clock: 0;
+  }
+}
+
+@keyframes enter-depth {
+  from {
+    --enter-depth: 1;
+  }
+  to {
+    --enter-depth: 0;
+  }
+}
+
+@keyframes enter-view {
+  from {
+    --enter-view: 0;
+  }
+}
+
+/* A fragment, or a link within the page, scrolls to where its target will
+   be once its block has risen. */
+[id] {
+  scroll-margin-top: var(--lift);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* A link within the page scrolls to its target instead of jumping. Not in
      the page's first second, so a page opened at a fragment starts there
@@ -26,20 +97,49 @@
     animation: hold-scroll 0s 1s backwards;
   }
 
-  .rise {
-    animation: enter var(--duration) var(--ease-out) both;
-    animation-delay: calc(var(--rise, 0) * 90ms);
-  }
-
   @supports ((animation-timeline: view()) and (animation-range: entry)) {
     /* Longhands only: the minifier folds a complete set into the
-       `animation` shorthand with the timeline inside, which browsers reject. */
+       `animation` shorthand with the timeline inside, which browsers reject.
+       The clock runs 860 ms: 360 ms of waiting for a block at the foot of
+       the viewport, then the 500 ms entrance. Depth is 0 for a top at or
+       above the header and 1 for a top at the foot of the viewport; view
+       goes from 0 to 1 while the top crosses the bottom 96 px. */
+    .rise,
     .reveal {
-      animation-name: enter;
-      animation-timing-function: var(--ease-out);
+      animation-name: enter-clock, enter-depth, enter-view;
+      animation-duration: 860ms, auto, auto;
+      animation-timing-function: linear, linear, var(--ease-out);
       animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 0 entry 96px;
+      animation-timeline: auto, view(), view();
+      animation-range:
+        normal,
+        entry 0 entry calc(100vh - var(--header-height)),
+        entry 0 entry 96px;
+      --enter-rest: calc(
+        1 -
+          clamp(
+            0,
+            (var(--enter-clock) * 860 - var(--enter-depth) * 360) / 500,
+            1
+          )
+      );
+      /* 1 − (1 − t)³ stays within 0.04 of `--ease-out`. */
+      --enter: calc(
+        (1 - var(--enter-rest) * var(--enter-rest) * var(--enter-rest)) *
+          var(--enter-view)
+      );
+      --lift: calc((1 - var(--enter)) * 8px);
+      opacity: var(--enter);
+      translate: 0 var(--lift);
+    }
+  }
+
+  /* Without view timelines the first screen fades in on load, one step of
+     90 ms per `--rise`, and blocks further down show at once. */
+  @supports not ((animation-timeline: view()) and (animation-range: entry)) {
+    .rise {
+      animation: enter var(--duration) var(--ease-out) both;
+      animation-delay: calc(var(--rise, 0) * 90ms);
     }
   }
 }

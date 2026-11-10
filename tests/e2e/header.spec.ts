@@ -33,13 +33,15 @@ for (const viewport of viewports) {
 
     test('the Projects link stops below the header', async ({ page }) => {
       await page.goto(BASE)
-      await page
-        .locator('#projects')
-        .evaluate((el) =>
-          Promise.all(
-            el.getAnimations({ subtree: true }).map((a) => a.finished),
-          ),
-        )
+      // Scroll-driven animations never finish; the load clock does.
+      await page.locator('#projects').evaluate((el) =>
+        Promise.all(
+          el
+            .getAnimations({ subtree: true })
+            .filter((a) => a.timeline === document.timeline)
+            .map((a) => a.finished),
+        ),
+      )
       const scrolled = page.evaluate(
         () =>
           new Promise<void>((resolve) =>

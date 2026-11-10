@@ -2,7 +2,7 @@
 
 Personal website of Aaron Yang. Built with Astro and TypeScript, with a hand-written WebGL2 and GLSL background.
 
-> Status: in development. See [docs/TASKS.md](docs/TASKS.md).
+Live at [shyanorn.github.io/portfolio-site](https://shyanorn.github.io/portfolio-site/).
 
 ## Pages
 
@@ -12,6 +12,15 @@ Personal website of Aaron Yang. Built with Astro and TypeScript, with a hand-wri
 - `/about/`: education, the four areas with what each project built and measured, and the tools, from `src/content/site/about.json` ([D017](docs/DECISIONS.md)); each statement is traced in `docs/project-sources/about.md`
 
 Every page but the 404 page also exists in Chinese under `/zh/` ([D011](docs/DECISIONS.md)). From 1024 px up the pages use a 1280 px container with side columns; below that, one column ([D020](docs/DECISIONS.md)).
+
+## Screenshots
+
+At 1440×900 ([D019](docs/DECISIONS.md)).
+
+| Light | Dark |
+| --- | --- |
+| ![Home page, light theme](docs/screenshots/home-light.png) | ![Home page, dark theme](docs/screenshots/home-dark.png) |
+| ![local-ledger project page, light theme](docs/screenshots/local-ledger-light.png) | ![local-ledger project page, dark theme](docs/screenshots/local-ledger-dark.png) |
 
 ## Development
 

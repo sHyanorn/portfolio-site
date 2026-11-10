@@ -178,7 +178,9 @@ const labels = Object.fromEntries(
     margin-top: var(--space-5);
   }
 
-  .gallery {
+  /* Later screenshots follow the first at the gap between screenshots, so
+     they read as one set; the child combinator outranks the section gap. */
+  .project > .gallery {
     margin-top: var(--space-5);
   }
 

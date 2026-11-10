@@ -54,6 +54,26 @@ for (const width of [768, 1024, 1056])
       await expect(page.locator('.diagram svg.narrow')).toBeHidden()
     })
 
+// Later screenshots follow the first at the gap between screenshots, closer
+// than the gap between sections, so they read as one set.
+for (const width of [768, 1440])
+  for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))
+    test(`${width} ${p.name}: the gallery keeps the screenshot gap`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto(p.path)
+      const gallery = page.locator('.gallery')
+      test.skip((await gallery.count()) === 0, 'one screenshot or a video')
+      const hero = (await page.locator('.hero').boundingBox())!
+      const top = (await gallery.boundingBox())!.y
+      const gap = await gallery
+        .locator('.shots')
+        .evaluate((el) => parseFloat(getComputedStyle(el).rowGap))
+      expect(top - (hero.y + hero.height)).toBeCloseTo(gap, 0)
+    })
+
 test.describe('1920x1080', () => {
   test.use({ viewport: { width: 1920, height: 1080 } })
 

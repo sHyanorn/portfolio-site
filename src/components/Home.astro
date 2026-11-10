@@ -33,14 +33,13 @@ const home = (await getEntry('home', 'home'))!.data
     </dl>
   </section>
 
-  <section
-    id="projects"
-    class="rise"
-    style="--rise: 3"
-    aria-labelledby="projects-title"
-  >
-    <h2 id="projects-title">{t(lang, 'projects')}</h2>
-    <div class="list">
+  {/* The entrance is on the children: a link to #projects aims at the
+       section's box, which must not move. */}
+  <section id="projects" aria-labelledby="projects-title">
+    <h2 id="projects-title" class="rise" style="--rise: 3">
+      {t(lang, 'projects')}
+    </h2>
+    <div class="list rise" style="--rise: 3">
       {projects.map((project, i) => (
         <ProjectCard {project} {lang} featured={i === 0} />
       ))}

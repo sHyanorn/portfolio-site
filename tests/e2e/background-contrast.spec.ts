@@ -133,8 +133,14 @@ for (const viewport of viewports) {
 
       /** Waits out the entrances and the canvas fade, then checks the text over the background. */
       async function check(page: Page, decoder: Page, state: string) {
+        // The header's animation follows the scroll and never finishes.
         await page.evaluate(() =>
-          Promise.all(document.getAnimations().map((a) => a.finished)),
+          Promise.all(
+            document
+              .getAnimations()
+              .filter((a) => a.timeline === document.timeline)
+              .map((a) => a.finished),
+          ),
         )
         if (screenshots)
           await page.screenshot({

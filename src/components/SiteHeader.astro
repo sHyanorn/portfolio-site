@@ -70,15 +70,73 @@ const home = getRelativeLocaleUrl(lang)
 </header>
 
 <style>
-  /* Where the name and the links do not fit on one line, the links move to
-     a second line instead of breaking inside a name or a label. */
+  /* The header stays at the top of the viewport (D020). Its background is
+     the page colour at 90%, which keeps the links at 4.5:1 whatever scrolls
+     under it, blurred where the browser can; without the blur it is opaque. */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--color-line) 50%, transparent);
+    background: var(--color-bg);
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .header {
+      background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+      backdrop-filter: blur(12px);
+    }
+  }
+
+  /* At the top of a page the header has no background and no line. Both
+     come in over the 3rem a page scrolls before its content reaches the
+     header; a page too short to scroll never shows them. Longhands, as for
+     `.reveal` (D014). */
+  @keyframes header-in {
+    to {
+      border-bottom-color: var(--color-line);
+      background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+      backdrop-filter: blur(12px);
+    }
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .header {
+      border-bottom-color: transparent;
+      background-color: transparent;
+      backdrop-filter: blur(0);
+      animation-name: header-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll();
+      animation-range: 0 var(--space-5);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .header {
+      background: Canvas;
+      backdrop-filter: none;
+      animation: none;
+    }
+  }
+
+  @media print {
+    .header {
+      position: static;
+    }
+  }
+
+  /* One row; below 22.5rem the links take a second row, and
+     `--header-height` follows. */
   .nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-1) var(--space-3);
-    min-height: var(--space-6);
+    min-height: calc(var(--header-height) - 1px);
     padding-block: var(--space-2);
   }
 
@@ -108,5 +166,24 @@ const home = getRelativeLocaleUrl(lang)
   .links a:hover,
   .links a[aria-current] {
     color: var(--color-text);
+  }
+
+  /* On a phone the links are smaller and closer, so that one row holds
+     them from 22.5rem up. */
+  @media (max-width: 29.99rem) {
+    .nav {
+      column-gap: var(--space-2);
+    }
+
+    .links {
+      gap: var(--space-2);
+      font-size: var(--step--1);
+    }
+  }
+
+  @media (max-width: 22.49rem) {
+    .links {
+      flex-basis: 100%;
+    }
   }
 </style>

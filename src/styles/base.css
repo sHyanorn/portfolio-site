@@ -15,9 +15,12 @@
   line-height: 1.75;
 }
 
+/* A link to a place in the page, and keyboard focus, stop 2rem below the
+   sticky header. */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + var(--space-4));
 }
 
 body {

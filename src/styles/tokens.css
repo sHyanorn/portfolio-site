@@ -66,6 +66,11 @@
   --gutter: clamp(1rem, 4vw, 1.5rem);
   --margin: clamp(1rem, 3vw, 3rem);
 
+  /* The sticky header's height (D020): one row, or two below 22.5rem
+     (360 px), where the name and the links do not fit side by side. Sticky
+     columns and scroll targets stay clear of it. */
+  --header-height: var(--space-6);
+
   --radius-2: 8px;
   --radius-3: 12px;
 
@@ -75,4 +80,10 @@
   --duration-fast: 240ms;
   --duration: 500ms;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (max-width: 22.49rem) {
+  :root {
+    --header-height: var(--space-7);
+  }
 }

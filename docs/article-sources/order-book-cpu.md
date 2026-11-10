@@ -29,7 +29,7 @@ All paths are in github.com/sHyanorn/matching-engine at commit 26ff705.
 | CPU per request up to +3% | docs/BENCHMARKS.md:113 |
 | 25k/s p99 20.0, 36.4, 215 → 19.6, 19.8, 28.7 ms | docs/BENCHMARKS.md:112 |
 | Crash window: one interval plus an fsync in progress | docs/DECISIONS.md:187 (D031) |
-| p99 1.76 ms at 10k/s, 41.1 ms at 50k/s in the headline end-to-end runs | docs/BENCHMARKS.md:5, 38, 44 |
+| p99 1.76 ms at 10k/s in the headline end-to-end runs; 50k/s near saturation: a median p99 of 41.1 ms over the three headline runs, 141.1 ms on a second 4 vCPU VM, 40 to 150 ms on the two machines | docs/BENCHMARKS.md:5, 38, 44, 56, 58; README.md:14 |
 | 64 keep-alive connections | docs/BENCHMARKS.md:28 |
 | One symbol per run | docs/BENCHMARKS.md:30 |
 | One 4 vCPU VM; the load generator and the engine share the 4 vCPUs | docs/BENCHMARKS.md:5 |

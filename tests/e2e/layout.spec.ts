@@ -2,13 +2,15 @@
 // on the content edge or the page margin; the metrics, diagram and gallery
 // of a project page; the 36em measure; and an article's contents list,
 // centred body and left column that stays in view.
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
 // The header's ends sit on the content's edges while the content fills the
 // page; once the content is centred at its full width with more room beside
 // it than the page margin, they sit on the page margin instead.
-for (const width of [800, 1024, 1280, 1340, 1440, 1920, 2560])
+for (const width of [480, 600, 800, 1024, 1280, 1340, 1440, 1920, 2560])
   for (const path of [BASE, `${BASE}zh/`])
     test(`${width} ${path}: header on the content edge or page margin`, async ({
       page,
@@ -64,9 +66,19 @@ for (const width of [768, 1024, 1056])
     })
 
 // Later screenshots follow the first at the gap between screenshots, closer
-// than the gap between sections, so they read as one set.
+// than the gap between sections, so they read as one set. A project whose
+// demo is a video has none.
+const CONTENT = 'src/content/projects'
+const withShots = readdirSync(CONTENT)
+  .filter((f) => f.endsWith('.json'))
+  .filter(
+    (f) => 'images' in JSON.parse(readFileSync(join(CONTENT, f), 'utf8')).demo,
+  )
+  .map((f) => f.replace('.json', ''))
 for (const width of [768, 1440])
-  for (const p of pages.filter((p) => /(^|-)projects-/.test(p.name)))
+  for (const p of pages.filter((p) =>
+    withShots.some((id) => p.name.endsWith(`projects-${id}`)),
+  ))
     test(`${width} ${p.name}: the gallery keeps the screenshot gap`, async ({
       page,
     }) => {
@@ -74,7 +86,6 @@ for (const width of [768, 1440])
       await page.emulateMedia({ reducedMotion: 'reduce' })
       await page.goto(p.path)
       const gallery = page.locator('.gallery')
-      test.skip((await gallery.count()) === 0, 'one screenshot or a video')
       const hero = (await page.locator('.hero').boundingBox())!
       const top = (await gallery.boundingBox())!.y
       const gap = await gallery

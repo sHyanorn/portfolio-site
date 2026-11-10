@@ -22,6 +22,39 @@ At 1440×900 ([D019](docs/DECISIONS.md)).
 | ![Home page, light theme](docs/screenshots/home-light.png) | ![Home page, dark theme](docs/screenshots/home-dark.png) |
 | ![local-ledger project page, light theme](docs/screenshots/local-ledger-light.png) | ![local-ledger project page, dark theme](docs/screenshots/local-ledger-dark.png) |
 
+## Lighthouse
+
+The live site at `8e1dcae` on 2026-11-10, with CI's settings ([D019](docs/DECISIONS.md)): the mobile preset three times per page, the median run kept, and the desktop preset once. Each cell is performance / accessibility / best practices / SEO.
+
+| Page | Mobile | Desktop |
+| --- | --- | --- |
+| `/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/about/` | 100 / 100 / 100 / 100 | 100 / 95 / 100 / 100 |
+| `/zh/about/` | 100 / 100 / 100 / 100 | 100 / 95 / 100 / 100 |
+| `/articles/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/articles/cryptography-held/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/cryptography-held/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/articles/locking-ends-a-process/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/locking-ends-a-process/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/articles/low-pbo-easy-question/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/low-pbo-easy-question/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/articles/order-book-cpu/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/order-book-cpu/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/backtest-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/backtest-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/local-ledger/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/local-ledger/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/matching-engine/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/matching-engine/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/push-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/push-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/vault-share/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/vault-share/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+
+Where accessibility is below 100, the contrast check read text partway through its entrance fade: the About pages on desktop ([D020](docs/DECISIONS.md)) and the gallery captions of three Chinese project pages on mobile.
+
 ## Development
 
 Requires Node.js 22.23.4 or later.

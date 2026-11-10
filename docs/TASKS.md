@@ -29,7 +29,7 @@
 ## M4 Polish and launch
 - [ ] Performance and accessibility optimization, Lighthouse 95 or higher
 - [ ] SEO and social share images for project and article pages
-- [ ] Launch, with screenshots and Lighthouse results in the README
+- [x] Launch, with screenshots and Lighthouse results in the README
 - [x] Wide-screen layout: a 1280 px container with side columns from 1024 px, picture cards on the home page (D020)
 - [x] Home headline and introduction by area, and an About page by area with every statement traced to its repository (D017)
 

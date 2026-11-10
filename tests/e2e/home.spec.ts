@@ -46,6 +46,18 @@ for (const path of [BASE, `${BASE}zh/`])
       expect(largest, String(src)).toBe(Math.min(source as number, 1080))
   })
 
+// Every card picture loads lazily; an eager first one measured no better in
+// Lighthouse.
+for (const path of [BASE, `${BASE}zh/`])
+  test(`${path}: card pictures load lazily`, async ({ page }) => {
+    await page.goto(path)
+    const loading = await page
+      .locator('#projects .thumb img')
+      .evaluateAll((imgs) => imgs.map((img) => img.getAttribute('loading')))
+    expect(loading.length).toBeGreaterThan(0)
+    for (const value of loading) expect(value).toBe('lazy')
+  })
+
 // A card whose picture has a dark copy shows that copy under the dark theme,
 // and the light one otherwise; only the copy shown loads.
 for (const colorScheme of ['light', 'dark'] as const)

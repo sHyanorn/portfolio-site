@@ -216,13 +216,16 @@ const sections = headings.filter((h) => h.depth === 2)
     margin-top: var(--space-6);
   }
 
-  /* A wide screen keeps the measure and moves the facts and the contents
-     into a column beside the text, where they stay in view. The columns
-     match the section rows of project pages and About. */
+  /* A wide screen keeps the measure in the middle of the page and moves
+     the facts and the contents into a column on its left, where they stay
+     in view. Where the page is too narrow for a column on each side, the
+     text moves right to make room. */
   @media (min-width: 64rem) {
     .article {
       display: grid;
-      grid-template-columns: 15rem minmax(0, var(--width-prose));
+      grid-template-columns:
+        minmax(15rem, 1fr) minmax(0, var(--width-prose))
+        minmax(0, 1fr);
       column-gap: var(--space-5);
     }
 
@@ -234,6 +237,8 @@ const sections = headings.filter((h) => h.depth === 2)
       grid-column: 1;
       grid-row: 2 / span 2;
       align-self: start;
+      justify-self: end;
+      width: 15rem;
       position: sticky;
       top: var(--space-4);
       margin-top: var(--space-5);

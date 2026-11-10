@@ -8,13 +8,19 @@
 import { expect, test } from '@playwright/test'
 import { BASE, pages } from './site'
 
-// Common laptop screens, and a tablet held upright.
+// Common laptop screens, and a tablet held upright; then the same screens
+// less a maximised browser's tabs, address bar and taskbar.
 const viewports = [
   { width: 1366, height: 768 },
   { width: 1536, height: 864 },
   { width: 1440, height: 900 },
   { width: 768, height: 1024 },
   { width: 1920, height: 1080 },
+  { width: 1366, height: 657 },
+  { width: 1280, height: 603 },
+  { width: 1536, height: 730 },
+  { width: 1440, height: 789 },
+  { width: 1920, height: 953 },
 ]
 // The first screenshot, then the gallery of the later ones.
 const SHOTS = ':is(.demo, .gallery) figure img:visible'

@@ -10,7 +10,7 @@ The intro's two sentences, then one sentence for each area.
 
 | Number or claim | Source |
 |---|---|
-| Commerce student at the University of Melbourne | site:docs/DECISIONS.md:115 (D017); site:src/lib/i18n.ts:38; site:src/lib/i18n.ts@b5c04e0:35, 47 |
+| Commerce student at the University of Melbourne | site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts:38; site:src/lib/i18n.ts@b5c04e0:35, 47 |
 | Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:376-380; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81 |
 | Each project below has a decision log in its repository | docs/DECISIONS.md:1 in all five repositories |
 | Backend: Go limit order book | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
@@ -39,11 +39,11 @@ Taken from the site's own earlier text and D017.
 
 | Number or claim | Source |
 |---|---|
-| The University of Melbourne | site:docs/SPEC.md:36; site:docs/DECISIONS.md:115 (D017); site:src/lib/i18n.ts@b5c04e0:52 |
-| Bachelor of Commerce | site:docs/DECISIONS.md:115 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| 2024 to 2027 | site:docs/DECISIONS.md:115 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| In progress | site:docs/DECISIONS.md:115 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| Based in Melbourne, Australia | Aaron, 2026-11-09. No repository source. site:docs/DECISIONS.md:117 (the D017 amendment) records only that About shows the city |
+| The University of Melbourne | site:docs/SPEC.md:36; site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts@b5c04e0:52 |
+| Bachelor of Commerce | site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| 2024 to 2027 | site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| In progress | site:docs/DECISIONS.md:116 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| Based in Melbourne, Australia | Aaron, 2026-11-09. No repository source. site:docs/DECISIONS.md:118 (the D017 amendment) records only that About shows the city |
 
 ### Backend systems
 
@@ -166,4 +166,4 @@ Where each tool appears: site project tags first, then the repositories.
 | faiss | site:src/content/projects/push-lab.json:111; push-lab docs/SPEC.md:38; docs/DECISIONS.md:98-100 (D007); pyproject.toml:11 |
 | GitHub Actions | site:src/content/projects/backtest-lab.json:143; backtest-lab docs/SPEC.md:35; .github/workflows/data.yml:3-4 |
 | This site: Astro | site:docs/SPEC.md:41; site:docs/DECISIONS.md:11-16 (D003); site:README.md:3 |
-| This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 99-101 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
+| This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 100-102 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |

@@ -111,6 +111,12 @@ const sections = headings.filter((h) => h.depth === 2)
 
   .facts a {
     color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .facts a:hover,
+  .prose :global(a:hover) {
+    color: var(--color-text);
   }
 
   /* The contents list helps only beside the text; a phone reads on. */
@@ -170,6 +176,7 @@ const sections = headings.filter((h) => h.depth === 2)
 
   .prose :global(a) {
     color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
   }
 
   .prose :global(:not(pre) > code) {

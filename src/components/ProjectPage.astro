@@ -216,6 +216,12 @@ const labels = Object.fromEntries(
     display: block;
     width: fit-content;
     color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .note a:hover,
+  .article a:hover {
+    color: var(--color-text);
   }
 
   h2 {
@@ -321,6 +327,7 @@ const labels = Object.fromEntries(
 
   .article a {
     color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
     font-size: var(--step-1);
     font-weight: 500;
     line-height: 1.4;

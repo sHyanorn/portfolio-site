@@ -43,7 +43,7 @@ On the faster VM, the headline end-to-end runs reached a p99 from order to trade
 
 ## Limits
 
-- **One machine.** The headline end-to-end figures come from one 4 vCPU VM, and the load generator shares those 4 vCPUs with the engine. The D004 prototype benchmarks were run separately, on a VM of the same type.
+- **One machine.** The headline end-to-end figures come from one 4 vCPU VM, and the load generator shares those 4 vCPUs with the engine. The D004 prototype benchmarks were run separately, on a VM of the same type. A second VM of the same size reproduced the 10k/s figure (1.75 ms against 1.76 ms) but not the 50k/s one; its reports are not in the repository.
 - **Two VMs.** The optimization comparisons ran on a slower VM of the same type. Its absolute latencies are not comparable with the headline table.
 - **A noisy host.** A 1 ms sleep loop in the load generator recorded pauses of up to 53 ms in one run on the faster VM, and a run on the slower VM recorded a stall of about 128 ms. Anything above p99 depends on single pauses like these. Three runs per rate show the spread; they do not remove it.
 - **One symbol, one protocol.** Every end-to-end run used one symbol, JSON over HTTP, and 64 keep-alive connections.

@@ -106,6 +106,13 @@ const home = (await getEntry('home', 'home'))!.data
     }
   }
 
+  /* Forced colours turn the shader's colours into the text colour. */
+  @media (forced-colors: active) {
+    .backdrop {
+      display: none;
+    }
+  }
+
   .intro {
     padding-block: var(--space-6) var(--space-7);
   }

@@ -87,7 +87,8 @@
   scroll-margin-top: var(--lift);
 }
 
-@media (prefers-reduced-motion: no-preference) {
+/* On screen only: in print every block stands where it ends. */
+@media screen and (prefers-reduced-motion: no-preference) {
   /* A link within the page scrolls to its target instead of jumping. Not in
      the page's first second, so a page opened at a fragment starts there
      without scrolling down from the top: `scroll-behavior` cannot be

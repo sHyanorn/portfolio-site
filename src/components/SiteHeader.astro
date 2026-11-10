@@ -168,6 +168,13 @@ const home = getRelativeLocaleUrl(lang)
     color: var(--color-text);
   }
 
+  /* Forced colours give every link one colour; a line marks the current. */
+  @media (forced-colors: active) {
+    .links a[aria-current] {
+      border-block-end: 2px solid;
+    }
+  }
+
   /* On a phone the links are smaller and closer, so that one row holds
      them from 22.5rem up. */
   @media (max-width: 29.99rem) {

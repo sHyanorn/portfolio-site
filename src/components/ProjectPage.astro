@@ -254,6 +254,14 @@ const labels = Object.fromEntries(
     background: var(--color-bg);
   }
 
+  /* Forced colours paint the gaps over with the cells' colour; outlines
+     keep the lines between them. */
+  @media (forced-colors: active) {
+    .metrics div {
+      outline: 1px solid;
+    }
+  }
+
   .metrics dd {
     font-size: var(--step-3);
     white-space: nowrap;

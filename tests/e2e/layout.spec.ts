@@ -180,3 +180,36 @@ for (const path of [BASE, `${BASE}zh/`, `${BASE}zh/projects/backtest-lab/`])
     expect(styles.length).toBeGreaterThan(0)
     expect(new Set(styles)).toEqual(new Set(['pretty']))
   })
+
+// Text-only zoom to 200 %: a 32 px default font size on a phone. The
+// header and title stay on the page and no metric value is cut off. An
+// article's table may still widen the page, which then scrolls.
+test.describe('390x844 text at 200 %', () => {
+  test.use({ viewport: { width: 390, height: 844 } })
+  for (const { name, path } of pages)
+    test(`${name}: header and title fit, no cut value`, async ({ page }) => {
+      const cdp = await page.context().newCDPSession(page)
+      await cdp.send('Page.setFontSizes', {
+        fontSizes: { standard: 32, fixed: 26 },
+      })
+      await page.goto(path)
+      const { right, cut } = await page.evaluate(() => ({
+        right: Math.max(
+          ...[...document.querySelectorAll('header a, h1')].map(
+            (e) => e.getBoundingClientRect().left + e.scrollWidth,
+          ),
+        ),
+        cut: [...document.querySelectorAll('.metrics dd')]
+          .filter((dd) => {
+            const cell = dd.parentElement!.getBoundingClientRect()
+            return (
+              dd.scrollWidth > dd.clientWidth + 1 ||
+              dd.getBoundingClientRect().right > cell.right + 1
+            )
+          })
+          .map((dd) => dd.textContent),
+      }))
+      expect(cut).toEqual([])
+      expect(right).toBeLessThanOrEqual(391)
+    })
+})

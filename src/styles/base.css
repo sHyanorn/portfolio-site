@@ -51,6 +51,7 @@ h3 {
   font-weight: 600;
   line-height: 1.25;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 h1:lang(en),

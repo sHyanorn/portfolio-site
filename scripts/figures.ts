@@ -103,7 +103,7 @@ const pair = (
 const BEIR = [
   // nDCG@10: Pyserini BM25 flat and this project, Bleve's own BM25; BGE
   // minus Pyserini's flat condition.
-  ['TREC-COVID', 0.5947, 0.3513, null],
+  ['TREC-COVID', 0.5947, 0.3513, -0.0006],
   ['NFCorpus', 0.3218, 0.3122, -0.0003],
   ['FiQA', 0.2361, 0.1906, -0.0003],
   ['ArguAna', 0.397, 0.5448, 0],
@@ -313,11 +313,10 @@ export const FIGURES: Figure[] = [
     },
     panels: [
       {
-        rows: BEIR.map(([label, , , delta]) =>
-          delta === null
-            ? { label, note: 'not run' }
-            : { label, marks: [{ dot: delta, color: 'blue' }] },
-        ),
+        rows: BEIR.map(([label, , , delta]) => ({
+          label,
+          marks: [{ dot: delta, color: 'blue' }],
+        })),
       },
     ],
   },

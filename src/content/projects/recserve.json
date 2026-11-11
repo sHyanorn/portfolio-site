@@ -105,8 +105,8 @@
           "zh": "0.2–0.3%"
         },
         "label": {
-          "en": "of responses fell back to the request's own items at 200 requests/s on Valkey and Kafka: the history read ran past its 3 ms budget. In a separate check with the four CPUs saturated, that stage missed the budget in the round that computes, at a p99 of 2.9 to 5.8 ms over three runs. All these runs carried a Kafka health check that kept about two thirds of a CPU busy",
-          "zh": "每秒 200 个请求、接上 Valkey 和 Kafka 时，因为读用户历史超出 3 ms 预算而退回到用请求自带物品的响应占比。另一项检查里四个 CPU 被占满，这个阶段在需要计算的那一轮超出了预算，三次运行的 p99 是 2.9 到 5.8 ms。这些运行都带着 Kafka 健康检查的负载，它占掉约三分之二个 CPU"
+          "en": "of responses fell back to the request's own items at 200 requests/s on Valkey and Kafka: the history read ran past its 3 ms budget. In a separate check with the four CPUs saturated, the p99 of the stage of history read and cache lookup was above the budget in two of three runs in the round that computes, 4.3 and 5.8 ms; in the other it was 2.9 ms. All these runs carried a Kafka health check that kept about two thirds of a CPU busy",
+          "zh": "每秒 200 个请求、接上 Valkey 和 Kafka 时，因为读用户历史超出 3 ms 预算而退回到用请求自带物品的响应占比。另一项检查里四个 CPU 被占满，读用户历史加查缓存这个阶段在需要计算的那一轮，三次运行里有两次 p99 超出预算，分别是 4.3 和 5.8 ms，另一次是 2.9 ms。这些运行都带着 Kafka 健康检查的负载，它占掉约三分之二个 CPU"
         }
       }
     ],

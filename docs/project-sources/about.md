@@ -2,7 +2,7 @@
 
 Content: `src/content/site/home.json` and `src/content/site/about.json`. Each row covers one fact from the English text. The Chinese text states the same facts.
 
-Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab 937ad77, ope-checks 7a097af, recserve 77069ac, retrieval-lab b1baad8. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
+Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab 937ad77, ope-checks 7a097af, recserve 77069ac, retrieval-lab 1c82956. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
 
 ## Home
 
@@ -24,7 +24,7 @@ The intro's two sentences, then the three areas.
 | Algorithms: no shortfall shown | ope-checks README.md:29; obd/results/pooled.json (`h3.ips.label`) |
 | Algorithms: BM25 and dense retrieval in Go checked against Pyserini's published BEIR numbers | retrieval-lab README.md:3, 5; docs/SPEC.md:10 |
 | Algorithms: BM25 equal to four decimals on six datasets | retrieval-lab README.md:5; docs/BENCHMARKS.md:46-51 |
-| Algorithms: BGE-base within 0.0004 on five | retrieval-lab README.md:5; docs/BENCHMARKS.md:96-100 (nDCG@10, differences of 0.0000 to −0.0004) |
+| Algorithms: BGE-base within 0.0006 on six | retrieval-lab README.md:5; docs/BENCHMARKS.md:95-100 (nDCG@10, differences of 0.0000 to −0.0006) |
 | Server-side: a recommendation serving system in Go, with retrieval, features, ranking and rerank behind one HTTP API | recserve README.md:3 |
 | Server-side: the item vectors on gRPC shard replicas | recserve README.md:5, 57 |
 | Server-side: in kind at 100 requests/s | recserve docs/DECISIONS.md:461 (D047), 463, 466 |
@@ -99,8 +99,8 @@ Items 8 and 9. All paths are in retrieval-lab.
 | The run files reproduce byte for byte from committed checksums | README.md:5, 15; results/bm25-flat.sha256:1-6 |
 | Dense retrieval with BGE-base-en-v1.5 on ONNX Runtime | README.md:5; docs/DECISIONS.md:65 (D009); docs/BENCHMARKS.md:86 |
 | Exact search | README.md:5; docs/DECISIONS.md:78 (D011); docs/BENCHMARKS.md:86 |
-| On five BEIR test sets its nDCG@10 is within 0.0004 of Pyserini's | README.md:5; docs/BENCHMARKS.md:96-100 |
-| TREC-COVID is not run | README.md:5; docs/BENCHMARKS.md:95, 126; docs/TASKS.md:22 |
+| On six BEIR test sets its nDCG@10 is within 0.0006 of Pyserini's | README.md:5; docs/BENCHMARKS.md:95-100 |
+| Within 0.0004 on all but TREC-COVID | README.md:5; docs/BENCHMARKS.md:95-100 (TREC-COVID −0.0006, the others 0.0000 to −0.0004) |
 | Comparing every document vector of SciFact and ArguAna with Pyserini's found 28 documents below a cosine of 0.9999 | docs/DECISIONS.md:73 (D010); docs/BENCHMARKS.md:105 |
 | Each held Unicode format characters that Pyserini's tokenizer removes and the Go library kept | docs/DECISIONS.md:73 (D010) |
 

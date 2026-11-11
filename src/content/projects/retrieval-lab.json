@@ -2,8 +2,8 @@
   "title": "retrieval-lab",
   "order": 3,
   "summary": {
-    "en": "BM25 and dense retrieval in Go, where each component is accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0004 in nDCG@10 on five; TREC-COVID is not run.",
-    "zh": "用 Go 实现的 BM25 和稠密检索，每个组件都对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在五个数据集上的 nDCG@10 相差不超过 0.0004；TREC-COVID 没有跑。"
+    "en": "BM25 and dense retrieval in Go, where each component is accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0006 in nDCG@10 on all six, and within 0.0004 on all but TREC-COVID.",
+    "zh": "用 Go 实现的 BM25 和稠密检索，每个组件都对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在六个数据集上的 nDCG@10 相差都不超过 0.0006，除 TREC-COVID 外不超过 0.0004。"
   },
   "tags": [
     {
@@ -45,12 +45,12 @@
         "src": "./retrieval-lab/bge-light.png",
         "dark": "./retrieval-lab/bge-dark.png",
         "alt": {
-          "en": "Dot chart of nDCG@10 of BGE-base-en-v1.5 with exact search minus Pyserini's flat condition, with the tolerance of ±0.005 shaded. NFCorpus −0.0003, FiQA −0.0003, ArguAna 0.0000, SCIDOCS 0.0000, SciFact −0.0004. TREC-COVID: not run.",
-          "zh": "点图，BGE-base-en-v1.5 加精确搜索的 nDCG@10 减去 Pyserini 的 flat 条件，阴影是 ±0.005 的容差。NFCorpus −0.0003，FiQA −0.0003，ArguAna 0.0000，SCIDOCS 0.0000，SciFact −0.0004。TREC-COVID：没有跑。"
+          "en": "Dot chart of nDCG@10 of BGE-base-en-v1.5 with exact search minus Pyserini's flat condition, with the tolerance of ±0.005 shaded. TREC-COVID −0.0006, NFCorpus −0.0003, FiQA −0.0003, ArguAna 0.0000, SCIDOCS 0.0000, SciFact −0.0004.",
+          "zh": "点图，BGE-base-en-v1.5 加精确搜索的 nDCG@10 减去 Pyserini 的 flat 条件，阴影是 ±0.005 的容差。TREC-COVID −0.0006，NFCorpus −0.0003，FiQA −0.0003，ArguAna 0.0000，SCIDOCS 0.0000，SciFact −0.0004。"
         },
         "caption": {
-          "en": "nDCG@10 of BGE-base-en-v1.5 with exact search, minus Pyserini's flat condition: 0.0000 on ArguAna and SCIDOCS, −0.0003 on NFCorpus and FiQA, −0.0004 on SciFact, against a tolerance of 0.005 fixed before any BGE result existed. TREC-COVID is not run: at the measured rate its encoding would take 4.4 to 4.7 hours on four cores.",
-          "zh": "BGE-base-en-v1.5 加精确搜索的 nDCG@10，减去 Pyserini 的 flat 条件：ArguAna 和 SCIDOCS 上是 0.0000，NFCorpus 和 FiQA 上是 −0.0003，SciFact 上是 −0.0004；容差是 0.005，在任何 BGE 结果出来之前定下。TREC-COVID 没有跑：按实测速度，它的编码在四核上要 4.4 到 4.7 小时。"
+          "en": "nDCG@10 of BGE-base-en-v1.5 with exact search, minus Pyserini's flat condition: 0.0000 on ArguAna and SCIDOCS, −0.0003 on NFCorpus and FiQA, −0.0004 on SciFact and −0.0006 on TREC-COVID, against a tolerance of 0.005 fixed before any BGE result existed.",
+          "zh": "BGE-base-en-v1.5 加精确搜索的 nDCG@10，减去 Pyserini 的 flat 条件：ArguAna 和 SCIDOCS 上是 0.0000，NFCorpus 和 FiQA 上是 −0.0003，SciFact 上是 −0.0004，TREC-COVID 上是 −0.0006；容差是 0.005，在任何 BGE 结果出来之前定下。"
         }
       },
       {
@@ -91,12 +91,12 @@
       },
       {
         "value": {
-          "en": "0.0004",
-          "zh": "0.0004"
+          "en": "0.0006",
+          "zh": "0.0006"
         },
         "label": {
-          "en": "the largest gap in nDCG@10 between BGE-base-en-v1.5 with exact search and Pyserini's flat condition, over five datasets. TREC-COVID is not run",
-          "zh": "BGE-base-en-v1.5 加精确搜索与 Pyserini 的 flat 条件在五个数据集上 nDCG@10 的最大差距。TREC-COVID 没有跑"
+          "en": "the largest gap in nDCG@10 between BGE-base-en-v1.5 with exact search and Pyserini's flat condition, over six datasets, found on TREC-COVID. On the other five it is at most 0.0004",
+          "zh": "BGE-base-en-v1.5 加精确搜索与 Pyserini 的 flat 条件在六个数据集上 nDCG@10 的最大差距，出现在 TREC-COVID 上。其余五个数据集上不超过 0.0004"
         }
       },
       {
@@ -111,15 +111,15 @@
       }
     ],
     "note": {
-      "en": "The anchors are the four-decimal values in Pyserini's `beir.yaml` at one commit, and the tolerance of 0.005 in nDCG@10 was fixed for BM25 and for BGE before either had a result. The BM25 checksums hold on amd64. The BGE figures come from one machine; the vectors depend on the CPU in their last bits, so exact values can differ on another. Pyserini's own run files were not compared line by line. Approximate search, fusion and reranking are not built yet.",
-      "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的四位小数值；nDCG@10 的容差 0.005，对 BM25 和 BGE 都是在各自出结果之前定下的。BM25 的校验和在 amd64 上成立。BGE 的数字来自一台机器；向量的末几位取决于 CPU，换一台机器具体数值可能不同。Pyserini 自己的 run 文件没有逐行比过。近似搜索、融合和重排还没有做。"
+      "en": "The anchors are the four-decimal values in Pyserini's `beir.yaml` at one commit, and the tolerance of 0.005 in nDCG@10 was fixed for BM25 and for BGE before either had a result. The BM25 checksums hold on amd64. The BGE, HNSW and fused figures come from one machine; the vectors depend on the CPU in their last bits, so exact values can differ on another. Pyserini's own run files were not compared line by line. Approximate search uses recserve's HNSW graph over the same vectors: at ef 200, 400 and 800, it holds on average at least 0.9912 of a query's exact top 10 on every dataset. Fusing the BM25 and BGE runs as Pyserini does, by RRF and by the sum of min-max normalised scores (Normalize), gives nDCG@10 within 0.005 of Pyserini's published fusion numbers on all six datasets; the largest differences, 0.0036 and 0.0043 above, are on ArguAna. Against the BGE run alone, neither fused run's 95% bootstrap interval lies above zero on any dataset; it lies below zero for RRF on FiQA, ArguAna and SCIDOCS and for Normalize on ArguAna and SCIDOCS. Reranking is not built yet.",
+      "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的四位小数值；nDCG@10 的容差 0.005，对 BM25 和 BGE 都是在各自出结果之前定下的。BM25 的校验和在 amd64 上成立。BGE、HNSW 和融合的数字来自一台机器；向量的末几位取决于 CPU，换一台机器具体数值可能不同。Pyserini 自己的 run 文件没有逐行比过。近似搜索用 recserve 的 HNSW 图，向量相同：在 ef 为 200、400 和 800 时，每个数据集上 HNSW 的前 10 名平均至少包含精确前 10 名中的 0.9912。融合按 Pyserini 的做法把 BM25 和 BGE 的 run 合起来，用 RRF 和 min-max 归一化后相加（Normalize）两种方法，六个数据集上的 nDCG@10 与 Pyserini 公布的融合结果相差都在 0.005 以内；差得最多的是 ArguAna，分别高 0.0036 和 0.0043。和单独的 BGE run 相比，两种融合在任何数据集上的 95% bootstrap 区间都不在零以上；RRF 在 FiQA、ArguAna 和 SCIDOCS 上、Normalize 在 ArguAna 和 SCIDOCS 上，区间整体在零以下。重排还没有做。"
     },
     "source": {
       "label": {
         "en": "Benchmarks",
         "zh": "基准测试"
       },
-      "url": "https://github.com/sHyanorn/retrieval-lab/blob/b1baad8174b2d0d9a1b235f1a79e291881a97947/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/retrieval-lab/blob/1c82956ddfc0efc8be876efe9c900ad3b0d82d2d/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -132,8 +132,8 @@
       "zh": "这个项目用 Go 实现检索的各个组件，每一个都对照一个已公布的数字验收，第三方用公开的命令和数据就能复现：文档数少于 20 万的 BEIR 测试集，和 Pyserini 的 BEIR 复现页面上的数字。超出容差的数据集不朝着锚点去调，要找到原因并记录下来。"
     },
     {
-      "en": "Done so far: the evaluation harness, BM25, and dense retrieval with exact search. Approximate search, fusion and reranking are next.",
-      "zh": "目前做完的有：评测台、BM25，以及精确搜索的稠密检索。接下来是近似搜索、融合和重排。"
+      "en": "Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion of the BM25 and BGE runs. Reranking is next.",
+      "zh": "目前做完的有：评测台、BM25，用精确搜索和用 recserve 的 HNSW 图做的稠密检索，以及 BM25 与 BGE 两路 run 的融合。接下来是重排。"
     }
   ],
   "architecture": {
@@ -274,7 +274,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/retrieval-lab/blob/b1baad8174b2d0d9a1b235f1a79e291881a97947/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/retrieval-lab/blob/1c82956ddfc0efc8be876efe9c900ad3b0d82d2d/docs/DECISIONS.md"
   },
   "challenges": [
     {

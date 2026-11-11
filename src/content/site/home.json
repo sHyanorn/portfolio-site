@@ -14,8 +14,8 @@
         "zh": "算法"
       },
       "body": {
-        "en": "Recommendation, off-policy evaluation and retrieval. Two-tower recall, gradient-boosted ranking and uplift models, labelled by evidence tier; a pre-registered recheck of the Open Bandit benchmark, where the IPS estimate pooled over the two confirmatory campaigns is 0.974 of the on-policy click rate (0.915 to 1.036 over ten-minute blocks): no shortfall shown; and BM25 and dense retrieval in Go checked against Pyserini's published BEIR numbers: BM25 equal to four decimals on six datasets, BGE-base within 0.0004 on five.",
-        "zh": "推荐、离策略评估与检索。双塔召回、梯度提升排序和增益模型，结果按证据等级标注；对 Open Bandit 基准做了预注册的复核，在两个确认性活动上，合并的 IPS 估计是在线点击率的 0.974（按 10 分钟时间块，区间 0.915 到 1.036），没有显示出偏低；用 Go 实现的 BM25 和稠密检索对照 Pyserini 公布的 BEIR 数字核对过：BM25 在六个数据集上四位小数相同，BGE-base 在五个数据集上相差不超过 0.0004。"
+        "en": "Recommendation, off-policy evaluation and retrieval. Two-tower recall, gradient-boosted ranking and uplift models, labelled by evidence tier; a pre-registered recheck of the Open Bandit benchmark, where the IPS estimate pooled over the two confirmatory campaigns is 0.974 of the on-policy click rate (0.915 to 1.036 over ten-minute blocks): no shortfall shown; and BM25 and dense retrieval in Go checked against Pyserini's published BEIR numbers: BM25 equal to four decimals on six datasets, BGE-base within 0.0006 on six.",
+        "zh": "推荐、离策略评估与检索。双塔召回、梯度提升排序和增益模型，结果按证据等级标注；对 Open Bandit 基准做了预注册的复核，在两个确认性活动上，合并的 IPS 估计是在线点击率的 0.974（按 10 分钟时间块，区间 0.915 到 1.036），没有显示出偏低；用 Go 实现的 BM25 和稠密检索对照 Pyserini 公布的 BEIR 数字核对过：BM25 在六个数据集上四位小数相同，BGE-base 在六个数据集上相差不超过 0.0006。"
       }
     },
     {

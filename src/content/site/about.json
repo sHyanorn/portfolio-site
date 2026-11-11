@@ -57,8 +57,8 @@
           "zh": "用 Go 实现的 BM25 检索，在 Bleve 的索引上按 Lucene 的公式打分：在六个 BEIR 测试集上，nDCG@10 和 Recall@100 与 Pyserini 公布的 BM25 数字四位小数全部一致，结果文件可以按已提交的校验和逐字节复现。"
         },
         {
-          "en": "Dense retrieval with BGE-base-en-v1.5 on ONNX Runtime and exact search: on five BEIR test sets its nDCG@10 is within 0.0004 of Pyserini's, and TREC-COVID is not run. Comparing every document vector of SciFact and ArguAna with Pyserini's found 28 documents below a cosine of 0.9999, each holding Unicode format characters that Pyserini's tokenizer removes and the Go library kept.",
-          "zh": "稠密检索用 ONNX Runtime 上的 BGE-base-en-v1.5 加精确搜索：在五个 BEIR 测试集上，nDCG@10 与 Pyserini 的相差不超过 0.0004，TREC-COVID 没有跑。把 SciFact 和 ArguAna 每篇文档的向量与 Pyserini 的逐一比较，查出 28 篇余弦低于 0.9999，每一篇都含有 Unicode 格式字符：Pyserini 的分词器会删掉它们，Go 的分词库没有删。"
+          "en": "Dense retrieval with BGE-base-en-v1.5 on ONNX Runtime and exact search: on six BEIR test sets its nDCG@10 is within 0.0006 of Pyserini's, and within 0.0004 on all but TREC-COVID. Comparing every document vector of SciFact and ArguAna with Pyserini's found 28 documents below a cosine of 0.9999, each holding Unicode format characters that Pyserini's tokenizer removes and the Go library kept.",
+          "zh": "稠密检索用 ONNX Runtime 上的 BGE-base-en-v1.5 加精确搜索：在六个 BEIR 测试集上，nDCG@10 与 Pyserini 的相差不超过 0.0006，除 TREC-COVID 外不超过 0.0004。把 SciFact 和 ArguAna 每篇文档的向量与 Pyserini 的逐一比较，查出 28 篇余弦低于 0.9999，每一篇都含有 Unicode 格式字符：Pyserini 的分词器会删掉它们，Go 的分词库没有删。"
         }
       ],
       "projects": ["push-lab", "ope-checks", "retrieval-lab"]

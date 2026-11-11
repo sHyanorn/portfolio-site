@@ -1,0 +1,90 @@
+---
+title: "The Open Bandit shortfall was not shown on the two confirmatory campaigns"
+project: ope-checks
+date: 2026-11-10
+summary: "A pre-registered check of the Open Bandit Dataset benchmark: the published prior is not the policy that was logged, and on the two confirmatory campaigns the off-policy estimate is not shown to fall short of the on-policy click rate."
+kind: note
+math: false
+draft: true
+---
+
+On the Men's campaign of the Open Bandit Dataset, the standard off-policy estimate of the Bernoulli Thompson sampling (BTS) policy is about 0.89 of the click rate BTS achieved online. A pre-registered study, ope-checks, asked how much of that gap comes from the evaluation target. On the two confirmatory campaigns, All and Women's, it found that the published prior is not the distribution the BTS log shows, and that the shortfall itself is not shown: the ratio is 0.948 (0.867 to 1.033) on All, 1.004 (0.917 to 1.099) on Women's and 0.974 (0.915 to 1.036) pooled. With no shortfall established, the registered rules leave the main question without a reading.
+
+The rules were committed before any outcome of All and Women's was computed. Men's was the development campaign and enters no verdict. Five analyses below were made after the results were known and are marked post hoc.
+
+## The benchmark and the 0.89
+
+The dataset holds one week of logs from two policies on ZOZOTOWN, uniform random and BTS, in three campaigns. The benchmark estimates the BTS click rate from the random log and compares it with the click rate of the BTS log. The BTS target comes from a published Beta prior by Monte Carlo draws, with no updates. On the full Men's campaign the IPS estimate is 0.891 of the on-policy value. Two public computations arrive at the same figure. Their 95% intervals, from impressions and from rows, lie below the on-policy value; in the 99% intervals of one paper's figure only the IPS interval does.
+
+## Rows in these logs are not independent
+
+Served lists are reused: in each of the six logs, 30% to 37% of complete impressions show the same three items in the same order as the impression before them. The click rate also moves between adjacent ten-minute blocks more than independent impressions would allow. The variance of the difference is 1.85 to 2.45 times as large, a ratio that carries no interval and does not separate clustering from drift.
+
+The registration therefore resamples ten-minute blocks, the same blocks in both logs. That choice was made after seeing the Men's results, and the registration says so.
+
+How much narrower the usual intervals are was measured on all three campaigns only afterwards. In that post hoc comparison the standard deviation of the ratio with blocks is 1.31 to 1.47 times the one with rows or impressions. The unit changes the side of 1 on which the interval ends only on Men's: 0.790 to 1.005 with blocks, 0.818 to 0.964 with rows, 0.816 to 0.968 with impressions. On All and Women's the interval contains 1 under each unit, so the result there does not rest on the choice of blocks.
+
+## What was registered
+
+Seven propositions, with All and Women's as confirmatory campaigns and a pooled value (weights 0.54 and 0.46) for the two central ones. Intervals are percentiles of 10,000 replicates over 1,008 ten-minute blocks from a registered random stream. H1 sets the distance between the prior and the hourly frequencies of the BTS log against a noise floor from alternate blocks within the hour. H3 calls the shortfall "low" only if the interval of the ratio lies below 1. H4, the primary proposition, takes the BTS log's own frequencies in the same period as the target and reads the gap only where H3 found one.
+
+## What the confirmatory campaigns show
+
+| | All | Women's | Pooled |
+|---|---|---|---|
+| H1 distance; noise floor | 0.526; 0.136 | 0.527; 0.115 | |
+| H1 label | inconsistent | inconsistent | |
+| H3 IPS over on-policy | 0.948 (0.867 to 1.033) | 1.004 (0.917 to 1.099) | 0.974 (0.915 to 1.036) |
+| H3 label | no shortfall shown | no shortfall shown | no shortfall shown |
+| H4 aligned estimate over on-policy | 1.031 (0.932 to 1.128) | 1.062 (0.974 to 1.158) | 1.045 (0.978 to 1.114) |
+| H4 change from the fixed-prior IPS | 0.083 (-0.019 to 0.182) | 0.058 (-0.031 to 0.147) | 0.072 (0.002 to 0.139) |
+| H4 alignment label | no change shown | no change shown | raises the estimate |
+| H4 reading | shortfall not established; gap not read | shortfall not established; gap not read | shortfall not established; gap not read |
+
+The prior and the log disagree by more than the rule asked for: a distance of 0.53 against a noise floor of 0.11 to 0.14. In the first hour of the week the distance on All is 0.180, 0.126 and 0.088 by position. What the deployed parameters were, and how they were updated, the public data cannot say.
+
+"No shortfall shown" is not "no shortfall". The pooled interval reaches down to 0.915, so with ten-minute blocks a shortfall of up to 8.5% is not excluded. On the development campaign the ratio is 0.891 (0.790 to 1.005), and that campaign enters no verdict.
+
+## Aligning the target
+
+With the target set to what the BTS log showed in the same three-hour period, the estimate is not distinguishable from the on-policy value in any unit. The paired change from the fixed-prior IPS is positive in every unit and at every period width. Its interval excludes 0 only in the pooled unit, 0.072 (0.002 to 0.139). On All and on Women's alone, no change is shown.
+
+This does not say that the target explains the gap. The rule reads the gap only where H3 found one, and it found none. The registration also names a way the aligned estimate can be too high: if BTS learned from clicks of the random bucket, or follows demand both buckets share, the aligned target and the random log's clicks move together. A calculation made after the results does not support the second case: under demand that both buckets share the aligned estimate is too low within a period, so the direction of its bias is not established. H5 is the descriptive check of that. A target built from the hour after a row gives a higher estimate than one built from the hour before, by 0.099 (0.033 to 0.166) on All and 0.076 (0.022 to 0.130) on Women's. The registration calls this descriptive, because it cannot tell the two sources apart.
+
+## What stayed open
+
+- **The recorded propensities (H2).** Undetermined on both campaigns. The registered statistic should average 1 if the recorded propensities are the probabilities that were used; it is 0.973 over 3 eligible cells on All, fewer than the rule needs, and 0.967 over 7 on Women's.
+- **The users of the two logs (H7).** The two files write one value of each user feature differently. An amendment made before any confirmatory result matched that value in three of the four features on each campaign. The fourth was compared as written, so the registered distances (0.360 and 0.236 for the joint distribution) still contain the difference in writing and cannot be read as a difference in the users.
+- **The gap itself.** Not established on the confirmatory campaigns, so the primary question has no reading.
+
+## Five post hoc looks
+
+All five were fixed after the results were known. For the block lengths and the distances the settings and the reading were also committed before they were run. They are descriptive and change no registered label.
+
+- **Resampling unit.** The comparison above. One figure in the registration did not survive it: the one-minute variance ratio of 1.2 to 1.5 reported for Men's lacks a small-sample factor, and with it the ratio is 1.18 and 1.20. The figure entered no rule; the factor changes the ten-minute ratios by at most 0.04.
+- **The unmatched feature.** On each campaign the BTS log holds one more rare value of that feature (30 and 14 rows), so the amendment's condition failed. The other value of each log sits on exactly the rows the matched features mark. With those two taken as one value, the joint distance is 0.007 and 0.009 (registered: 0.360 and 0.236), and the change in the aligned estimate under user weights is 0.001 (-0.003 to 0.005) and -0.001 (-0.014 to 0.005) (registered: -0.058 (-0.136 to 0.013) and -0.116 (-0.178 to -0.063)). That the two values are one category is an inference from the rows they sit on.
+- **The propensity statistic.** Much of its distance from 1 sits in a few hours in which an eligible cell is shown at under a tenth of the rate its recorded propensities imply. On All such hours hold 0.033, where the statistic is 0.027 below 1, and nearly all of that falls on 27 and 29 November, as on Women's. The hours are picked by the statistic itself; on Men's, where it is at 1.005, the same selection finds 0.002. The cause is not identified.
+- **Block length.** The lengths and the reading were fixed before these were run. With clock blocks of 5 to 180 minutes as resampling units, the interval of each H3 ratio contains 1 at every length on All, Women's and pooled. From ten minutes upward the standard deviation of the ratio there grows with the length: the pooled interval is 0.915 to 1.036 with ten-minute blocks and 0.897 to 1.056 with three-hour blocks, where it rests on 56 blocks, so the 8.5% above becomes 10.3%. On Men's the standard deviation stays within 3% of the one at ten minutes. The interval of the aligned estimate contains 1 in every unit at every length. The lower end of the pooled paired change lies between 0.001 and 0.004 and is within two Monte Carlo standard errors of 0 at three of the six lengths. The H5 difference lies above 0 with blocks of 5 to 20 minutes on both campaigns; its interval contains 0 with 60-minute blocks on both and with three-hour blocks on Women's. The analysis does not separate dependence beyond ten minutes from change over the week.
+- **The prior, the week and the hours.** Three distances that read no click, fixed before they were computed. The frequencies of the whole week lie at a distance of 0.386 (All) and 0.413 (Women's) from the prior. The hourly frequencies lie at 0.410 and 0.394 from those of the whole week, 3.0 and 3.4 times the noise floor; in the random logs, whose policy is fixed, that figure is 0.52 to 0.55. By the thresholds of the registered rule, and without an interval, the hourly frequencies thus differ from those of the whole week. The distances bound the 0.53 of H1 and do not say how much of it is change. In the first hour, three of the six distances from the prior are at most a noise floor computed for that hour and three lie between the floor and twice the floor.
+
+## Limits
+
+- **The interval method was shaped by the development campaign.** Block length and the H1 thresholds were fixed with the Men's results in view.
+- **Dependence beyond ten minutes is not covered.** The data have no user id, so visits of one user spread over a day are treated as independent.
+- **One week, one site.** All is not a clean hold-out from the development campaign. A check of the published prior file, made after the results and without reading a click, finds all 34 Beta parameter pairs of Men's among the 80 of All, identical and in the same order, and none of the 46 of Women's. Women's shares no pair with Men's.
+- **Two estimators.** The confirmatory campaigns were run with IPS and SNIPS only.
+- **One run.** The confirmatory results come from a single run of one commit. A first attempt was cut off by a host restart before it wrote or printed anything, and the same command was run again at the same commit; the repository records it.
+
+## When this does not hold
+
+The statement covers these two campaigns, this target and an interval that respects the dependence in the logs. It does not say the estimate is unbiased, since the Men's ratio is 0.891 with an interval down to 0.790, and it makes no claim about the recorded propensities or the users of the two logs.
+
+## Reproduce
+
+```
+pip install -e .
+python -m obd.run all women    # confirmatory campaigns and the pooled unit
+python -m obd.posthoc.run      # the post hoc analyses
+```
+
+The first run downloads the dataset archive and the prior file and verifies their checksums. Every result file names the commit that produced it.

@@ -211,9 +211,12 @@ const sections = headings.filter((h) => h.depth === 2)
     font-variant-numeric: tabular-nums;
   }
 
+  /* A word may break where a column of a narrow screen cannot hold it, so
+     a table of four columns does not widen the page. */
   .prose :global(:is(th, td)) {
     padding: var(--space-1) var(--space-1) var(--space-1) 0;
     border-bottom: 1px solid var(--color-line);
+    overflow-wrap: anywhere;
     text-align: left;
     vertical-align: top;
   }

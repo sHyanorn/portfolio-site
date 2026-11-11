@@ -63,10 +63,14 @@ const projects = defineCollection({
         labels: z.record(z.string(), text),
         description: text,
       }),
-      // 6. Three to five decisions from the repository's decision log
+      // 6. Three to five decisions from the repository's decision log, or,
+      // for a pre-registered study, rules from its registration (`§4`, `H3`)
+      // and amendments (`A7`)
       decisions: z.strictObject({
         items: z
-          .array(item.extend({ id: z.string().regex(/^D\d{3}$/) }))
+          .array(
+            item.extend({ id: z.string().regex(/^(D\d{3}|§\d+|H\d|A\d+)$/) }),
+          )
           .min(3)
           .max(5),
         source: z.url(),
@@ -75,6 +79,11 @@ const projects = defineCollection({
       challenges: z.array(item).min(1),
       // 8. Links
       repo: z.url(),
+      /** Titles a study gives sections 6 and 7 and the link under section 6,
+       * in place of "Key decisions", "Challenges" and "Decision log". */
+      headings: z
+        .strictObject({ decisions: text, decisionLog: text, challenges: text })
+        .optional(),
     }),
 })
 

@@ -20,6 +20,7 @@ const routes = [
   'projects/backtest-lab/',
   'projects/local-ledger/',
   'projects/matching-engine/',
+  'projects/ope-checks/',
   'projects/push-lab/',
   'projects/vault-share/',
 ]

@@ -76,16 +76,18 @@ for (const viewport of viewports) {
         const box = (await first.boundingBox())!
         // The page column, or the intro's neighbour on a wide screen.
         const column = (await page.locator('.demo').boundingBox())!
-        // The ratio inside the border, which is a larger share of a small demo.
-        const [width, height, inner] = await first.evaluate((el) => [
-          ...(el instanceof HTMLVideoElement
-            ? [el.width, el.height]
-            : [
-                (el as HTMLImageElement).naturalWidth,
-                (el as HTMLImageElement).naturalHeight,
-              ]),
-          el.clientWidth / el.clientHeight,
-        ])
+        // The ratio inside the border, which is a larger share of a small
+        // demo, against the source's: both from sizes before rounding, which
+        // would move the ratio of a small, wide picture by more than the
+        // tolerance.
+        const [width, height, inner] = await first.evaluate((el) => {
+          const box = el.getBoundingClientRect()
+          return [
+            Number(el.getAttribute('width')),
+            Number(el.getAttribute('height')),
+            (box.width - 2 * el.clientLeft) / (box.height - 2 * el.clientTop),
+          ]
+        })
 
         const line = await page
           .locator('.summary')
@@ -186,6 +188,7 @@ for (const [project, columns] of [
   ['backtest-lab', 1],
   ['push-lab', 2],
   ['local-ledger', 2],
+  ['ope-checks', 2],
 ] as const)
   test(`${project}: later screenshots in ${columns} column(s)`, async ({
     page,

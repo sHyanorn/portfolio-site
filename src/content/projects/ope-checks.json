@@ -1,0 +1,336 @@
+{
+  "title": "ope-checks",
+  "order": 6,
+  "summary": {
+    "en": "Pre-registered checks of published off-policy evaluation results. The first study retests the Open Bandit benchmark: on its two confirmatory campaigns, with ten-minute blocks as resampling units, the standard estimate is not shown to fall short of the on-policy click rate.",
+    "zh": "对已发表的离策略评估结果做预注册检验。第一项研究重测 Open Bandit 基准：在两个确认性活动上，以 10 分钟时间块为重采样单位时，标准估计没有显示出低于在线点击率。"
+  },
+  "tags": [
+    {
+      "en": "Python",
+      "zh": "Python"
+    },
+    {
+      "en": "Off-policy evaluation",
+      "zh": "离策略评估"
+    },
+    {
+      "en": "Pre-registration",
+      "zh": "预注册"
+    },
+    {
+      "en": "Block bootstrap",
+      "zh": "时间块 bootstrap"
+    },
+    {
+      "en": "Open Bandit Dataset",
+      "zh": "Open Bandit 数据集"
+    }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./ope-checks/confirmatory-estimates-light.png",
+        "dark": "./ope-checks/confirmatory-estimates-dark.png",
+        "alt": {
+          "en": "Dot-and-line chart of six registered estimates, each over the on-policy click rate. Fixed-prior IPS: 0.948 (0.867 to 1.033) on All, 1.004 (0.917 to 1.099) on Women's, 0.974 (0.915 to 1.036) pooled. Aligned estimate: 1.031 (0.932 to 1.128), 1.062 (0.974 to 1.158), 1.045 (0.978 to 1.114). All six intervals contain 1.",
+          "zh": "点线图，六个登记的估计，都表示为与在线点击率之比。固定先验 IPS：All 为 0.948（0.867 到 1.033），Women's 为 1.004（0.917 到 1.099），合并为 0.974（0.915 到 1.036）。对齐后的估计：1.031（0.932 到 1.128）、1.062（0.974 到 1.158）、1.045（0.978 到 1.114）。六个区间都包含 1。"
+        },
+        "caption": {
+          "en": "Registered results on the confirmatory campaigns: the fixed-prior IPS estimate (H3) and the estimate with the target aligned to the BTS log in three-hour periods (H4), each over the on-policy click rate, with intervals from 10,000 replicates over ten-minute blocks. The pooled unit is 0.54 times All plus 0.46 times Women's, not a third sample. Every interval contains 1: no shortfall is shown, so by the registered rule the gap is not read. The paired difference between the two estimates, not drawn, is 0.072 (0.002 to 0.139) pooled, and its interval contains 0 on All and on Women's. The pooled lower end of the fixed-prior IPS, 0.915, leaves a shortfall of up to 8.5% not excluded.",
+          "zh": "两个确认性活动上的登记结果：固定先验的 IPS 估计（H3），和把目标按 3 小时时段对齐到 BTS 日志后的估计（H4），都表示为与在线点击率之比，区间来自对 10 分钟时间块做的 10,000 次重采样。合并单元是 0.54 倍的 All 加 0.46 倍的 Women's，不是第三份样本。每个区间都包含 1：没有显示出偏低，按登记的规则，差距不读。两个估计的配对差没有画出，合并为 0.072（0.002 到 0.139），在 All 和 Women's 上各自的区间都包含 0。固定先验 IPS 的合并区间下端是 0.915，最多 8.5% 的偏低排除不了。"
+        }
+      },
+      {
+        "src": "./ope-checks/resampling-units-light.png",
+        "dark": "./ope-checks/resampling-units-dark.png",
+        "alt": {
+          "en": "Post hoc dot-and-line chart of the IPS ratio under three resampling units. On the confirmatory campaigns, All and Women's, all three intervals contain 1. On Men's, the development campaign, the intervals over rows and impressions end below 1, at 0.964 and 0.968, and the interval over blocks ends at 1.005. The block interval is the widest on every campaign.",
+          "zh": "事后分析的点线图，三种重采样单位下的 IPS 比值。在两个确认性活动 All 和 Women's 上，三个区间都包含 1。在开发用的 Men's 上，按行和按曝光的区间上端低于 1，分别是 0.964 和 0.968，按时间块的区间上端是 1.005。在每个活动上，按时间块的区间都最宽。"
+        },
+        "caption": {
+          "en": "Post hoc: the IPS estimate over the on-policy click rate, with its 2.5th to 97.5th percentile interval, when rows, impressions or ten-minute blocks are resampled. The block intervals are the registered ones. On All and Women's every interval contains 1. On Men's, the development campaign, which enters no verdict, the intervals over rows and impressions end below 1 and the block interval ends at 1.005.",
+          "zh": "事后分析：分别按行、按曝光、按 10 分钟时间块重采样时，IPS 估计与在线点击率之比及其 2.5 到 97.5 百分位区间。按时间块的区间就是登记的区间。在 All 和 Women's 上，每个区间都包含 1。在 Men's 上，按行和按曝光的区间上端低于 1，按时间块的区间上端是 1.005。Men's 是开发用的活动，不进入任何判定。"
+        }
+      },
+      {
+        "src": "./ope-checks/prior-distance-light.png",
+        "dark": "./ope-checks/prior-distance-dark.png",
+        "alt": {
+          "en": "Bar chart of registered distances. On All D is 0.526 and its noise floor D0 0.136; on Women's D is 0.527 and D0 0.115. First-hour distances by position: 0.180, 0.126 and 0.088 on All; 0.164, 0.098 and 0.105 on Women's.",
+          "zh": "条形图，登记的距离。All 上 D 为 0.526，噪声底 D0 为 0.136；Women's 上 D 为 0.527，D0 为 0.115。第一个小时各位置的距离：All 为 0.180、0.126、0.088；Women's 为 0.164、0.098、0.105。"
+        },
+        "caption": {
+          "en": "Registered, without intervals: D, the row-weighted mean over hours and positions of the total variation distance between the published prior and the item frequencies of the BTS log, next to its noise floor D0, the same statistic between alternate ten-minute blocks of each hour of that log. D0 measures noise; it is not a distance the prior should have. Below, the distance in the first hour of the week by position, reported without a rule. The registration computed no noise floor for a single hour, so these bars are not to be compared with D0, and no other single hour is reported, so the figure does not show whether the first hour is the closest.",
+          "zh": "登记的统计量，没有区间：D 是公开先验与 BTS 日志中物品频率之间的总变差距离，按行数对各小时和各位置加权平均；旁边是它的噪声底 D0，即同一份日志里每小时内相间的 10 分钟时间块之间的同一统计量。D0 衡量的是噪声，不是先验应有的距离。下方是一周第一个小时各位置的距离，报告时没有配判定规则。登记时没有为单个小时计算噪声底，所以这些条不能和 D0 比较；也没有报告别的单个小时，所以这张图不能说明第一个小时是不是最接近的。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": {
+          "en": "0.974",
+          "zh": "0.974"
+        },
+        "label": {
+          "en": "of the on-policy click rate: the fixed-prior IPS estimate pooled over All and Women's, with an interval of 0.915 to 1.036 over ten-minute blocks. No shortfall is shown, and one of up to 8.5% is not excluded",
+          "zh": "固定先验的 IPS 估计与在线点击率之比，All 和 Women's 合并，按 10 分钟时间块的区间为 0.915 到 1.036。没有显示出偏低，最多 8.5% 的偏低排除不了"
+        }
+      },
+      {
+        "value": {
+          "en": "0.53",
+          "zh": "0.53"
+        },
+        "label": {
+          "en": "distance between the published prior and the item frequencies of the BTS log, on All and on Women's, against noise floors of 0.14 and 0.11: the prior is not the distribution the log shows",
+          "zh": "公开先验与 BTS 日志中物品频率的距离，All 和 Women's 上都是这个数，噪声底分别为 0.14 和 0.11：先验不是日志实际展示的分布"
+        }
+      },
+      {
+        "value": {
+          "en": "+0.072",
+          "zh": "+0.072"
+        },
+        "label": {
+          "en": "paired change in the pooled estimate when the target is aligned to the BTS log in three-hour periods, with an interval of 0.002 to 0.139 whose lower end is, post hoc, about two Monte Carlo standard errors from 0; on All and on Women's alone the interval contains 0. No shortfall was established, so the registered rule does not read the gap",
+          "zh": "把目标按 3 小时时段对齐到 BTS 日志后，合并估计的配对变化，区间 0.002 到 0.139，事后算得下端离 0 约两个蒙特卡洛标准误；单看 All 或 Women's，区间都包含 0。偏低没有被确立，所以按登记的规则不读差距"
+        }
+      },
+      {
+        "value": {
+          "en": "1.31–1.47×",
+          "zh": "1.31–1.47×"
+        },
+        "label": {
+          "en": "the standard deviation of the H3 ratios with ten-minute blocks over the one with rows or impressions as resampling units, on all three campaigns (post hoc)",
+          "zh": "按 10 分钟时间块重采样时 H3 比值的标准差，与按行或按曝光重采样时的标准差之比，三个活动都在这个范围内（事后分析）"
+        }
+      }
+    ],
+    "note": {
+      "en": "Registered results from one run of commit `11e9340`. Intervals are the 2.5th and 97.5th percentiles of 10,000 replicates that resample ten-minute blocks, a length fixed with the Men's results in view, as the registration states. Men's is the development campaign and enters no verdict; its IPS ratio is 0.891 (0.790 to 1.005). The last figure is post hoc.",
+      "zh": "登记的结果来自提交 `11e9340` 的一次运行。区间是对 10 分钟时间块做 10,000 次重采样的 2.5 和 97.5 百分位；这个块长是看过 Men's 的结果之后定的，预注册里写明了。Men's 是开发用的活动，不进入任何判定，它的 IPS 比值是 0.891（0.790 到 1.005）。最后一格是事后分析。"
+    },
+    "source": {
+      "label": {
+        "en": "Results in the README",
+        "zh": "README 的结果一节"
+      },
+      "url": "https://github.com/sHyanorn/ope-checks#results"
+    }
+  },
+  "problem": [
+    {
+      "en": "The Open Bandit Dataset holds one week of logs from two policies on ZOZOTOWN, uniform random and Bernoulli Thompson sampling (BTS), in three campaigns. Its standard benchmark estimates the BTS click rate from the random logs and compares it with the click rate of the BTS logs. On the Men's campaign the estimate is about 0.89 of the on-policy value.",
+      "zh": "Open Bandit 数据集记录了 ZOZOTOWN 上两个策略一周的日志，一个是均匀随机，一个是伯努利汤普森采样（BTS），分三个活动。它的标准基准用随机日志估计 BTS 的点击率，再和 BTS 日志的点击率比较。在 Men's 活动上，这个估计约为在线值的 0.89。"
+    },
+    {
+      "en": "The BTS target is computed from the published prior, which is not the policy that was deployed during the logged week. The study asks how much of the gap comes from that target. It does not ask why the two differ.",
+      "zh": "BTS 的评估目标是按公开的先验算的，而公开的先验并不是日志那一周实际部署的策略。这项研究问的是：差距里有多少来自这个目标。它不问两者为什么不同。"
+    },
+    {
+      "en": "The propositions, statistics and decision rules were committed before any outcome of All and Women's was computed; the results on Men's were known. Men's is the development campaign; All and Women's are the confirmatory campaigns, and every verdict comes from one run on them.",
+      "zh": "命题、统计量和判定规则在 All 和 Women's 的任何结果算出之前提交；当时 Men's 的结果已知。Men's 是开发用的活动；All 和 Women's 是确认性活动，所有判定都来自在它们上面的一次运行。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "registration": {
+        "en": "registration",
+        "zh": "登记"
+      },
+      "registrationSub": {
+        "en": "rules, before the confirmatory run",
+        "zh": "规则，先于确认性运行"
+      },
+      "data": {
+        "en": "data",
+        "zh": "数据"
+      },
+      "dataSub": {
+        "en": "download, SHA-256, stop checks",
+        "zh": "下载、SHA-256、停止检查"
+      },
+      "tables": {
+        "en": "block tables",
+        "zh": "时间块表"
+      },
+      "tablesSub": {
+        "en": "sums by ten-minute block",
+        "zh": "按 10 分钟时间块求和"
+      },
+      "estimators": {
+        "en": "estimators",
+        "zh": "估计器"
+      },
+      "estimatorsSub": {
+        "en": "fixed-prior target, H1 to H7",
+        "zh": "固定先验目标，H1 到 H7"
+      },
+      "rules": {
+        "en": "decision rules",
+        "zh": "判定规则"
+      },
+      "rulesSub": {
+        "en": "labels",
+        "zh": "标签"
+      },
+      "run": {
+        "en": "bootstrap run",
+        "zh": "bootstrap 运行"
+      },
+      "runSub": {
+        "en": "10,000 replicates over blocks",
+        "zh": "对时间块重采样 10,000 次"
+      },
+      "results": {
+        "en": "result files",
+        "zh": "结果文件"
+      },
+      "resultsSub": {
+        "en": "JSON, with the commit",
+        "zh": "JSON，带提交号"
+      },
+      "posthoc": {
+        "en": "post hoc",
+        "zh": "事后分析"
+      },
+      "posthocSub": {
+        "en": "results of its own",
+        "zh": "结果单独存放"
+      },
+      "figures": {
+        "en": "figures",
+        "zh": "图"
+      },
+      "figuresSub": {
+        "en": "from the result files",
+        "zh": "由结果文件画出"
+      }
+    },
+    "description": {
+      "en": "`data.py` downloads the dataset archive and the prior file, verifies their SHA-256 and runs the registration's stop checks, which read no click. `tables.py` sums the rows of both logs by ten-minute block. `estimators.py` computes the fixed-prior target and the propositions H1 to H7 as functions of those tables, and `verdicts.py` holds the decision rules. `run.py` draws 10,000 bootstrap replicates over blocks, each of which rescales the block tables and calls the same estimators, and writes one JSON file per campaign with every statistic, interval and label and the commit that produced it. The post hoc analyses live in `obd/posthoc/` with result files of their own, and the figures are drawn from the result files.",
+      "zh": "`data.py` 下载数据集压缩包和先验文件，校验它们的 SHA-256，并运行预注册规定的停止检查，这些检查不读任何点击。`tables.py` 把两份日志的行按 10 分钟时间块求和。`estimators.py` 把固定先验目标和命题 H1 到 H7 写成这些表的函数，`verdicts.py` 里是判定规则。`run.py` 对时间块做 10,000 次 bootstrap 重采样，每次按抽到的次数重新缩放时间块表，再调用同一批估计器；每个活动写一个 JSON 文件，里面有每个统计量、区间和标签，以及产生它的提交号。事后分析放在 `obd/posthoc/`，结果文件单独存放；图由结果文件画出。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "§4",
+        "title": {
+          "en": "One campaign to develop on, two for the verdicts",
+          "zh": "一个活动用来开发，两个活动用于判定"
+        },
+        "body": {
+          "en": "Men's is the development campaign: code is written and checked on it, and its results enter no verdict. Nothing was computed from the files of All and Women's, beyond row counts and checks that read no click, until the code for every proposition had run on Men's and been committed. The confirmatory results come from one run of that commit.",
+          "zh": "Men's 是开发用的活动：代码在它上面写成并检查，它的结果不进入任何判定。在每个命题的代码都在 Men's 上跑过并提交之前，除了行数和不读点击的检查，没有从 All 和 Women's 的文件里算过任何东西。确认性结果来自那个提交的一次运行。"
+        }
+      },
+      {
+        "id": "§5",
+        "title": {
+          "en": "Ten-minute blocks as the resampling unit",
+          "zh": "以 10 分钟时间块为重采样单位"
+        },
+        "body": {
+          "en": "Lists are reused across impressions for up to a few minutes and clicks cluster over a few minutes, so neither rows nor impressions are independent. A replicate draws 1,008 ten-minute blocks with replacement, and a block carries the rows of both logs that fall in it.",
+          "zh": "同一个列表会在几分钟内的多次曝光中重复出现，点击也在几分钟内聚集，所以行和曝光都不独立。一次重采样有放回地抽 1,008 个 10 分钟时间块，一个时间块带着两份日志落在其中的所有行。"
+        }
+      },
+      {
+        "id": "H3",
+        "title": {
+          "en": "Low only if the whole interval lies below 1",
+          "zh": "整个区间低于 1 才算偏低"
+        },
+        "body": {
+          "en": "For each unit and estimator the label is `low` if the interval of the ratio to the on-policy click rate lies below 1, `high` if it lies above, and otherwise `no shortfall shown`. On All, on Women's and pooled, IPS and SNIPS are all `no shortfall shown`.",
+          "zh": "对每个单元和每个估计器：比值（估计与在线点击率之比）的区间整个低于 1，标签是 `low`；整个高于 1，是 `high`；其余情况是 `no shortfall shown`。在 All、Women's 和合并单元上，IPS 和 SNIPS 的标签全部是 `no shortfall shown`。"
+        }
+      },
+      {
+        "id": "H4",
+        "title": {
+          "en": "The gap is read only where a shortfall is found",
+          "zh": "只有发现偏低的地方才读差距"
+        },
+        "body": {
+          "en": "H4, the primary proposition, replaces the prior with the BTS log's own frequencies in the same period. Its reading of the gap applies only in a unit where H3 found IPS `low`. No unit did, so every unit reads `shortfall not established; gap not read`.",
+          "zh": "H4 是主命题，它把先验换成 BTS 日志在同一时段的实际频率。对差距的读法只适用于 H3 把 IPS 判为 `low` 的单元。没有一个单元是这样，所以每个单元的读数都是 `shortfall not established; gap not read`。"
+        }
+      },
+      {
+        "id": "A7",
+        "title": {
+          "en": "One feature value written differently in the two files",
+          "zh": "一个特征取值在两份文件里写法不同"
+        },
+        "body": {
+          "en": "The two log files hash the user features, and one value of each feature is written differently in them. Amendment 7, fixed before any confirmatory outcome was computed, treats the two as one value where exactly one value occurs only in each file. That matched three of the four features on each confirmatory campaign; the fourth is compared as written, so the registered distances between the users of the two logs, 0.360 and 0.236, cannot be read as a difference in the users.",
+          "zh": "两份日志文件里的用户特征是哈希过的，每个特征各有一个取值在两份文件里写法不同。修订 7 在任何确认性结果算出之前定下：如果恰好有一个取值只出现在其中一份文件、恰好有一个只出现在另一份，就把这两个当作同一个取值。在每个确认性活动上，四个特征里有三个这样配上了；第四个按原样比较，所以登记的两份日志用户之间的距离（0.360 和 0.236）不能读成用户构成的差别。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/ope-checks/blob/main/obd/PREREGISTRATION.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "Not shown is not absent",
+        "zh": "没有显示不等于不存在"
+      },
+      "body": {
+        "en": "The pooled interval reaches down to 0.915, so with ten-minute blocks a shortfall of up to 8.5% is not excluded. Post hoc, with three-hour blocks the pooled interval is 0.897 to 1.056. On the development campaign the ratio is 0.891 (0.790 to 1.005), and it enters no verdict.",
+        "zh": "合并区间的下端是 0.915，所以按 10 分钟时间块，最多 8.5% 的偏低排除不了。事后按 3 小时时间块，合并区间是 0.897 到 1.056。开发用的活动上比值是 0.891（0.790 到 1.005），它不进入任何判定。"
+      }
+    },
+    {
+      "title": {
+        "en": "The block length was fixed after the development results",
+        "zh": "块长是看过开发集结果之后定的"
+      },
+      "body": {
+        "en": "The block length and the thresholds of H1 were fixed with the Men's results in view. The data have no user id, so dependence that reaches beyond a ten-minute block, such as visits of one user spread over the day, is not in the intervals.",
+        "zh": "块长和 H1 的阈值是看着 Men's 的结果定下的。数据里没有用户标识，所以跨出一个 10 分钟时间块的依赖，比如同一个用户一天里的多次访问，没有进入区间。"
+      }
+    },
+    {
+      "title": {
+        "en": "The main question has no reading",
+        "zh": "主问题没有读数"
+      },
+      "body": {
+        "en": "The study set out to measure how much of the gap the evaluation target accounts for. With no shortfall established on the confirmatory campaigns, the registered rule reads no gap, so that question is unanswered. The aligned estimate is not distinguishable from the on-policy value in any unit, and its paired change from the fixed-prior IPS excludes 0 only pooled, where the lower end of its interval is 0.002.",
+        "zh": "这项研究原本要量的是：差距里有多少可以归到评估目标上。在确认性活动上偏低没有被确立，按登记的规则不读差距，所以这个问题没有答案。对齐后的估计在每个单元上都与在线值无法区分；它相对固定先验 IPS 的配对变化，只有在合并单元上区间不含 0，那里区间下端是 0.002。"
+      }
+    },
+    {
+      "title": {
+        "en": "What the public data cannot show",
+        "zh": "公开数据答不了的事"
+      },
+      "body": {
+        "en": "The Beta parameters in force at any time, the update interval and which version served a row are not in the data. Whether the recorded propensities of the BTS log are internally consistent is undetermined on both campaigns. All is not a clean hold-out from the development campaign: a check made after the results, without reading a click, finds all 34 Beta parameter pairs of Men's in the prior file among the 80 of All, identical and in the same order, and none of the 46 of Women's.",
+        "zh": "任一时刻生效的 Beta 参数、更新间隔、每一行是哪个版本提供的，数据里都没有。BTS 日志记录的倾向分是否自洽，在两个活动上都是 undetermined。All 不是相对开发用活动的干净留出集：结果出来之后做的一项不读点击的核对发现，先验文件里 Men's 的 34 对 Beta 参数原样、按原顺序出现在 All 的 80 对里，Women's 的 46 对一对也没有。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/ope-checks",
+  "headings": {
+    "decisions": {
+      "en": "Registered rules",
+      "zh": "登记的规则"
+    },
+    "decisionLog": {
+      "en": "Pre-registration",
+      "zh": "预注册文件"
+    },
+    "challenges": {
+      "en": "Limits",
+      "zh": "局限"
+    }
+  }
+}

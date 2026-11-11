@@ -30,6 +30,9 @@ const Diagram =
   diagrams[`./architecture/${Astro.props.project.id}.astro`]?.default
 if (!Diagram)
   throw new Error(`No architecture diagram for ${Astro.props.project.id}`)
+// A study names sections 6 and 7 itself.
+const heading = (key: 'decisions' | 'decisionLog' | 'challenges') =>
+  p.headings?.[key][lang] ?? t(lang, key)
 const hasRest = 'images' in p.demo && p.demo.images.length > 1
 const labels = Object.fromEntries(
   Object.entries(p.architecture.labels).map(([key, label]) => [
@@ -108,7 +111,7 @@ const labels = Object.fromEntries(
     </section>
 
     <section class="row reveal" aria-labelledby="decisions">
-      <h2 id="decisions">{t(lang, 'decisions')}</h2>
+      <h2 id="decisions">{heading('decisions')}</h2>
       <div class="body">
         <ul class="items">
           {p.decisions.items.map((d) => (
@@ -124,13 +127,13 @@ const labels = Object.fromEntries(
           ))}
         </ul>
         <p class="note">
-          <a href={p.decisions.source}>{t(lang, 'decisionLog')}</a>
+          <a href={p.decisions.source}>{heading('decisionLog')}</a>
         </p>
       </div>
     </section>
 
     <section class="row reveal" aria-labelledby="challenges">
-      <h2 id="challenges">{t(lang, 'challenges')}</h2>
+      <h2 id="challenges">{heading('challenges')}</h2>
       <div class="body">
         <ul class="items">
           {p.challenges.map((c) => (

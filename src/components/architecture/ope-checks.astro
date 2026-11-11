@@ -1,0 +1,311 @@
+---
+// Architecture of ope-checks, drawn by hand in two variants: a wide one drawn
+// at 720 px and scaled to fit containers from 664 px up, where its smallest
+// text is still above 11 px, and a narrow one drawn at 358 px for narrower
+// ones.
+interface Props {
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+}
+
+// Each part has a name and a line under it, `<key>` and `<key>Sub`.
+const PARTS = [
+  'registration',
+  'rules',
+  'data',
+  'tables',
+  'estimators',
+  'run',
+  'results',
+  'posthoc',
+  'figures',
+] as const
+type Part = (typeof PARTS)[number]
+
+const PATHS: Record<Part, string> = {
+  registration: 'obd/PREREGISTRATION.md',
+  rules: 'obd/verdicts.py',
+  data: 'obd/data.py',
+  tables: 'obd/tables.py',
+  estimators: 'obd/estimators.py',
+  run: 'obd/run.py',
+  results: 'obd/results',
+  posthoc: 'obd/posthoc',
+  figures: 'obd/figures',
+}
+
+const { labels, id } = Astro.props
+const missing = PARTS.flatMap((key) => [key, `${key}Sub`]).filter(
+  (key) => !labels[key],
+)
+if (missing.length > 0)
+  throw new Error(
+    `OpeChecks: missing label${missing.length > 1 ? 's' : ''} ${missing.join(', ')}`,
+  )
+
+// A box over whole pixels x..x+w, y..y+h, with its 1 px stroke inside.
+const box = (x: number, y: number, w: number, h: number) => ({
+  x: x + 0.5,
+  y: y + 0.5,
+  width: w - 1,
+  height: h - 1,
+})
+
+// Wide: three columns of 224 px, three rows of 80 px. The data flows along
+// the first row, the rules along the second into the run, and what the run
+// writes along the third, right to left.
+const COLUMNS = [0, 248, 496]
+const ROWS = [0, 128, 256]
+const WIDE: Record<Part, [column: number, row: number]> = {
+  data: [0, 0],
+  tables: [1, 0],
+  estimators: [2, 0],
+  registration: [0, 1],
+  rules: [1, 1],
+  run: [2, 1],
+  figures: [0, 2],
+  posthoc: [1, 2],
+  results: [2, 2],
+}
+// Narrow: one column, in the order the parts come into play.
+const NARROW: Part[] = [
+  'registration',
+  'rules',
+  'data',
+  'tables',
+  'estimators',
+  'run',
+  'results',
+  'posthoc',
+  'figures',
+]
+const STEP = 80
+
+// Marker ids are per instance and per variant: a hidden SVG's markers do not render.
+const head = { h: `${id}-head-h`, v: `${id}-head-v` }
+// Text goes in through set:text, so formatting adds no spaces that would
+// shift centred labels.
+---
+
+<div class="diagram">
+  <svg
+    class="wide"
+    width="720"
+    height="360"
+    viewBox="0 0 720 360"
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.h}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    {PARTS.map((part) => {
+      const x = COLUMNS[WIDE[part][0]]!
+      const y = ROWS[WIDE[part][1]]!
+      return (
+        <>
+          <rect
+            {...box(x, y, 224, 80)}
+            rx="7.5"
+            class:list={['box', { core: part === 'registration' }]}
+          />
+          <text x={x + 112} y={y + 26} class="label" set:text={labels[part]} />
+          <text
+            x={x + 112}
+            y={y + 45}
+            class="sub middle"
+            set:text={labels[`${part}Sub`]}
+          />
+          <text x={x + 112} y={y + 63} class="path" set:text={PATHS[part]} />
+        </>
+      )
+    })}
+
+    <path class="line" d="M224 40.5H248" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M472 40.5H496" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M608.5 80V128" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M224 168.5H248" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M472 168.5H496" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M608.5 208V256" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M496 296.5H472" marker-end={`url(#${head.h})`}></path>
+    <path class="line" d="M248 296.5H224" marker-end={`url(#${head.h})`}></path>
+    {/* The figures are also drawn from the registered result files. */}
+    <path
+      class="line"
+      d="M608.5 336V351.5H112.5V336"
+      marker-end={`url(#${head.h})`}
+    ></path>
+  </svg>
+
+  <svg
+    class="narrow"
+    width="358"
+    height="700"
+    viewBox="0 0 358 700"
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.v}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    {NARROW.map((part, i) => (
+      <>
+        <rect
+          {...box(0, i * STEP, 334, 60)}
+          rx="7.5"
+          class:list={['box', { core: part === 'registration' }]}
+        />
+        <text
+          x="12"
+          y={i * STEP + 25}
+          class="label start"
+          set:text={labels[part]}
+        />
+        <text
+          x="322"
+          y={i * STEP + 25}
+          class="path end"
+          set:text={PATHS[part]}
+        />
+        <text
+          x="12"
+          y={i * STEP + 45}
+          class="sub"
+          set:text={labels[`${part}Sub`]}
+        />
+      </>
+    ))}
+
+    {
+      // Each part leads to the next, but the rules lead to the run, past the
+      // data, and the data does not come from the rules.
+      NARROW.slice(0, -1).map(
+        (part, i) =>
+          part !== 'rules' && (
+            <path
+              class="line"
+              d={`M167.5 ${i * STEP + 60}V${(i + 1) * STEP}`}
+              marker-end={`url(#${head.v})`}
+            />
+          ),
+      )
+    }
+    <path
+      class="line"
+      d="M334 110.5H346.5V430.5H334"
+      marker-end={`url(#${head.v})`}
+    ></path>
+    {/* The figures are also drawn from the registered result files. */}
+    <path
+      class="line"
+      d="M334 510.5H346.5V670.5H334"
+      marker-end={`url(#${head.v})`}
+    ></path>
+  </svg>
+</div>
+
+<style>
+  .diagram {
+    container-type: inline-size;
+  }
+
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+    font-family: inherit;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  @container (min-width: 664px) {
+    .wide {
+      display: block;
+      width: 100%;
+    }
+
+    .narrow {
+      display: none;
+    }
+  }
+
+  .box {
+    fill: var(--color-bg-subtle);
+    stroke: var(--color-border-strong);
+  }
+
+  /* The one use of the accent: the registration, fixed before the run it
+     governs. */
+  .core {
+    fill: var(--color-accent-subtle);
+    stroke: var(--color-accent-line);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--color-border-strong);
+  }
+
+  .head {
+    fill: var(--color-text-muted);
+  }
+
+  /* Text is centred on its x in the wide variant; the narrow one sets a
+     name and the line under it from the left and the path from the right. */
+  .label,
+  .path,
+  .middle {
+    text-anchor: middle;
+  }
+
+  .start {
+    text-anchor: start;
+  }
+
+  .end {
+    text-anchor: end;
+  }
+
+  .label {
+    fill: var(--color-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .path {
+    fill: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .sub {
+    fill: var(--color-text-muted);
+    font-size: 12px;
+  }
+</style>

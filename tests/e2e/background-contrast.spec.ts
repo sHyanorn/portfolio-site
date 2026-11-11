@@ -164,6 +164,16 @@ for (const viewport of viewports) {
           .map((box) => `${box.label}: ${box.lowest.toFixed(2)}`)
         expect(failing, `${state}: text below its contrast minimum`).toEqual([])
         await hide.evaluate((style) => (style as ChildNode).remove())
+        // Links ease back to their colour, and axe must not read one on the
+        // way: under load it has read the footer's links partway.
+        await page.evaluate(() =>
+          Promise.allSettled(
+            document
+              .getAnimations()
+              .filter((a) => a instanceof CSSTransition)
+              .map((a) => a.finished),
+          ),
+        )
       }
 
       /** axe must not judge the text over the background as passing. */

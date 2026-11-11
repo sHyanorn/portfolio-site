@@ -12,7 +12,8 @@ All paths are in github.com/sHyanorn/push-lab at commit 937ad77.
 | Demo, first chart: DR bias against simulator truth along annoyance from 0 to 0.1; overrates two pushes a day, underrates fewer | README.md:28-32 |
 | Demo, second chart: truth from −0.0065 to +0.0315, DR between −0.0049 and −0.0036; post hoc | README.md:30 |
 | Demo, third image: no Tier B result; generated from committed results; no scripts | README.md:7, 18; docs/DECISIONS.md:496 (D049) |
-| 0.891 (0.815 to 0.966) for IPS, 0.897 for DR on the full Men's campaign; no estimator passed | README.md:55; docs/DECISIONS.md:458, 460 (D046) |
+| 0.891 for IPS, 0.897 for DR on the full Men's campaign; the registered interval over impressions, 0.815 to 0.966, excludes the known value; no estimator passed | README.md:55; docs/DECISIONS.md:458, 460 (D046) |
+| Post hoc, over ten-minute blocks the interval of IPS is 0.789 to 1.004 | README.md:55; docs/DECISIONS.md:620 (D063); results/ope_obd_blocks.json (`full.validation.IPS.ratio_to_on_policy`) |
 | −2.3% (−2.4% to −2.2%) daily active share, one push a day against none, at the reference | README.md:39 |
 | 23 of 24 sweep settings at which DR reverses the order of no pushes and one a day; post hoc | README.md:30 |
 | 43 of 64 settings won at half volume, 19 lost, none won without annoyance | README.md:70 |
@@ -41,8 +42,12 @@ All paths are in github.com/sHyanorn/push-lab at commit 937ad77.
 | Fine ranker: hyperparameters as registered; changes reported as separate variants | docs/DECISIONS.md:204 |
 | Open Bandit: Tier B needs an estimator checked against a known answer on real logs | docs/DECISIONS.md:391 (D041) |
 | Open Bandit: 46 clicks in the small random sample, 2,321 in the full campaign; 50 times the clicks | docs/DECISIONS.md:399 (D042), 416 (D043) |
-| Open Bandit: small-sample passes; full campaign none passes, IPS 0.891, DR 0.897; no Tier B result | docs/DECISIONS.md:458, 460 (D046) |
+| Open Bandit: small-sample passes; full campaign none passes, IPS 0.891, DR 0.897, with registered intervals over impressions; no Tier B result | docs/DECISIONS.md:458, 460 (D046) |
 | Open Bandit: deployed policy not the fixed prior; re-weighting moves IPS to 0.917, a change of +0.026 (−0.004 to 0.059) whose interval includes zero; the data do not show where the gap comes from | docs/DECISIONS.md:422 (D043), 460 (D046); README.md:55, 57 |
 | Open Bandit: rows are the three positions of an impression; resampling by impression | docs/DECISIONS.md:458 (D046) |
+| Open Bandit: impressions are not independent in these logs either | README.md:55; docs/DECISIONS.md:618 (D063) |
+| Open Bandit: post hoc, with ten-minute blocks as resampling units, the intervals of IPS (0.789 to 1.004) and DR (0.796 to 1.006) contain the known value | README.md:55; docs/DECISIONS.md:620-621 (D063); results/ope_obd_blocks.json (`full.validation.IPS` and `full.validation.DR`: `ratio_to_on_policy`, `interval_contains_on_policy`) |
+| Open Bandit: post hoc, the interval of the change is −0.021 to 0.074 | docs/DECISIONS.md:624 (D063); results/ope_obd_blocks.json (`full.post_hoc.difference_from_fixed_prior`) |
+| Open Bandit: the registered verdict stands, and no estimator is treated as validated | README.md:55; docs/DECISIONS.md:617, 625 (D063) |
 | Random streams: trailing zeros ignored; exploration coins keyed by seed, day and slot; open rate 0.13 to 0.38 in a synthetic run | docs/DECISIONS.md:296 (D032) |
 | Random streams: purpose first and a closing 1; test of uncorrelated streams; bit-for-bit rerun of `sim.build` | docs/DECISIONS.md:297-298 |

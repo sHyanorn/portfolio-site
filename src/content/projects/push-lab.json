@@ -54,8 +54,8 @@
       {
         "value": { "en": "0.891", "zh": "0.891" },
         "label": {
-          "en": "of the known click rate, as estimated by IPS on the full Open Bandit campaign, with an interval of 0.815 to 0.966 that excludes it: no estimator passed",
-          "zh": "IPS 在 Open Bandit 完整活动上估出的点击率与已知真值之比，区间为 0.815 到 0.966，不含真值：没有一个估计器通过检验"
+          "en": "of the known click rate, as estimated by IPS on the full Open Bandit campaign. The registered interval over impressions, 0.815 to 0.966, excludes it and no estimator passed; post hoc, over ten-minute blocks the interval is 0.789 to 1.004",
+          "zh": "IPS 在 Open Bandit 完整活动上估出的点击率与已知真值之比。登记的区间按曝光重采样，为 0.815 到 0.966，不含真值，没有估计器通过检验；事后按 10 分钟时间块重采样，区间为 0.789 到 1.004"
         }
       },
       {
@@ -216,8 +216,8 @@
         "zh": "数据太少时通过的检验"
       },
       "body": {
-        "en": "Tier B needed an estimator that recovers a known policy value on real logs. On the small Open Bandit sample, with 46 clicks in the random logs, IPS and DR passed the registered rule. The full Men's campaign has 50 times the clicks, and there no estimator passes: IPS estimates 0.891 of the known click rate and DR 0.897, with intervals that exclude it, so the project has no Tier B result. The deployed policy was not the fixed prior the target assumes; re-weighting to its logged frequencies moves IPS to 0.917, a change of +0.026 whose interval (−0.004 to 0.059) includes zero, so these data do not show where the gap comes from. Along the way the bootstrap was moved from rows to impressions, since each impression fills three rows.",
-        "zh": "要得到 B 级结果，需要一个估计器能在真实日志上还原已知的策略价值。在 Open Bandit 的小样本上，随机日志里只有 46 次点击，IPS 和 DR 通过了预注册的判定规则。完整的男装活动有 50 倍的点击，在那里没有一个估计器通过：IPS 估出已知点击率的 0.891，DR 估出 0.897，区间都不含真值，所以项目没有 B 级结果。实际部署的策略并不是目标所假定的固定先验；按日志中的实际频率重新加权后，IPS 升到 0.917，变化为 +0.026，区间（−0.004 到 0.059）包含 0，所以这份数据无法说明差距来自哪里。在这个过程中，bootstrap 的重抽样单位也从行改成了曝光，因为每次曝光占三行。"
+        "en": "Tier B needed an estimator that recovers a known policy value on real logs. On the small Open Bandit sample, with 46 clicks in the random logs, IPS and DR passed the registered rule. The full Men's campaign has 50 times the clicks, and there no estimator passes: IPS estimates 0.891 of the known click rate and DR 0.897, with registered intervals over impressions that exclude it, so the project has no Tier B result. The deployed policy was not the fixed prior the target assumes; re-weighting to its logged frequencies moves IPS to 0.917, a change of +0.026 whose interval (−0.004 to 0.059) includes zero, so these data do not show where the gap comes from. Along the way the bootstrap was moved from rows to impressions, since each impression fills three rows. Impressions are not independent in these logs either: post hoc, with ten-minute blocks as resampling units, the intervals of IPS (0.789 to 1.004) and DR (0.796 to 1.006) contain the known value, and that of the change is −0.021 to 0.074. The registered verdict stands, and no estimator is treated as validated.",
+        "zh": "要得到 B 级结果，需要一个估计器能在真实日志上还原已知的策略价值。在 Open Bandit 的小样本上，随机日志里只有 46 次点击，IPS 和 DR 通过了预注册的判定规则。完整的男装活动有 50 倍的点击，在那里没有一个估计器通过：IPS 估出已知点击率的 0.891，DR 估出 0.897，登记的区间按曝光重采样，都不含真值，所以项目没有 B 级结果。实际部署的策略并不是目标所假定的固定先验；按日志中的实际频率重新加权后，IPS 升到 0.917，变化为 +0.026，区间（−0.004 到 0.059）包含 0，所以这份数据无法说明差距来自哪里。在这个过程中，bootstrap 的重抽样单位也从行改成了曝光，因为每次曝光占三行。曝光在这份日志里也不独立：事后按 10 分钟时间块重采样，IPS 的区间（0.789 到 1.004）和 DR 的区间（0.796 到 1.006）都包含真值，变化的区间是 −0.021 到 0.074。登记的判定不变，没有估计器被当作通过了检验。"
       }
     },
     {

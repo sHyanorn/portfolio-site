@@ -20,6 +20,78 @@
   "areas": [
     {
       "title": {
+        "en": "Algorithms",
+        "zh": "算法"
+      },
+      "items": [
+        {
+          "en": "A push notification pipeline on public data: two-tower recall with a faiss index, coarse and LightGBM fine ranking, uplift models, and a delivery policy for send, time slot and copy.",
+          "zh": "基于公开数据的推送推荐管线：双塔召回配 faiss 索引，粗排加 LightGBM 精排，增益模型，以及决定发不发、何时发、发什么文案的投放策略。"
+        },
+        {
+          "en": "Off-policy evaluation (IPS, DR) checked against a known answer on the Open Bandit Dataset; on the full campaign no estimator passed with the registered intervals over impressions, so the project reports no result that rests on one. Post hoc, over ten-minute blocks, the intervals of both contain the known value, and the registered verdict stands.",
+          "zh": "离策略评估（IPS、DR）先在 Open Bandit 数据集上对照已知答案检验；在完整活动数据上，按登记的曝光重采样区间没有估计器通过，因此项目不报告依赖它的结果。事后按 10 分钟时间块重采样，两者的区间都包含已知值，登记的判定不变。"
+        },
+        {
+          "en": "A simulator fitted on KuaiRand random exposures for effects no public dataset records, with results labelled by evidence tier (A real data, B checked estimator, C simulator only).",
+          "zh": "公开数据集没有记录的效应，用在 KuaiRand 随机曝光上拟合的模拟器估计；每个结果按证据等级标注（A 真实数据，B 经检验的估计器，C 仅在模拟器中成立）。"
+        },
+        {
+          "en": "Comparisons registered before the simulations and reported as they came out, including a pre-registered ranking result that went the other way.",
+          "zh": "比较方案在模拟之前预注册，结果原样报告，包括一个与预期方向相反的预注册排序结果。"
+        },
+        {
+          "en": "A pre-registered recheck of the Open Bandit benchmark: propositions, statistics and decision rules committed before any outcome of the confirmatory campaigns was computed, with one campaign to develop on and two for the verdicts.",
+          "zh": "对 Open Bandit 基准的预注册复核：命题、统计量和判定规则在两个确认性活动的任何结果算出之前提交，一个活动用来开发，两个活动用于判定。"
+        },
+        {
+          "en": "On the two confirmatory campaigns the published prior is not the distribution the BTS log shows (distance 0.53 against a noise floor of 0.11 to 0.14), and the IPS estimate pooled over them is 0.974 of the on-policy click rate (0.915 to 1.036 over ten-minute blocks): no shortfall is shown, and one of up to 8.5% is not excluded.",
+          "zh": "在两个确认性活动上，公开的先验与 BTS 日志实际展示的分布不一致（距离 0.53，噪声底 0.11 到 0.14）；合并的 IPS 估计是在线点击率的 0.974（按 10 分钟时间块，区间 0.915 到 1.036）：没有显示出偏低，最多 8.5% 的偏低也排除不了。"
+        },
+        {
+          "en": "Post hoc, on all three campaigns: the standard deviation of that ratio with ten-minute blocks as resampling units is 1.31 to 1.47 times the one with rows or impressions.",
+          "zh": "事后分析，三个活动都是如此：按 10 分钟时间块重采样时，这个比值的标准差是按行或按曝光重采样时的 1.31 到 1.47 倍。"
+        },
+        {
+          "en": "BM25 retrieval in Go, with Lucene's scoring computed from a Bleve index: on six BEIR test sets its nDCG@10 and Recall@100 equal Pyserini's published BM25 numbers to all four decimals, and the run files reproduce byte for byte from committed checksums.",
+          "zh": "用 Go 实现的 BM25 检索，在 Bleve 的索引上按 Lucene 的公式打分：在六个 BEIR 测试集上，nDCG@10 和 Recall@100 与 Pyserini 公布的 BM25 数字四位小数全部一致，结果文件可以按已提交的校验和逐字节复现。"
+        }
+      ],
+      "projects": ["push-lab", "ope-checks"],
+      "repos": ["https://github.com/sHyanorn/retrieval-lab"]
+    },
+    {
+      "title": {
+        "en": "Server-side systems",
+        "zh": "服务端系统"
+      },
+      "items": [
+        {
+          "en": "A recommendation serving system in Go: retrieval, features, ranking and rerank behind one HTTP API, with the user encoder and the ranker run through ONNX Runtime.",
+          "zh": "用 Go 写的推荐服务系统：召回、特征、排序和重排在同一个 HTTP 接口后面，用户编码器和排序模型通过 ONNX Runtime 运行。"
+        },
+        {
+          "en": "Item vectors split into shards on replicas over gRPC: a search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search. With one replica of every shard lost, every response equals the one with all replicas healthy.",
+          "zh": "物品向量分片后放在 gRPC 副本上：一个副本失败时查询立刻转到下一个，第一个慢时再发给第二个，每次查询最多一次对冲。每个分片各丢一个副本时，每个响应都与副本全部正常时相同。"
+        },
+        {
+          "en": "Model bundles swapped while serving: every replica prepares the new version, activation is atomic, and a version is the digest of its files, checked by the gateway and by every replica.",
+          "zh": "模型包在服务期间替换：每个副本先备好新版本，切换是原子的；版本号是包内文件的摘要，网关和每个副本都校验。"
+        },
+        {
+          "en": "Events through Kafka to an ingest consumer that applies them idempotently; user histories and the result cache on Valkey, with a circuit breaker that keeps the gateway answering while Valkey is down.",
+          "zh": "事件经 Kafka 进入幂等的消费程序；用户历史和结果缓存放在 Valkey，Valkey 不可用时由熔断器保证网关继续应答。"
+        },
+        {
+          "en": "Deployed in kind: replicas as a StatefulSet, gateways with an HPA, Pod Security `restricted`, and a NetworkPolicy whose enforcement CI checks. At 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded, with stage budgets of 100 ms on one node.",
+          "zh": "部署在 kind 上：副本用 StatefulSet，网关带 HPA，命名空间执行 Pod Security `restricted`，NetworkPolicy 是否生效由 CI 检查。每秒 100 个请求下，网关滚动重启、副本滚动重启和一次换包期间，没有一个响应失败或降级；单节点，各阶段的时间预算为 100 ms。"
+        }
+      ],
+      "projects": [],
+      "repos": ["https://github.com/sHyanorn/recserve"]
+    },
+    {
+      "title": {
         "en": "Backend systems",
         "zh": "后端系统"
       },
@@ -46,89 +118,6 @@
         }
       ],
       "projects": ["matching-engine"]
-    },
-    {
-      "title": {
-        "en": "Security engineering",
-        "zh": "安全工程"
-      },
-      "items": [
-        {
-          "en": "Client-side encryption with Web Crypto in RFC 8188 `aes128gcm` records of 64 KiB, AES-256-GCM, with the key in the URL fragment the browser never sends.",
-          "zh": "用 Web Crypto 在浏览器端加密，采用 RFC 8188 `aes128gcm` 格式，64 KiB 分块，AES-256-GCM；密钥放在浏览器从不发送的 URL 片段里。"
-        },
-        {
-          "en": "Password protection and accounts with Argon2id key derivation and HKDF, where the server never sees the password.",
-          "zh": "密码保护和账号体系用 Argon2id 派生密钥并配合 HKDF，服务端始终看不到密码。"
-        },
-        {
-          "en": "Download counts decremented in one conditional SQL UPDATE, so concurrent requests cannot over-issue; stateless HMAC challenges.",
-          "zh": "下载次数在一条带条件的 SQL UPDATE 里扣减，并发请求不会超发；挑战值无状态，用 HMAC 签名。"
-        },
-        {
-          "en": "A threat model and an OWASP Top 10:2025 self-assessment: 170 black-box checks, 30 browser checks, 55 findings, 5 of them High, 49 fixed.",
-          "zh": "威胁模型和 OWASP Top 10:2025 自评：170 项黑盒检查、30 项浏览器检查，55 项发现，其中高危 5 项，已修复 49 项。"
-        },
-        {
-          "en": "Electron hardening: sandboxed renderer without Node.js, a custom protocol with a content security policy, typed IPC validated with zod, no network requests (checked by the e2e suite's net log), and a renderer process replaced on every lock.",
-          "zh": "Electron 加固：渲染进程沙箱化且没有 Node.js，自定义协议配内容安全策略，IPC 有类型并用 zod 校验，应用不发任何网络请求（端到端测试读取网络日志核对），每次锁定都换掉渲染进程。"
-        }
-      ],
-      "projects": ["vault-share", "local-ledger"]
-    },
-    {
-      "title": {
-        "en": "Quantitative research",
-        "zh": "量化研究"
-      },
-      "items": [
-        {
-          "en": "A daily multi-asset backtesting engine, long and short, that trades at the next open after the signal's close, net of fees and slippage.",
-          "zh": "日频多资产回测引擎，支持做多做空，在信号收盘后的下一个开盘价成交，扣除手续费和滑点。"
-        },
-        {
-          "en": "Overfitting diagnostics on every recorded trial: walk-forward analysis, purged cross-validation, the probability of backtest overfitting (PBO) and the deflated Sharpe ratio (DSR).",
-          "zh": "对每一次参数试验做过拟合诊断：滚动前推分析、清洗交叉验证、回测过拟合概率（PBO）和紧缩夏普比率（DSR）。"
-        },
-        {
-          "en": "Pre-registration: data range, grids, costs and pass thresholds fixed before any run on real data; post hoc analyses kept in their own module and labelled.",
-          "zh": "预注册：数据区间、参数网格、成本和通过阈值都在任何真实数据运行之前固定；事后分析放在单独的模块里并加标注。"
-        },
-        {
-          "en": "Reproducible reports: registered results frozen with SHA-256 sums checked in CI.",
-          "zh": "结果可复现：预注册结果冻结后，CI 校验其 SHA-256。"
-        },
-        {
-          "en": "Data pipeline on yfinance and FRED into Parquet and DuckDB, refreshed by a weekly GitHub Actions workflow.",
-          "zh": "数据管线从 yfinance 和 FRED 取数，存为 Parquet 并用 DuckDB 查询，每周由 GitHub Actions 更新。"
-        }
-      ],
-      "projects": ["backtest-lab"]
-    },
-    {
-      "title": {
-        "en": "Recommender systems",
-        "zh": "推荐系统"
-      },
-      "items": [
-        {
-          "en": "A push notification pipeline on public data: two-tower recall with a faiss index, coarse and LightGBM fine ranking, uplift models, and a delivery policy for send, time slot and copy.",
-          "zh": "基于公开数据的推送推荐管线：双塔召回配 faiss 索引，粗排加 LightGBM 精排，增益模型，以及决定发不发、何时发、发什么文案的投放策略。"
-        },
-        {
-          "en": "Off-policy evaluation (IPS, DR) checked against a known answer on the Open Bandit Dataset; on the full campaign no estimator passed, so the project reports no result that rests on one.",
-          "zh": "离策略评估（IPS、DR）先在 Open Bandit 数据集上对照已知答案检验；在完整活动数据上没有估计器通过，因此项目不报告依赖它的结果。"
-        },
-        {
-          "en": "A simulator fitted on KuaiRand random exposures for effects no public dataset records, with results labelled by evidence tier (A real data, B checked estimator, C simulator only).",
-          "zh": "公开数据集没有记录的效应，用在 KuaiRand 随机曝光上拟合的模拟器估计；每个结果按证据等级标注（A 真实数据，B 经检验的估计器，C 仅在模拟器中成立）。"
-        },
-        {
-          "en": "Comparisons registered before the simulations and reported as they came out, including a pre-registered ranking result that went the other way.",
-          "zh": "比较方案在模拟之前预注册，结果原样报告，包括一个与预期方向相反的预注册排序结果。"
-        }
-      ],
-      "projects": ["push-lab"]
     }
   ],
   "tools": {
@@ -137,8 +126,8 @@
       "zh": "技术栈"
     },
     "body": {
-      "en": "Go, Python, TypeScript. React, FastAPI, Electron. SQLite, SQLCipher 4 format, DuckDB, Parquet. Web Crypto, Argon2id. LightGBM, faiss. GitHub Actions. This site: Astro and hand-written WebGL2 and GLSL.",
-      "zh": "Go、Python、TypeScript。React、FastAPI、Electron。SQLite、SQLCipher 4 格式、DuckDB、Parquet。Web Crypto、Argon2id。LightGBM、faiss。GitHub Actions。本站：Astro，以及手写的 WebGL2 和 GLSL。"
+      "en": "Go, Python, TypeScript. gRPC, Kafka, Valkey, ONNX Runtime, Kubernetes, Prometheus. React, FastAPI, Electron. SQLite, SQLCipher 4 format, DuckDB, Parquet. Web Crypto, Argon2id. LightGBM, faiss, NumPy. GitHub Actions. This site: Astro and hand-written WebGL2 and GLSL.",
+      "zh": "Go、Python、TypeScript。gRPC、Kafka、Valkey、ONNX Runtime、Kubernetes、Prometheus。React、FastAPI、Electron。SQLite、SQLCipher 4 格式、DuckDB、Parquet。Web Crypto、Argon2id。LightGBM、faiss、NumPy。GitHub Actions。本站：Astro，以及手写的 WebGL2 和 GLSL。"
     }
   },
   "direction": {
@@ -147,8 +136,8 @@
       "zh": "我的方向"
     },
     "body": {
-      "en": "My work sits where economics, finance and technology meet. Commerce asks how markets match orders, how a strategy can look good by chance, and how to judge a decision without live data. Software is how I test those questions. Three projects on this site each take one, with numbers that trace back to their repositories.",
-      "zh": "我的工作处在经济、金融和技术的交汇处。商科提出的问题是：市场怎样撮合订单，一个策略怎样仅凭运气就显得很好，没有线上数据时怎样评判一个决策。软件是我检验这些问题的方式。网站上有三个项目各回答其中一个，给出的数字都能追溯到项目仓库。"
+      "en": "My work is algorithm engineering and server-side systems, with backend development next to them. On the algorithm side: recommendation models and off-policy evaluation, where comparisons are registered before the results and reported as they came out, including a ranking result that went the other way and a benchmark shortfall that the confirmatory campaigns did not show. On the server side: a recommendation serving system checked under load through rolling restarts and a bundle swap. Every number on this site traces back to a project repository.",
+      "zh": "我的方向是算法工程和服务端系统，其次是后端开发。算法方面做推荐模型和离策略评估：比较方案在出结果之前登记，结果原样报告，包括一个方向与预期相反的排序结果，和一个在确认性活动上没有显示出来的基准偏低。服务端方面做了一个推荐服务系统，在持续请求下经过了滚动重启和换包的检验。站上的每个数字都能追溯到项目仓库。"
     }
   }
 }

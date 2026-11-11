@@ -1,6 +1,6 @@
 {
   "title": "ope-checks",
-  "order": 6,
+  "order": 2,
   "summary": {
     "en": "Pre-registered checks of published off-policy evaluation results. The first study retests the Open Bandit benchmark: on its two confirmatory campaigns, with ten-minute blocks as resampling units, the standard estimate is not shown to fall short of the on-policy click rate.",
     "zh": "对已发表的离策略评估结果做预注册检验。第一项研究重测 Open Bandit 基准：在两个确认性活动上，以 10 分钟时间块为重采样单位时，标准估计没有显示出低于在线点击率。"

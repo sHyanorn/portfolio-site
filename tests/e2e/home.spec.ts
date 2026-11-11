@@ -1,21 +1,38 @@
-// The home pages: every project in the order its content file gives, and
-// the card pictures' sizes, loading and theme.
+// The home pages: every project in the order its content file gives, the
+// earlier ones apart, and the card pictures' sizes, loading and theme.
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { BASE } from './site'
 
 const CONTENT = 'src/content/projects'
-const titles = readdirSync(CONTENT)
+const projects = readdirSync(CONTENT)
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(readFileSync(join(CONTENT, f), 'utf8')))
   .sort((a, b) => a.order - b.order)
-  .map((p) => p.title as string)
+const titles = (early: boolean) =>
+  projects.filter((p) => !!p.early === early).map((p) => p.title as string)
 
 for (const path of [BASE, `${BASE}zh/`])
   test(`${path}: project cards follow their order`, async ({ page }) => {
     await page.goto(path)
-    await expect(page.locator('#projects h3')).toHaveText(titles)
+    await expect(page.locator('#projects h3')).toHaveText(titles(false))
+  })
+
+// Earlier projects have no card: each is a title, a summary and tags under
+// the cards, and its page is one link away.
+for (const path of [BASE, `${BASE}zh/`])
+  test(`${path}: earlier projects follow the cards`, async ({ page }) => {
+    await page.goto(path)
+    expect(titles(true).length).toBeGreaterThan(0)
+    const links = page.locator('#projects ~ .earlier h3 a')
+    await expect(links).toHaveText(titles(true))
+    await expect(page.locator('.earlier img')).toHaveCount(0)
+    for (const [i, title] of titles(true).entries())
+      await expect(links.nth(i)).toHaveAttribute(
+        'href',
+        `${path}projects/${title}/`,
+      )
   })
 
 // A card picture offers its source width when that is under the largest
@@ -82,4 +99,18 @@ for (const colorScheme of ['light', 'dark'] as const)
         `the ${other} copy does not load`,
       ).toBe('')
     }
+  })
+
+// An area whose work has no project page yet links to its repository.
+for (const path of [BASE, `${BASE}zh/`])
+  test(`${path}: three areas, one with its repository`, async ({ page }) => {
+    await page.goto(path)
+    await expect(page.locator('.areas dt')).toHaveCount(3)
+    const link = page.locator('.areas dd a')
+    await expect(link).toHaveCount(1)
+    await expect(link).toHaveText('recserve')
+    await expect(link).toHaveAttribute(
+      'href',
+      'https://github.com/sHyanorn/recserve',
+    )
   })

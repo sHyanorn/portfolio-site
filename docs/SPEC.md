@@ -7,9 +7,9 @@ Aaron's personal website: a restrained design, an animated background written in
 ## 2. Pages
 
 ### Home
-- A headline naming the four areas of the work (backend systems, security engineering, quantitative research, recommender systems), a short introduction, and each area with one sentence of evidence
+- A headline naming the direction of the work (algorithm engineering and server-side systems), a short introduction, and three areas (algorithms, server-side systems, backend systems), each with a sentence or two of evidence
 - GLSL background: a subtle flowing gradient or noise field that responds slightly to the mouse
-- Featured project cards that link to detail pages
+- Featured project cards that link to detail pages, and under them the earlier projects as text entries
 - Contact details: email and GitHub
 
 ### Project detail page (one per project)
@@ -20,15 +20,15 @@ Fixed structure:
 3. Key metrics (e.g. matching throughput, test coverage)
 4. Problem and goals
 5. Architecture diagram
-6. Three to five key technical decisions (from each repository's DECISIONS.md)
-7. Challenges and how they were solved
+6. Three to five key technical decisions (from each repository's DECISIONS.md); for a pre-registered study, rules from its registration and amendments
+7. Challenges and how they were solved; for a study, its limits
 8. GitHub link, and a link to the project's article when there is one
 
 ### Articles
-- List page `/articles`: newest first; each entry shows the title, a one-sentence summary, the project, the date and the reading time
+- List page `/articles`: newest first; each entry shows the title, a one-sentence summary, its kind (a note or a paper), the project, the date and the reading time
 - Article page `/articles/<slug>`: one per project, on one finding that runs against expectation. It opens with the conclusion, then covers how it was found, the evidence and numbers, the limits, and when the conclusion does not hold
 - Every number can be traced to a file in the project's repository
-- Names its project at the top, linked to the project page; the repository link sits below the body
+- Names its kind and its project at the top, the project linked to its page; the repository link sits below the body
 - English only. In the Chinese version the interface is translated, the body stays in English with `lang="en"`, and the list marks articles as English
 - Published on this site only, with a full-text RSS feed at `/rss.xml`
 

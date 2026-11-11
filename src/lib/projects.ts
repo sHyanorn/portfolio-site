@@ -14,3 +14,8 @@ export function byOrder<T extends Ordered>(projects: T[]): T[] {
   }
   return projects.toSorted((a, b) => a.data.order - b.data.order)
 }
+
+/** A repository's name, the last part of its URL. */
+export function repoName(url: string): string {
+  return new URL(url).pathname.split('/').filter(Boolean).at(-1)!
+}

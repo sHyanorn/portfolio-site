@@ -27,11 +27,12 @@ export function pagePath(
 /** Interface text; page content lives in the content collections. */
 const ui = {
   description: {
-    en: 'Aaron Yang: backend systems, security engineering, quantitative research and recommender systems.',
-    zh: 'Aaron Yang：后端系统、安全工程、量化研究与推荐系统。',
+    en: 'Aaron Yang: algorithm engineering and server-side systems.',
+    zh: 'Aaron Yang：算法工程与服务端系统。',
   },
   skip: { en: 'Skip to content', zh: '跳到正文' },
   projects: { en: 'Projects', zh: '项目' },
+  earlier: { en: 'Earlier projects', zh: '早期项目' },
   articles: { en: 'Articles', zh: '文章' },
   about: { en: 'About', zh: '关于' },
   aboutDescription: {

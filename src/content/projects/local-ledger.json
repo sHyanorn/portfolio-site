@@ -1,6 +1,7 @@
 {
   "title": "local-ledger",
-  "order": 4,
+  "order": 6,
+  "early": true,
   "summary": {
     "en": "A personal finance desktop app for macOS and Windows that keeps everything in an encrypted database on your computer and makes no network requests.",
     "zh": "一款面向 macOS 和 Windows 的个人记账桌面应用，所有数据都存在本机的加密数据库里，应用不发出任何网络请求。"

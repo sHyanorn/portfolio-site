@@ -17,7 +17,7 @@ export interface SiteText {
 }
 
 /** The text the images should show: the home page's headline and
- * introduction. The four areas the headline names are left out. */
+ * introduction. The areas under them are left out. */
 export function siteText(lang: Lang): SiteText {
   const home = JSON.parse(readFileSync('src/content/site/home.json', 'utf8'))
   return {
@@ -81,7 +81,7 @@ if (import.meta.main) {
       await page.waitForTimeout(1500)
       // The headline and introduction alone, centred in the frame.
       await page.addStyleTag({
-        content: `header.header, .skip, #projects, footer, .areas { display: none !important }
+        content: `header.header, .skip, #projects, .earlier, footer, .areas { display: none !important }
           main { display: flex; flex-direction: column; justify-content: center;
             min-height: 420px; padding-top: 0 !important }
           main > * { margin-block: 0 !important; padding-block: 0 !important }`,

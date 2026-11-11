@@ -157,3 +157,14 @@
 - Date: 2026-11-10
 - Decision: the repository is `sHyanorn.github.io`, so GitHub Pages serves the site at `https://shyanorn.github.io/` with an empty base path. Only the repository name changed (D007): the deploy workflow reads the new origin and base from the Pages configuration. `/portfolio-site/` is gone, with no redirect
 - Rationale: a short address that names the owner; the old one was never shared, so a redirect would serve no one
+
+## D022 Algorithms and server-side systems first; earlier projects apart
+- Date: 2026-11-11
+- Decision:
+  1. The headline names the direction of the work, algorithm engineering and server-side systems. Home and About give three areas in place of four (D017): algorithms, server-side systems, backend systems. An area whose work has no project page yet links to its repository: a link under the area's text on the home page, and a name in the area's project line on About (`repo` in `home.json`, `repos` in `about.json`)
+  2. A project marked `early` in its content file keeps its page and leaves the cards (D020): the home page lists it under them as a title, its summary and its tags, and About as a name and its summary, after the areas. The projects in security and quantitative research are the earlier ones
+  3. Every article states its kind in a required `kind` field, `note` or `paper`, shown first in the list's details and beside the date on the article page. A paper is a preprint or a submitted or published paper; everything else is a note
+  4. A pre-registered study uses the project template (D013) with two sections renamed in its content file (`headings`): the decisions become rules from its registration and amendments, numbered by section, proposition or amendment (`§4`, `H3`, `A7`), and the challenges become its limits. Its three figures take the place of the screenshots, each with a dark copy
+- Rationale: the first screen should say what the work is now, and a visitor should reach the newer work first without losing the pages of the older; a text entry costs the home page a few lines where a card costs a screen. A study has no decision log, and what a reader needs beside its numbers is the rule each was read by and what the result leaves open. A label on every article keeps a note from being read as a paper
+- Alternatives: a separate page for earlier projects (one more click, and a navigation entry for three links); cards for them in a smaller grid (six pictures compete on the first page); a second template for studies (two templates to keep alike for one page)
+

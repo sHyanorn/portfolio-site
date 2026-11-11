@@ -18,6 +18,8 @@ const projects = defineCollection({
       title: z.string(),
       /** Place in project lists, from 1; no two projects share one. */
       order: z.number().int().positive(),
+      /** An earlier project: listed under the cards, without a picture. */
+      early: z.boolean().default(false),
       // 1. Summary and tags
       summary: text,
       tags: z.array(text).min(1),
@@ -126,8 +128,9 @@ const home = defineCollection({
   schema: z.strictObject({
     headline: text,
     intro: text,
-    /** The four areas of the work, each a title and a sentence. */
-    areas: z.array(item).length(4),
+    /** The three areas of the work, each a title and a sentence, and the
+     * repository of work that has no project page yet. */
+    areas: z.array(item.extend({ repo: z.url().optional() })).length(3),
   }),
 })
 
@@ -144,20 +147,24 @@ const about = defineCollection({
     }),
     areas: z
       .array(
-        z.strictObject({
-          title: text,
-          items: z.array(text).min(1),
-          /** Project ids, linked to their pages. */
-          projects: z
-            .array(
+        z
+          .strictObject({
+            title: text,
+            items: z.array(text).min(1),
+            /** Project ids, linked to their pages. */
+            projects: z.array(
               z.string().refine((id) => projectIds.has(id), {
                 message: 'names no project in src/content/projects',
               }),
-            )
-            .min(1),
-        }),
+            ),
+            /** Repositories of work with no project page yet, linked by name. */
+            repos: z.array(z.url()).default([]),
+          })
+          .refine((area) => area.projects.length + area.repos.length > 0, {
+            message: 'names no project and no repository',
+          }),
       )
-      .length(4),
+      .length(3),
     tools: z.strictObject({ title: text, body: text }),
     direction: z.strictObject({ title: text, body: text }),
   }),

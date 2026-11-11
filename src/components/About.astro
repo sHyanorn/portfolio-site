@@ -1,13 +1,26 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n'
-import { getEntry } from 'astro:content'
+import { getCollection, getEntry } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
+import { byOrder, repoName } from '../lib/projects'
 import Text from './Text.astro'
 
 const lang = toLang(Astro.currentLocale)
 const about = (await getEntry('about', 'about'))!.data
 const { education, areas, tools, direction } = about
+// An area's projects link to their pages; work with no page yet links to
+// its repository.
+const links = (area: (typeof areas)[number]) => [
+  ...area.projects.map((id) => ({
+    name: id,
+    href: getRelativeLocaleUrl(lang, `projects/${id}/`),
+  })),
+  ...area.repos.map((url) => ({ name: repoName(url), href: url })),
+]
+const earlier = byOrder(await getCollection('projects')).filter(
+  (p) => p.data.early,
+)
 // The year range stays on one line, without invisible characters in the
 // text. The parts form one expression, as line breaks between them would
 // render as spaces, which show in Chinese.
@@ -49,11 +62,11 @@ const punct = {
         </ul>
         <p class="projects">
           {[
-            t(lang, area.projects.length > 1 ? 'projects' : 'project'),
+            t(lang, links(area).length > 1 ? 'projects' : 'project'),
             punct.colon,
-            ...area.projects.flatMap((id, j) => [
+            ...links(area).flatMap(({ name, href }, j) => [
               j > 0 && punct.comma,
-              <a href={getRelativeLocaleUrl(lang, `projects/${id}/`)}>{id}</a>,
+              <a {href}>{name}</a>,
             ]),
             punct.stop,
           ]}
@@ -61,6 +74,22 @@ const punct = {
       </div>
     </section>
   ))}
+
+  <section class="row reveal" aria-labelledby="earlier">
+    <h2 id="earlier">{t(lang, 'earlier')}</h2>
+    <ul class="earlier">
+      {earlier.map((project) => (
+        <li>
+          <a href={getRelativeLocaleUrl(lang, `projects/${project.id}/`)}>
+            {project.data.title}
+          </a>
+          <p>
+            <Text value={project.data.summary[lang]} />
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   <section class="row reveal" aria-labelledby="tools">
     <h2 id="tools">{tools.title[lang]}</h2>
@@ -103,11 +132,24 @@ const punct = {
     color: var(--color-text-muted);
   }
 
+  /* Earlier projects: a name and its summary each, with no marker. */
+  .earlier {
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .earlier p {
+    color: var(--color-text-muted);
+  }
+
+  .earlier a,
   .projects a {
     color: var(--color-accent);
     transition: color var(--duration-fast) var(--ease-out);
   }
 
+  .earlier a:hover,
   .projects a:hover {
     color: var(--color-text);
   }

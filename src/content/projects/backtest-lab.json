@@ -1,6 +1,7 @@
 {
   "title": "backtest-lab",
-  "order": 3,
+  "order": 5,
+  "early": true,
   "summary": {
     "en": "A backtesting platform that tests whether a strategy is probably overfit: it runs a parameter search, then judges the winner with walk-forward analysis, purged cross-validation, the probability of backtest overfitting and the deflated Sharpe ratio.",
     "zh": "一个回测平台，用来判断一个策略是否很可能过拟合：先做参数搜索，再用滚动前推分析、清洗交叉验证、回测过拟合概率和紧缩夏普比率来评判搜出的最优参数。"

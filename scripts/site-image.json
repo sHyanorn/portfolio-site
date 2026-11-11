@@ -1,10 +1,10 @@
 {
   "en": {
-    "headline": "Backend systems, security engineering, quantitative research and recommender systems.",
-    "intro": "Commerce student at the University of Melbourne. Each project below ships its tests and decision log in its repository."
+    "headline": "Algorithm engineering and server-side systems.",
+    "intro": "Commerce student at the University of Melbourne. Each project below ships its tests in its repository, with its decision log or its pre-registration."
   },
   "zh": {
-    "headline": "后端系统、安全工程、量化研究与推荐系统。",
-    "intro": "墨尔本大学商科在读。下面每个项目的测试和决策记录都在各自仓库里。"
+    "headline": "算法工程与服务端系统。",
+    "intro": "墨尔本大学商科在读。下面每个项目的仓库里都有测试，以及决策记录或预注册文件。"
   }
 }

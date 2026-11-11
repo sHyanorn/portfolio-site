@@ -2,12 +2,16 @@
 import { getCollection, getEntry } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import { t, toLang } from '../lib/i18n'
-import { byOrder } from '../lib/projects'
+import { byOrder, repoName } from '../lib/projects'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import ProjectCard from './ProjectCard.astro'
+import Tags from './Tags.astro'
 import Text from './Text.astro'
 
 const lang = toLang(Astro.currentLocale)
-const projects = byOrder(await getCollection('projects'))
+const all = byOrder(await getCollection('projects'))
+const projects = all.filter((p) => !p.data.early)
+const earlier = all.filter((p) => p.data.early)
 const home = (await getEntry('home', 'home'))!.data
 ---
 
@@ -27,6 +31,7 @@ const home = (await getEntry('home', 'home'))!.data
           <dt>{area.title[lang]}</dt>
           <dd>
             <Text value={area.body[lang]} />
+            {area.repo && <a href={area.repo}>{repoName(area.repo)}</a>}
           </dd>
         </div>
       ))}
@@ -44,6 +49,25 @@ const home = (await getEntry('home', 'home'))!.data
         <ProjectCard {project} {lang} featured={i === 0} />
       ))}
     </div>
+  </section>
+
+  <section class="earlier reveal" aria-labelledby="earlier-title">
+    <h2 id="earlier-title">{t(lang, 'earlier')}</h2>
+    <ul>
+      {earlier.map((project) => (
+        <li>
+          <h3>
+            <a href={getRelativeLocaleUrl(lang, `projects/${project.id}/`)}>
+              {project.data.title}
+            </a>
+          </h3>
+          <p>
+            <Text value={project.data.summary[lang]} />
+          </p>
+          <Tags tags={project.data.tags.map((tag) => tag[lang])} />
+        </li>
+      ))}
+    </ul>
   </section>
 </Base>
 
@@ -117,9 +141,9 @@ const home = (await getEntry('home', 'home'))!.data
     padding-block: var(--space-6) var(--space-7);
   }
 
-  /* The headline is a list: Chinese breaks only after its commas, and a
-     phone takes a step down so the list leaves room for the introduction,
-     small enough at 320 px for the longest phrase, ten characters. */
+  /* Chinese breaks only between phrases, and a phone takes a step down so
+     the headline leaves room for the introduction. The Chinese headline is
+     one phrase of eleven characters, sized to fit a line at 320 px. */
   h1 {
     max-width: 20em;
     font-size: min(var(--step-4), 8.8vw);
@@ -128,10 +152,15 @@ const home = (await getEntry('home', 'home'))!.data
     overflow-wrap: break-word;
   }
 
+  h1:lang(zh) {
+    font-size: min(var(--step-4), 8.1vw);
+  }
+
   /* A wide introduction ends evenly rather than with a word or two, and
      Chinese breaks between phrases. */
   @media (min-width: 48rem) {
-    h1 {
+    h1,
+    h1:lang(zh) {
       font-size: var(--step-5);
     }
 
@@ -148,22 +177,16 @@ const home = (await getEntry('home', 'home'))!.data
     font-size: var(--step-1);
   }
 
-  /* One area a row on a phone, two on a tablet, four on a wide screen. */
+  /* One area a row on a phone, three on a wide screen. */
   .areas {
     display: grid;
     gap: var(--space-3) var(--space-4);
     margin-top: var(--space-5);
   }
 
-  @media (min-width: 48rem) {
-    .areas {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
   @media (min-width: 64rem) {
     .areas {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -181,6 +204,19 @@ const home = (await getEntry('home', 'home'))!.data
     margin-top: var(--space-1);
     color: var(--color-text-muted);
     font-size: var(--step--1);
+  }
+
+  /* The repository of an area whose work has no project page yet. */
+  dd a {
+    display: block;
+    width: fit-content;
+    margin-top: var(--space-1);
+    color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  dd a:hover {
+    color: var(--color-text);
   }
 
   h2 {
@@ -202,5 +238,49 @@ const home = (await getEntry('home', 'home'))!.data
     .list > :global(.featured) {
       grid-column: 1 / -1;
     }
+  }
+
+  /* Earlier projects: text only, set like the areas above, one a row until
+     three fit side by side. */
+  .earlier {
+    margin-top: var(--space-6);
+  }
+
+  .earlier ul {
+    display: grid;
+    gap: var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 64rem) {
+    .earlier ul {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .earlier li {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .earlier h3 {
+    font-size: var(--step-0);
+  }
+
+  .earlier a {
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .earlier a:hover {
+    color: var(--color-accent);
+  }
+
+  .earlier p {
+    max-width: var(--width-prose);
+    margin-block: var(--space-1) var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
   }
 </style>

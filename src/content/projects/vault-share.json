@@ -1,6 +1,7 @@
 {
   "title": "vault-share",
-  "order": 2,
+  "order": 4,
+  "early": true,
   "summary": {
     "en": "End-to-end encrypted file sharing with a Go server and a React client: the browser encrypts each file, the key travels only in the part of the link that browsers never send, and the server stores ciphertext it cannot read.",
     "zh": "端到端加密的文件分享服务，服务端用 Go，前端用 React：文件在浏览器里加密，密钥只放在链接中浏览器不会发出的那一部分，服务器只保存它读不了的密文。"

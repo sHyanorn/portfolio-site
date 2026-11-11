@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { byOrder } from './projects'
+import { byOrder, repoName } from './projects'
 
 const project = (id: string, order: number) => ({ id, data: { order } })
 
@@ -13,5 +13,12 @@ describe('byOrder', () => {
     expect(() => byOrder([project('a', 1), project('b', 1)])).toThrow(
       'Projects a and b share order 1',
     )
+  })
+})
+
+describe('repoName', () => {
+  it('is the last part of the address', () => {
+    expect(repoName('https://github.com/sHyanorn/recserve')).toBe('recserve')
+    expect(repoName('https://github.com/sHyanorn/recserve/')).toBe('recserve')
   })
 })

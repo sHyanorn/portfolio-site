@@ -178,3 +178,43 @@ for (const path of [
       .poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused))
       .toBe(true)
   })
+
+// Later screenshots sit side by side on a wide screen, unless their aspect
+// ratios differ so much that the wider one would be a thin strip beside a
+// tall one; then they stack.
+for (const [project, columns] of [
+  ['backtest-lab', 1],
+  ['push-lab', 2],
+  ['local-ledger', 2],
+] as const)
+  test(`${project}: later screenshots in ${columns} column(s)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto(`${BASE}projects/${project}/`)
+    const tops = await page
+      .locator('.shots.rest figure')
+      .evaluateAll((els) =>
+        els.map((e) => Math.round(e.getBoundingClientRect().top)),
+      )
+    expect(tops.filter((t) => t === tops[0]).length).toBe(columns)
+  })
+
+// Stacked screenshots are offered a file at least as wide as they show.
+test('backtest-lab: stacked screenshots are not enlarged', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto(`${BASE}projects/backtest-lab/`)
+  for (const img of await page.locator('.shots.rest img').all()) {
+    await img.scrollIntoViewIfNeeded()
+    await expect
+      .poll(() =>
+        img.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth),
+      )
+      .toBeTruthy()
+    const [natural, shown] = await img.evaluate((i: HTMLImageElement) => [
+      i.naturalWidth,
+      i.getBoundingClientRect().width,
+    ])
+    expect(natural).toBeGreaterThanOrEqual(shown)
+  }
+})

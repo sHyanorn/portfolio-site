@@ -2,10 +2,11 @@ import type { ImageMetadata } from 'astro'
 
 /** The width each demo screenshot is shown at (D013, D020): the first fills
  * the column, or the intro's neighbour from 64rem up; later ones sit two a
- * row from 48rem up. */
+ * row from 48rem up, or fill the column when they stack. */
 const SIZES = {
   first: '(min-width: 64rem) 710px, 100vw',
   rest: '(min-width: 80rem) 616px, (min-width: 48rem) 50vw, 100vw',
+  stacked: '(min-width: 80rem) 1280px, 100vw',
 }
 
 /** The widths to offer of a picture: those below its source width, then

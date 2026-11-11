@@ -35,6 +35,10 @@ const shots =
         ),
       )
     : []
+// Shots whose aspect ratios differ by more than half stack, so the wider one
+// is not a thin strip beside a tall one.
+const ratios = shots.map((s) => s.src.width / s.src.height)
+const stacked = Math.max(...ratios) > 1.5 * Math.min(...ratios)
 ---
 
 {'video' in demo
@@ -61,13 +65,13 @@ const shots =
       </figure>
     )
   : shots.length > 0 && (
-      <div class={`shots ${part}`}>
+      <div class:list={['shots', part, { stacked }]}>
         {shots.map((shot, i) => (
           <figure style={`--ratio: ${shot.src.width} / ${shot.src.height}`}>
             {shot.variants.map((v) => (
               <a href={v.full.src} class={v.theme}>
                 <Image
-                  {...shotImage(v.src, part)}
+                  {...shotImage(v.src, stacked ? 'stacked' : part)}
                   alt={shot.alt[lang]}
                   loading={
                     part === 'first' && i === 0 && !shot.dark ? 'eager' : 'lazy'
@@ -102,6 +106,10 @@ const shots =
   .rest {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
     align-items: start;
+  }
+
+  .rest.stacked {
+    grid-template-columns: 1fr;
   }
 
   .rest figure {

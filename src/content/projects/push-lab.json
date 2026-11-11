@@ -86,7 +86,7 @@
     },
     "source": {
       "label": { "en": "Results summary", "zh": "结果摘要" },
-      "url": "https://github.com/sHyanorn/push-lab/blob/acab86b4b173fb2396142acd301a4823dfd35b0a/README.md"
+      "url": "https://github.com/sHyanorn/push-lab/blob/937ad7700ca065dc16bdd3eb28d884cb3c78dad1/README.md"
     }
   },
   "problem": [
@@ -197,7 +197,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/push-lab/blob/acab86b4b173fb2396142acd301a4823dfd35b0a/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/push-lab/blob/937ad7700ca065dc16bdd3eb28d884cb3c78dad1/docs/DECISIONS.md"
   },
   "challenges": [
     {

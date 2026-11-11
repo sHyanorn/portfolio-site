@@ -1,8 +1,8 @@
 import type { Element, Root, RootContent } from 'hast'
 
-/** Whether a node shows nothing: no text but white space, and no element. */
+/** Whether a node shows nothing: white space or a comment. */
 function blank(node: RootContent): boolean {
-  return node.type === 'text' ? !node.value.trim() : node.type !== 'element'
+  return node.type === 'text' ? !node.value.trim() : node.type === 'comment'
 }
 
 function walk(node: Root | Element) {

@@ -119,7 +119,7 @@
         "en": "Results in the README",
         "zh": "README 的结果一节"
       },
-      "url": "https://github.com/sHyanorn/ope-checks#results"
+      "url": "https://github.com/sHyanorn/ope-checks/blob/7a097afe16bc0dc63137cf63c70ba53024a58c27/README.md#results"
     }
   },
   "problem": [
@@ -274,7 +274,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/ope-checks/blob/main/obd/PREREGISTRATION.md"
+    "source": "https://github.com/sHyanorn/ope-checks/blob/7a097afe16bc0dc63137cf63c70ba53024a58c27/obd/PREREGISTRATION.md"
   },
   "challenges": [
     {

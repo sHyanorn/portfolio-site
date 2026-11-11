@@ -26,12 +26,12 @@ At 1440×900 ([D019](docs/DECISIONS.md)).
 
 ## Lighthouse
 
-The live site at `73c4188` on 2026-11-11, with CI's settings ([D019](docs/DECISIONS.md)): the mobile preset three times per page, the median run kept, and the desktop preset once. Each cell is performance / accessibility / best practices / SEO. Mobile performance on the Chinese pages is the median of seven runs: on the live site their longest layout task runs after first contentful paint and counts as blocking time, and single runs of one page ranged from 85 to 100 ([D020](docs/DECISIONS.md)).
+The live site at `5a03295` on 2026-11-11, with CI's settings ([D019](docs/DECISIONS.md)): the mobile preset three times per page, the median run kept, and the desktop preset once. Each cell is performance / accessibility / best practices / SEO. Mobile performance on the Chinese pages is the median of seven runs: on the live site their longest layout task runs after first contentful paint and counts as blocking time, and single runs of one page ranged from 85 to 100 ([D020](docs/DECISIONS.md)).
 
 | Page | Mobile | Desktop |
 | --- | --- | --- |
 | `/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/about/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/about/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/articles/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
@@ -49,15 +49,19 @@ The live site at `73c4188` on 2026-11-11, with CI's settings ([D019](docs/DECISI
 | `/projects/backtest-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/projects/backtest-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/local-ledger/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/local-ledger/` | 100 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/local-ledger/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/matching-engine/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/matching-engine/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/matching-engine/` | 98 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/ope-checks/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/ope-checks/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/ope-checks/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/push-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/push-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/push-lab/` | 100 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/recserve/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/recserve/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/retrieval-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/retrieval-lab/` | 97 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/vault-share/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/vault-share/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/vault-share/` | 97 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 
 Where accessibility is below 100, the contrast check read the gallery captions of three Chinese project pages partway through their entrance fade, on mobile.
 

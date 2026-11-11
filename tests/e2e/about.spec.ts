@@ -46,6 +46,10 @@ for (const path of [`${BASE}about/`, `${BASE}zh/about/`])
         ...(area.repos ?? []),
       ])
     }
+    // Every project named in an area has a page.
+    expect(
+      about.areas.flatMap((a: { repos?: string[] }) => a.repos ?? []),
+    ).toEqual([])
     // Earlier projects come after the last area and before the tools.
     const order = await page
       .locator('main section[aria-labelledby]')

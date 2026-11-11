@@ -2,7 +2,7 @@
 
 Content: `src/content/site/home.json` and `src/content/site/about.json`. Each row covers one fact from the English text. The Chinese text states the same facts.
 
-Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab 937ad77, ope-checks 7a097af, recserve 7221f1c, retrieval-lab e0ae490. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
+Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab 937ad77, ope-checks 7a097af, recserve 77069ac, retrieval-lab b1baad8. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
 
 ## Home
 
@@ -11,8 +11,9 @@ The intro's two sentences, then the three areas.
 | Number or claim | Source |
 |---|---|
 | Commerce student at the University of Melbourne | site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts:39; site:src/lib/i18n.ts@b5c04e0:35, 47 |
-| Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:377-381; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81; ope-checks README.md:112, .github/workflows/ci.yml:20 |
-| Each project below has a decision log or a pre-registration in its repository | docs/DECISIONS.md:1 in matching-engine, vault-share, backtest-lab, local-ledger and push-lab; ope-checks obd/PREREGISTRATION.md:1, README.md:9 |
+| Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:377-381; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81; ope-checks README.md:112, .github/workflows/ci.yml:20; recserve README.md:73, docs/SPEC.md:115, .github/workflows/ci.yml:26; retrieval-lab internal/bm25/lucene_test.go:37, .github/workflows/ci.yml:16 |
+| Each project below has a decision log or a pre-registration in its repository | docs/DECISIONS.md:1 in matching-engine, vault-share, backtest-lab, local-ledger, push-lab, recserve and retrieval-lab; ope-checks obd/PREREGISTRATION.md:1, README.md:9 |
+| Algorithms: recommendation, off-policy evaluation and retrieval | push-lab README.md:3; docs/SPEC.md:11-13; ope-checks README.md:3; retrieval-lab README.md:3 |
 | Algorithms: two-tower recall | push-lab docs/SPEC.md:11, 37-38 |
 | Algorithms: gradient-boosted ranking (LightGBM) | push-lab docs/SPEC.md:12, 42; docs/DECISIONS.md:106-108 (D008) |
 | Algorithms: uplift models | push-lab docs/SPEC.md:12, 45-46 |
@@ -21,11 +22,14 @@ The intro's two sentences, then the three areas.
 | Algorithms: a pre-registered recheck of the Open Bandit benchmark | ope-checks README.md:3, 7, 9 |
 | Algorithms: the IPS estimate pooled over the two confirmatory campaigns is 0.974 of the on-policy click rate (0.915 to 1.036 over ten-minute blocks) | ope-checks README.md:13, 17, 28; obd/results/pooled.json (`quantities["h3.ips"]`) |
 | Algorithms: no shortfall shown | ope-checks README.md:29; obd/results/pooled.json (`h3.ips.label`) |
+| Algorithms: BM25 and dense retrieval in Go checked against Pyserini's published BEIR numbers | retrieval-lab README.md:3, 5; docs/SPEC.md:10 |
+| Algorithms: BM25 equal to four decimals on six datasets | retrieval-lab README.md:5; docs/BENCHMARKS.md:46-51 |
+| Algorithms: BGE-base within 0.0004 on five | retrieval-lab README.md:5; docs/BENCHMARKS.md:96-100 (nDCG@10, differences of 0.0000 to −0.0004) |
 | Server-side: a recommendation serving system in Go, with retrieval, features, ranking and rerank behind one HTTP API | recserve README.md:3 |
-| Server-side: the item vectors on gRPC shard replicas | recserve README.md:5, 50 |
-| Server-side: in kind at 100 requests/s | recserve docs/DECISIONS.md:456 (D047), 458, 461 |
-| Server-side: through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded | recserve README.md:66; docs/DECISIONS.md:456 (D047); docs/SPEC.md:171; docs/TASKS.md:64 |
-| Server-side: stage budgets of 100 ms | recserve docs/DECISIONS.md:454 (D047); README.md:79 |
+| Server-side: the item vectors on gRPC shard replicas | recserve README.md:5, 57 |
+| Server-side: in kind at 100 requests/s | recserve docs/DECISIONS.md:461 (D047), 463, 466 |
+| Server-side: through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded | recserve README.md:76; docs/DECISIONS.md:461 (D047); docs/SPEC.md:173; docs/TASKS.md:64 |
+| Server-side: stage budgets of 100 ms | recserve docs/DECISIONS.md:459 (D047); README.md:89 |
 | Backend: Go limit order book | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
 | Backend: write-ahead command log | matching-engine README.md:3, 42; docs/DECISIONS.md:101-103 (D017) |
 | Backend: open-loop load testing | matching-engine docs/DECISIONS.md:179-181 (D030); docs/BENCHMARKS.md:28 |
@@ -84,7 +88,7 @@ Items 5 to 7. All paths are in ope-checks.
 | One of up to 8.5% is not excluded: 1 minus the lower end of the interval, 0.915 | README.md:28; obd/results/pooled.json (`quantities["h3.ips"].interval`, lower end 0.9146) |
 | Post hoc, on all three campaigns: the standard deviation of the ratio with ten-minute blocks is 1.31 to 1.47 times the one with rows or impressions | README.md:83; obd/posthoc/README.md:34-41; obd/posthoc/results/units.json (`all`, `men`, `women`: `h3.sd_of_blocks_over`) |
 
-Item 8. All paths are in retrieval-lab.
+Items 8 and 9. All paths are in retrieval-lab.
 
 | Number or claim | Source |
 |---|---|
@@ -93,6 +97,12 @@ Item 8. All paths are in retrieval-lab.
 | Six BEIR test sets | README.md:3; docs/BENCHMARKS.md:11-16 |
 | nDCG@10 and Recall@100 equal Pyserini's published BM25 numbers to all four decimals | README.md:5; docs/BENCHMARKS.md:7-16, 46-51 |
 | The run files reproduce byte for byte from committed checksums | README.md:5, 15; results/bm25-flat.sha256:1-6 |
+| Dense retrieval with BGE-base-en-v1.5 on ONNX Runtime | README.md:5; docs/DECISIONS.md:65 (D009); docs/BENCHMARKS.md:86 |
+| Exact search | README.md:5; docs/DECISIONS.md:78 (D011); docs/BENCHMARKS.md:86 |
+| On five BEIR test sets its nDCG@10 is within 0.0004 of Pyserini's | README.md:5; docs/BENCHMARKS.md:96-100 |
+| TREC-COVID is not run | README.md:5; docs/BENCHMARKS.md:95, 126; docs/TASKS.md:22 |
+| Comparing every document vector of SciFact and ArguAna with Pyserini's found 28 documents below a cosine of 0.9999 | docs/DECISIONS.md:73 (D010); docs/BENCHMARKS.md:105 |
+| Each held Unicode format characters that Pyserini's tokenizer removes and the Go library kept | docs/DECISIONS.md:73 (D010) |
 
 ### Server-side systems
 
@@ -101,26 +111,40 @@ All paths are in recserve.
 | Number or claim | Source |
 |---|---|
 | A recommendation serving system in Go: retrieval, features, ranking and rerank behind one HTTP API | README.md:3; docs/SPEC.md:5 |
-| The user encoder and the ranker run through ONNX Runtime | README.md:56; docs/DECISIONS.md:170 (D026), 182, 187 (D027); the ranker's bundle at 2b5312b: docs/DECISIONS.md:188 (D027) |
-| Item vectors split into shards on replicas over gRPC | README.md:5, 50; docs/DECISIONS.md:353 (D040) |
-| A search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search | README.md:51; docs/DECISIONS.md:371-372 (D041) |
-| With one replica of every shard lost, every response equals the one with all replicas healthy | docs/SPEC.md:126; docs/DECISIONS.md:377 (D041) |
-| Model bundles swapped while serving | README.md:17, 59; docs/DECISIONS.md:228 (D031) |
-| Every replica prepares the new version | README.md:52; docs/DECISIONS.md:393 (D042) |
-| Activation is atomic | README.md:59; docs/DECISIONS.md:228 (D031), 392 (D042) |
-| A version is the digest of its files, checked by the gateway and by every replica | README.md:55; docs/DECISIONS.md:439 (D046) |
-| Events through Kafka to an ingest consumer that applies them idempotently | README.md:60; docs/DECISIONS.md:282 (D035); docs/SPEC.md:122 |
-| User histories and the result cache on Valkey | README.md:5, 61 |
-| A circuit breaker keeps the gateway answering while Valkey is down | README.md:5, 62; docs/DECISIONS.md:314 (D037); docs/SPEC.md:124 |
-| Deployed in kind | README.md:38-45, 66; docs/DECISIONS.md:446, 458 (D047) |
-| Replicas as a StatefulSet | README.md:66; docs/DECISIONS.md:451 (D047) |
-| Gateways with an HPA | README.md:66; docs/DECISIONS.md:452 (D047) |
-| Pod Security `restricted` | README.md:66; docs/DECISIONS.md:450 (D047) |
-| A NetworkPolicy whose enforcement CI checks | README.md:66; docs/DECISIONS.md:457 (D047); .github/workflows/ci.yml:98-102 |
-| At 100 requests/s | docs/DECISIONS.md:456, 461 (D047) |
-| Through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded | README.md:66; docs/DECISIONS.md:456 (D047); docs/SPEC.md:171; docs/TASKS.md:64 |
-| Stage budgets of 100 ms | docs/DECISIONS.md:454 (D047); README.md:79 |
-| On one node | docs/DECISIONS.md:458, 464 (D047); README.md:79 |
+| The user encoder and the ranker run through ONNX Runtime | README.md:63; docs/DECISIONS.md:171 (D026), 183, 188, 189 (D027) |
+| Item vectors split into shards on replicas over gRPC | README.md:5, 57; docs/DECISIONS.md:358 (D040) |
+| A search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search | README.md:58; docs/DECISIONS.md:376-377 (D041) |
+| With one replica of every shard lost, every response equals the one with all replicas healthy | docs/SPEC.md:128; docs/DECISIONS.md:382 (D041) |
+| For a replica that goes silent, this holds within the hedge budget | docs/SPEC.md:128; README.md:92 |
+| Model bundles swapped while serving | README.md:17, 69; docs/DECISIONS.md:232 (D031) |
+| Every replica prepares the new version | README.md:59; docs/DECISIONS.md:398 (D042) |
+| Activation is atomic | README.md:69; docs/DECISIONS.md:232 (D031), 397 (D042) |
+| A version is the digest of its files, checked by the gateway and by every replica | README.md:62; docs/DECISIONS.md:444 (D046) |
+| Events through Kafka to an ingest consumer that applies them idempotently | README.md:70; docs/DECISIONS.md:286 (D035); docs/SPEC.md:124 |
+| User histories and the result cache on Valkey | README.md:5, 71 |
+| A circuit breaker keeps the gateway answering while Valkey is down | README.md:5, 72; docs/DECISIONS.md:318 (D037); docs/SPEC.md:126 |
+| Deployed in kind | README.md:45-52, 76; docs/DECISIONS.md:451, 463 (D047) |
+| Replicas as a StatefulSet | README.md:76; docs/DECISIONS.md:456 (D047) |
+| Gateways with an HPA | README.md:76; docs/DECISIONS.md:457 (D047) |
+| Pod Security `restricted` | README.md:76; docs/DECISIONS.md:455 (D047) |
+| A NetworkPolicy whose enforcement CI checks | README.md:76; docs/DECISIONS.md:462 (D047); .github/workflows/ci.yml:98-102 |
+| At 100 requests/s | docs/DECISIONS.md:461, 466 (D047) |
+| Through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded | README.md:76; docs/DECISIONS.md:461 (D047); docs/SPEC.md:173; docs/TASKS.md:64 |
+| Stage budgets of 100 ms | docs/DECISIONS.md:459 (D047); README.md:89 |
+| On one node | docs/DECISIONS.md:463, 469 (D047); README.md:89 |
+| Users split between A/B arms by a hash of the experiment's name and the user ID | README.md:25, 64; docs/DECISIONS.md:488 (D049) |
+| With an exposure log | README.md:25, 64; docs/DECISIONS.md:491 (D049) |
+| Rate and in-flight limits that answer 503 at once | README.md:25, 65; docs/DECISIONS.md:500 (D050) |
+| OpenTelemetry traces from the gateway's API through each stage to the replicas' searches | README.md:66; docs/DECISIONS.md:513 (D051) |
+| A logistic-regression ranker over six features | README.md:63; docs/DECISIONS.md:183, 189 (D027) |
+| Its bundle carries golden features that the gateway recomputes at load | README.md:63; docs/DECISIONS.md:190 (D027) |
+| On 680 held-out users its recall@10 is 0.091 against 0.026 for retrieval order, measured before MMR | README.md:97; docs/DECISIONS.md:189 (D027) |
+| Its weight on the vector score is negative | docs/DECISIONS.md:189 (D027) |
+| A CPU profile at 400 requests/s put 54% of a replica's CPU in the inner product of exact search | docs/BENCHMARKS.md:412 (54.2%); docs/DECISIONS.md:539-540 (D053) |
+| Rewritten in AVX2 with a fixed order of additions | docs/DECISIONS.md:539 (D053); docs/BENCHMARKS.md:414 |
+| It takes 4.5 to 5 times less time | docs/BENCHMARKS.md:420-421, 429 |
+| p99 at 400 requests/s fell from 6.90–7.79 ms to 4.27–4.64 ms | docs/BENCHMARKS.md:416, 425 |
+| At that rate the gateway's CPU per request is not resolved on this machine | docs/BENCHMARKS.md:427 |
 
 ### Backend systems
 
@@ -163,12 +187,13 @@ Where each tool appears: site project tags first, then the repositories.
 | Go | site:src/content/projects/matching-engine.json:9, vault-share.json:10; matching-engine docs/DECISIONS.md:5-8 (D001); vault-share README.md:7 |
 | Python | site:src/content/projects/backtest-lab.json:11, push-lab.json:9; backtest-lab docs/DECISIONS.md:3 (D001); push-lab docs/DECISIONS.md:71 (D001) |
 | TypeScript | site:src/content/projects/local-ledger.json:11; local-ledger docs/DECISIONS.md:3 (D001); vault-share README.md:7 |
-| gRPC | recserve README.md:5, 50; go.mod:15 |
-| Kafka | recserve README.md:5, 60; go.mod:8 |
-| Valkey | recserve README.md:5, 61; go.mod:11 |
-| ONNX Runtime | recserve README.md:17, 56; go.mod:12 |
-| Kubernetes | recserve README.md:38, 66; docs/DECISIONS.md:446, 458 (D047) |
-| Prometheus | recserve README.md:38, 64; go.mod:6 |
+| gRPC | recserve README.md:5, 57; go.mod:24 |
+| Kafka | recserve README.md:5, 70; go.mod:10 |
+| Valkey | recserve README.md:5, 71; go.mod:13 |
+| ONNX Runtime | recserve README.md:17, 63; go.mod:14 |
+| Kubernetes | recserve README.md:45, 76; docs/DECISIONS.md:451, 463 (D047) |
+| Prometheus | recserve README.md:45, 74; go.mod:6 |
+| OpenTelemetry | recserve README.md:66; docs/DECISIONS.md:512 (D051); go.mod:17 |
 | React | site:src/content/projects/vault-share.json:11, local-ledger.json:12, backtest-lab.json:27; vault-share README.md:7; backtest-lab docs/DECISIONS.md:3 (D001) |
 | FastAPI | site:src/content/projects/backtest-lab.json:23; backtest-lab docs/SPEC.md:14; pyproject.toml:11 |
 | Electron | site:src/content/projects/local-ledger.json:10; local-ledger docs/DECISIONS.md:3 (D001); package.json:46 |
@@ -181,6 +206,7 @@ Where each tool appears: site project tags first, then the repositories.
 | LightGBM | push-lab docs/SPEC.md:42; docs/DECISIONS.md:106 (D008); pyproject.toml:12 |
 | faiss | site:src/content/projects/push-lab.json:111; push-lab docs/SPEC.md:38; docs/DECISIONS.md:102-104 (D007); pyproject.toml:11 |
 | NumPy | ope-checks README.md:11, 17; pyproject.toml:13 |
+| Bleve | retrieval-lab README.md:5; docs/DECISIONS.md:33 (D005); go.mod:6 |
 | GitHub Actions | site:src/content/projects/backtest-lab.json:144; backtest-lab docs/SPEC.md:35; .github/workflows/data.yml:3-4 |
 | This site: Astro | site:docs/SPEC.md:41; site:docs/DECISIONS.md:11-16 (D003); site:README.md:3 |
 | This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 108-110 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
@@ -194,5 +220,6 @@ Where each tool appears: site project tags first, then the repositories.
 | Comparisons are registered before the results and reported as they came out | push-lab docs/SPEC.md:18; docs/DECISIONS.md:199 (D020); ope-checks README.md:9; obd/PREREGISTRATION.md:163 |
 | A ranking result that went the other way | push-lab docs/DECISIONS.md:201 (D020) |
 | A benchmark shortfall that the confirmatory campaigns did not show | ope-checks README.md:7, 28-29, 70 |
-| A recommendation serving system checked under load through rolling restarts and a bundle swap | recserve README.md:66; docs/DECISIONS.md:456 (D047) |
+| Retrieval, where each component is accepted against a published number | retrieval-lab README.md:3; docs/SPEC.md:5 |
+| A recommendation serving system checked under load through rolling restarts and a bundle swap | recserve README.md:76; docs/DECISIONS.md:461 (D047) |
 | Every number on this site traces back to a project repository | site:docs/project-sources/, one file per project |

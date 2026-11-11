@@ -101,16 +101,30 @@ for (const colorScheme of ['light', 'dark'] as const)
     }
   })
 
-// An area whose work has no project page yet links to its repository.
+// An area whose work has no project page yet links to its repository
+// (D022); every area's work has a page now, so no area has a link.
 for (const path of [BASE, `${BASE}zh/`])
-  test(`${path}: three areas, one with its repository`, async ({ page }) => {
+  test(`${path}: three areas, none with a repository link`, async ({
+    page,
+  }) => {
     await page.goto(path)
     await expect(page.locator('.areas dt')).toHaveCount(3)
-    const link = page.locator('.areas dd a')
-    await expect(link).toHaveCount(1)
-    await expect(link).toHaveText('recserve')
-    await expect(link).toHaveAttribute(
-      'href',
-      'https://github.com/sHyanorn/recserve',
-    )
+    await expect(page.locator('.areas dd a')).toHaveCount(0)
   })
+
+// Two cards a row under the first, so five projects fill three rows.
+test('five cards: the first takes a row, the others pair up', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto(BASE)
+  const cards = page.locator('#projects .card')
+  await expect(cards).toHaveCount(5)
+  await expect(cards.first()).toHaveClass(/featured/)
+  const tops = await cards.evaluateAll((els) =>
+    els.map((el) => Math.round(el.getBoundingClientRect().top)),
+  )
+  expect(tops[1]).toBe(tops[2])
+  expect(tops[3]).toBe(tops[4])
+  expect(new Set(tops).size).toBe(3)
+})

@@ -55,10 +55,13 @@
         {
           "en": "BM25 retrieval in Go, with Lucene's scoring computed from a Bleve index: on six BEIR test sets its nDCG@10 and Recall@100 equal Pyserini's published BM25 numbers to all four decimals, and the run files reproduce byte for byte from committed checksums.",
           "zh": "用 Go 实现的 BM25 检索，在 Bleve 的索引上按 Lucene 的公式打分：在六个 BEIR 测试集上，nDCG@10 和 Recall@100 与 Pyserini 公布的 BM25 数字四位小数全部一致，结果文件可以按已提交的校验和逐字节复现。"
+        },
+        {
+          "en": "Dense retrieval with BGE-base-en-v1.5 on ONNX Runtime and exact search: on five BEIR test sets its nDCG@10 is within 0.0004 of Pyserini's, and TREC-COVID is not run. Comparing every document vector of SciFact and ArguAna with Pyserini's found 28 documents below a cosine of 0.9999, each holding Unicode format characters that Pyserini's tokenizer removes and the Go library kept.",
+          "zh": "稠密检索用 ONNX Runtime 上的 BGE-base-en-v1.5 加精确搜索：在五个 BEIR 测试集上，nDCG@10 与 Pyserini 的相差不超过 0.0004，TREC-COVID 没有跑。把 SciFact 和 ArguAna 每篇文档的向量与 Pyserini 的逐一比较，查出 28 篇余弦低于 0.9999，每一篇都含有 Unicode 格式字符：Pyserini 的分词器会删掉它们，Go 的分词库没有删。"
         }
       ],
-      "projects": ["push-lab", "ope-checks"],
-      "repos": ["https://github.com/sHyanorn/retrieval-lab"]
+      "projects": ["push-lab", "ope-checks", "retrieval-lab"]
     },
     {
       "title": {
@@ -71,8 +74,8 @@
           "zh": "用 Go 写的推荐服务系统：召回、特征、排序和重排在同一个 HTTP 接口后面，用户编码器和排序模型通过 ONNX Runtime 运行。"
         },
         {
-          "en": "Item vectors split into shards on replicas over gRPC: a search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search. With one replica of every shard lost, every response equals the one with all replicas healthy.",
-          "zh": "物品向量分片后放在 gRPC 副本上：一个副本失败时查询立刻转到下一个，第一个慢时再发给第二个，每次查询最多一次对冲。每个分片各丢一个副本时，每个响应都与副本全部正常时相同。"
+          "en": "Item vectors split into shards on replicas over gRPC: a search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget.",
+          "zh": "物品向量分片后放在 gRPC 副本上：一个副本失败时查询立刻转到下一个，第一个慢时再发给第二个，每次查询最多一次对冲。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立。"
         },
         {
           "en": "Model bundles swapped while serving: every replica prepares the new version, activation is atomic, and a version is the digest of its files, checked by the gateway and by every replica.",
@@ -85,10 +88,21 @@
         {
           "en": "Deployed in kind: replicas as a StatefulSet, gateways with an HPA, Pod Security `restricted`, and a NetworkPolicy whose enforcement CI checks. At 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded, with stage budgets of 100 ms on one node.",
           "zh": "部署在 kind 上：副本用 StatefulSet，网关带 HPA，命名空间执行 Pod Security `restricted`，NetworkPolicy 是否生效由 CI 检查。每秒 100 个请求下，网关滚动重启、副本滚动重启和一次换包期间，没有一个响应失败或降级；单节点，各阶段的时间预算为 100 ms。"
+        },
+        {
+          "en": "Users split between A/B arms by a hash of the experiment's name and the user ID, with an exposure log; rate and in-flight limits that answer 503 at once; OpenTelemetry traces from the gateway's API through each stage to the replicas' searches.",
+          "zh": "按实验名和用户 ID 的哈希把用户分到 A/B 实验组，并写曝光日志；速率和在途请求数超限时立刻回 503；OpenTelemetry 追踪从网关的接口经每个阶段一直到副本上的搜索。"
+        },
+        {
+          "en": "A logistic-regression ranker over six features, whose bundle carries golden features that the gateway recomputes at load. On 680 held-out users its recall@10 is 0.091 against 0.026 for retrieval order, measured before MMR, and its weight on the vector score is negative.",
+          "zh": "六个特征上的逻辑回归排序模型，模型包带着黄金特征，网关加载时重算核对。在 680 个留出用户上，它的 recall@10 是 0.091，召回顺序是 0.026，在 MMR 之前测得；它给向量分的权重是负的。"
+        },
+        {
+          "en": "A CPU profile at 400 requests/s put 54% of a replica's CPU in the inner product of exact search. Rewritten in AVX2 with a fixed order of additions, it takes 4.5 to 5 times less time, and p99 at 400 requests/s fell from 6.90–7.79 ms to 4.27–4.64 ms; at that rate the gateway's CPU per request is not resolved on this machine.",
+          "zh": "每秒 400 个请求下的 CPU 剖析显示，副本 54% 的 CPU 花在精确搜索的内积上。改用 AVX2 并固定加法顺序后，内积的速度是原来的 4.5 到 5 倍，每秒 400 个请求时的 p99 从 6.90–7.79 ms 降到 4.27–4.64 ms；这个速率下网关每个请求的 CPU 时间在这台机器上分辨不了。"
         }
       ],
-      "projects": [],
-      "repos": ["https://github.com/sHyanorn/recserve"]
+      "projects": ["recserve"]
     },
     {
       "title": {
@@ -126,8 +140,8 @@
       "zh": "技术栈"
     },
     "body": {
-      "en": "Go, Python, TypeScript. gRPC, Kafka, Valkey, ONNX Runtime, Kubernetes, Prometheus. React, FastAPI, Electron. SQLite, SQLCipher 4 format, DuckDB, Parquet. Web Crypto, Argon2id. LightGBM, faiss, NumPy. GitHub Actions. This site: Astro and hand-written WebGL2 and GLSL.",
-      "zh": "Go、Python、TypeScript。gRPC、Kafka、Valkey、ONNX Runtime、Kubernetes、Prometheus。React、FastAPI、Electron。SQLite、SQLCipher 4 格式、DuckDB、Parquet。Web Crypto、Argon2id。LightGBM、faiss、NumPy。GitHub Actions。本站：Astro，以及手写的 WebGL2 和 GLSL。"
+      "en": "Go, Python, TypeScript. gRPC, Kafka, Valkey, ONNX Runtime, Kubernetes, Prometheus, OpenTelemetry. React, FastAPI, Electron. SQLite, SQLCipher 4 format, DuckDB, Parquet. Web Crypto, Argon2id. LightGBM, faiss, NumPy, Bleve. GitHub Actions. This site: Astro and hand-written WebGL2 and GLSL.",
+      "zh": "Go、Python、TypeScript。gRPC、Kafka、Valkey、ONNX Runtime、Kubernetes、Prometheus、OpenTelemetry。React、FastAPI、Electron。SQLite、SQLCipher 4 格式、DuckDB、Parquet。Web Crypto、Argon2id。LightGBM、faiss、NumPy、Bleve。GitHub Actions。本站：Astro，以及手写的 WebGL2 和 GLSL。"
     }
   },
   "direction": {
@@ -136,8 +150,8 @@
       "zh": "我的方向"
     },
     "body": {
-      "en": "My work is algorithm engineering and server-side systems, with backend development next to them. On the algorithm side: recommendation models and off-policy evaluation, where comparisons are registered before the results and reported as they came out, including a ranking result that went the other way and a benchmark shortfall that the confirmatory campaigns did not show. On the server side: a recommendation serving system checked under load through rolling restarts and a bundle swap. Every number on this site traces back to a project repository.",
-      "zh": "我的方向是算法工程和服务端系统，其次是后端开发。算法方面做推荐模型和离策略评估：比较方案在出结果之前登记，结果原样报告，包括一个方向与预期相反的排序结果，和一个在确认性活动上没有显示出来的基准偏低。服务端方面做了一个推荐服务系统，在持续请求下经过了滚动重启和换包的检验。站上的每个数字都能追溯到项目仓库。"
+      "en": "My work is algorithm engineering and server-side systems, with backend development next to them. On the algorithm side: recommendation models and off-policy evaluation, where comparisons are registered before the results and reported as they came out, including a ranking result that went the other way and a benchmark shortfall that the confirmatory campaigns did not show; and retrieval, where each component is accepted against a published number. On the server side: a recommendation serving system checked under load through rolling restarts and a bundle swap. Every number on this site traces back to a project repository.",
+      "zh": "我的方向是算法工程和服务端系统，其次是后端开发。算法方面做推荐模型和离策略评估：比较方案在出结果之前登记，结果原样报告，包括一个方向与预期相反的排序结果，和一个在确认性活动上没有显示出来的基准偏低；也做检索，每个组件都对照已公布的数字验收。服务端方面做了一个推荐服务系统，在持续请求下经过了滚动重启和换包的检验。站上的每个数字都能追溯到项目仓库。"
     }
   }
 }

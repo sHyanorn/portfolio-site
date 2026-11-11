@@ -29,7 +29,7 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af.
 | Demo, third figure: D, the row-weighted mean over hours and positions of the total variation distance between the published prior and the item frequencies of the BTS log | obd/PREREGISTRATION.md:82 |
 | Demo, third figure: D0, the same statistic between alternate ten-minute blocks of each hour of that log | obd/PREREGISTRATION.md:83 |
 | Demo, third figure: registered without intervals | README.md:23; obd/posthoc/README.md:326; obd/results/all.json and women.json (`h1`) |
-| Demo, third figure: D0 measures noise and is not a distance the prior should have | obd/PREREGISTRATION.md:84, 155 |
+| Demo, third figure: D0 is a floor, not a distance the prior should have; it holds noise and the policy's own change within the hour | obd/PREREGISTRATION.md:83-84, 155 |
 | Demo, third figure: D 0.526 and D0 0.136 on All; D 0.527 and D0 0.115 on Women's | README.md:23; obd/results/all.json and women.json (`h1.d`, `h1.d0`) |
 | Demo, third figure: first-hour distance by position, 0.180, 0.126 and 0.088 on All, 0.164, 0.098 and 0.105 on Women's, reported without a rule | README.md:68; obd/PREREGISTRATION.md:86; obd/results/all.json and women.json (`h1.first_hour`) |
 | Demo, third figure: no noise floor registered for a single hour, and no other single hour reported | obd/PREREGISTRATION.md:83, 86; obd/posthoc/README.md:318 (a first-hour floor is post hoc) |
@@ -41,10 +41,10 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af.
 | On All and on Women's alone the interval contains 0 | README.md:35-36; obd/results/all.json and women.json (`quantities["h4.d.3"]`, `h4.alignment`) |
 | No shortfall was established, so the registered rule does not read the gap (third metric, third limit) | README.md:37, 71; obd/PREREGISTRATION.md:116 |
 | 1.31 to 1.47 times: standard deviation of the H3 ratios with ten-minute blocks over the one with rows or impressions, on all three campaigns, post hoc | README.md:83; obd/posthoc/README.md:34-41; obd/posthoc/results/units.json (`all`, `men`, `women`: `h3.sd_of_blocks_over`) |
-| Metrics note: registered results from one run of commit `11e9340` | README.md:17; obd/results/pooled.json (`code_commit`) |
+| Metrics note: registered results on All and Women's from one run of commit `11e9340` | README.md:17; obd/results/all.json, women.json and pooled.json (`code_commit`) |
 | Metrics note: intervals are the 2.5th and 97.5th percentiles of 10,000 replicates that resample ten-minute blocks | README.md:17; obd/PREREGISTRATION.md:73, 75 |
 | Metrics note: the block length was fixed with the Men's results in view, as the registration states | obd/PREREGISTRATION.md:40, 64 |
-| Men's is the development campaign and enters no verdict; its IPS ratio is 0.891 (0.790 to 1.005) (metrics note, first limit) | README.md:13, 70, 77; obd/results/men.json (`quantities["h3.ips"]`) |
+| Men's is the development campaign and enters no verdict; its IPS ratio is 0.891 (0.790 to 1.005), from that campaign's own result file (metrics note, first limit) | README.md:13, 70, 77; obd/results/men.json (`quantities["h3.ips"]`; `code_commit` `581b29d`) |
 | Metrics note: the last figure is post hoc | README.md:81, 83 |
 | The Open Bandit Dataset holds one week of logs from two policies on ZOZOTOWN, uniform random and BTS, in three campaigns | obd/PREREGISTRATION.md:5 |
 | The benchmark estimates the BTS click rate from the random logs and compares it with that of the BTS logs; on Men's the estimate is about 0.89 of the on-policy value | obd/PREREGISTRATION.md:5; README.md:7 |

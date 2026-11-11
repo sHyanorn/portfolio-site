@@ -81,3 +81,23 @@ test('the sitemap lists every page with its other language', async ({
     expect(links, loc).toEqual({ en, 'zh-CN': ZH + en.slice(ROOT.length) })
   }
 })
+
+// Every page links the SVG favicon, a 32 px ICO for browsers without SVG
+// icons and a 180 px touch icon, and each one is served.
+for (const p of pages)
+  test(`${p.name}: icons`, async ({ page, request }) => {
+    await page.goto(p.path)
+    for (const [selector, type] of [
+      ['link[rel="icon"][type="image/svg+xml"]', 'image/svg+xml'],
+      ['link[rel="icon"][sizes="32x32"]', 'icon'],
+      ['link[rel="apple-touch-icon"]', 'image/png'],
+    ]) {
+      const link = page.locator(selector)
+      await expect(link, selector).toHaveCount(1)
+      const href = await link.getAttribute('href')
+      expect(href, selector).toMatch(new RegExp(`^${BASE}`))
+      const res = await request.get(href!)
+      expect(res.status(), href!).toBe(200)
+      expect(res.headers()['content-type'], href!).toContain(type)
+    }
+  })

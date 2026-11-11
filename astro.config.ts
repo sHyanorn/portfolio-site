@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import { LANG_TAG } from './src/lib/i18n'
 import { remarkReadingTime } from './src/lib/reading-time'
+import { rehypeCornerCell } from './src/lib/table'
 
 // Deploys take both from the GitHub Pages configuration (D007); local builds serve from the root.
 const site = process.env.SITE_URL || 'http://localhost:4321'
@@ -33,7 +34,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath, remarkReadingTime],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [rehypeKatex, rehypeCornerCell],
     }),
     // Both themes as CSS variables; base.css picks one by colour scheme.
     shikiConfig: {

@@ -2,7 +2,7 @@
 
 Content: `src/content/site/home.json` and `src/content/site/about.json`. Each row covers one fact from the English text. The Chinese text states the same facts.
 
-Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab acab86b. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
+Repositories at: matching-engine 1d50110, vault-share d5f69e6, backtest-lab 024e743, local-ledger ae08641, push-lab 937ad77. `site:` is this repository. `site:…@b5c04e0` is the last commit with the earlier text.
 
 ## Home
 
@@ -26,10 +26,10 @@ The intro's two sentences, then one sentence for each area.
 | Quant: walk-forward analysis, purged cross-validation, PBO, deflated Sharpe ratio | backtest-lab README.md:3; docs/SPEC.md:5 |
 | Quant: thresholds fixed before any run on real data | backtest-lab docs/DECISIONS.md:134 (D022); README.md:38 |
 | Recommender: two-tower recall | push-lab docs/SPEC.md:11, 37-38 |
-| Recommender: gradient-boosted ranking (LightGBM) | push-lab docs/SPEC.md:12, 42; docs/DECISIONS.md:102-104 (D008) |
+| Recommender: gradient-boosted ranking (LightGBM) | push-lab docs/SPEC.md:12, 42; docs/DECISIONS.md:106-108 (D008) |
 | Recommender: uplift models | push-lab docs/SPEC.md:12, 45-46 |
 | Recommender: off-policy evaluation | push-lab docs/SPEC.md:13, 63-65 |
-| Recommender: results labelled by evidence tier | push-lab README.md:3, 12-16; docs/SPEC.md:87-93; docs/DECISIONS.md:73 (D002) |
+| Recommender: results labelled by evidence tier | push-lab README.md:3, 12-16; docs/SPEC.md:87-93; docs/DECISIONS.md:77 (D002) |
 
 ## About
 
@@ -129,20 +129,20 @@ All paths are in push-lab.
 | Number or claim | Source |
 |---|---|
 | Push notification pipeline built on public data | README.md:3; docs/SPEC.md:5 |
-| Two-tower recall with a faiss (HNSW) index | docs/SPEC.md:38, 148; docs/DECISIONS.md:98-100 (D007) |
-| Coarse ranking by the two-tower score | docs/SPEC.md:41; docs/DECISIONS.md:102-104 (D008) |
-| LightGBM fine ranking | docs/SPEC.md:42; docs/DECISIONS.md:102-104 (D008) |
+| Two-tower recall with a faiss (HNSW) index | docs/SPEC.md:38, 148; docs/DECISIONS.md:102-104 (D007) |
+| Coarse ranking by the two-tower score | docs/SPEC.md:41; docs/DECISIONS.md:106-108 (D008) |
+| LightGBM fine ranking | docs/SPEC.md:42; docs/DECISIONS.md:106-108 (D008) |
 | Uplift models | docs/SPEC.md:45-46, 55 |
 | The delivery policy decides whether to send, the slot and the copy | docs/SPEC.md:35, 53-62, 159-160 |
-| Off-policy estimators include IPS and DR | docs/SPEC.md:64; docs/DECISIONS.md:396 (D042: IPS and DR are primary) |
-| Checked against a known answer on the Open Bandit Dataset | docs/SPEC.md:65; docs/DECISIONS.md:387 (D041), 396 (D042) |
-| On the full campaign no estimator passed (IPS 0.891, DR 0.897 of the on-policy value) | docs/DECISIONS.md:454, 456 (D046); README.md:55 |
-| No Tier B result; 0 Tier B claims | README.md:15, 18; docs/SPEC.md:95; docs/DECISIONS.md:456 (D046) |
+| Off-policy estimators include IPS and DR | docs/SPEC.md:64; docs/DECISIONS.md:400 (D042: IPS and DR are primary) |
+| Checked against a known answer on the Open Bandit Dataset | docs/SPEC.md:65; docs/DECISIONS.md:391 (D041), 400 (D042) |
+| On the full campaign no estimator passed (IPS 0.891, DR 0.897 of the on-policy value) | docs/DECISIONS.md:458, 460 (D046); README.md:55 |
+| No Tier B result; 0 Tier B claims | README.md:15, 18; docs/SPEC.md:95; docs/DECISIONS.md:460 (D046) |
 | Simulator response model fitted on KuaiRand random exposures | docs/SPEC.md:50, 182 |
-| No public dataset links push sends to later behaviour | docs/METHODS.md:267; docs/SPEC.md:216; docs/DECISIONS.md:87 |
-| Tiers: A randomized real data, B validated off-policy estimate, C simulator with a sweep | README.md:12-16; docs/SPEC.md:89-93; docs/DECISIONS.md:73 (D002) |
-| Comparisons are pre-registered before the simulations run and reported as they come out | docs/SPEC.md:18; docs/DECISIONS.md:195 (D020), 404 (D043) |
-| A pre-registered ranking result went the other way: fine ranker click GAUC 0.545 against the two-tower score's 0.598 (C2) | docs/DECISIONS.md:197 (D020); README.md:55 |
+| No public dataset links push sends to later behaviour | docs/METHODS.md:267; docs/SPEC.md:216; docs/DECISIONS.md:91 |
+| Tiers: A randomized real data, B validated off-policy estimate, C simulator with a sweep | README.md:12-16; docs/SPEC.md:89-93; docs/DECISIONS.md:77 (D002) |
+| Comparisons are pre-registered before the simulations run and reported as they come out | docs/SPEC.md:18; docs/DECISIONS.md:199 (D020), 408 (D043) |
+| A pre-registered ranking result went the other way: fine ranker click GAUC 0.545 against the two-tower score's 0.598 (C2) | docs/DECISIONS.md:201 (D020); README.md:55 |
 
 ### Tools
 
@@ -151,7 +151,7 @@ Where each tool appears: site project tags first, then the repositories.
 | Number or claim | Source |
 |---|---|
 | Go | site:src/content/projects/matching-engine.json:9, vault-share.json:9; matching-engine docs/DECISIONS.md:5-8 (D001); vault-share README.md:7 |
-| Python | site:src/content/projects/backtest-lab.json:10, push-lab.json:9; backtest-lab docs/DECISIONS.md:3 (D001); push-lab docs/DECISIONS.md:67 (D001) |
+| Python | site:src/content/projects/backtest-lab.json:10, push-lab.json:9; backtest-lab docs/DECISIONS.md:3 (D001); push-lab docs/DECISIONS.md:71 (D001) |
 | TypeScript | site:src/content/projects/local-ledger.json:10; local-ledger docs/DECISIONS.md:3 (D001); vault-share README.md:7 |
 | React | site:src/content/projects/vault-share.json:10, local-ledger.json:11, backtest-lab.json:26; vault-share README.md:7; backtest-lab docs/DECISIONS.md:3 (D001) |
 | FastAPI | site:src/content/projects/backtest-lab.json:22; backtest-lab docs/SPEC.md:14; pyproject.toml:11 |
@@ -162,8 +162,8 @@ Where each tool appears: site project tags first, then the repositories.
 | Parquet | site:src/content/projects/backtest-lab.json:155, push-lab.json:109; backtest-lab docs/SPEC.md:33; push-lab docs/SPEC.md:32, 143 |
 | Web Crypto | site:src/content/projects/vault-share.json:12; vault-share docs/DECISIONS.md:7-9 (D002) |
 | Argon2id | vault-share README.md:31, 41; local-ledger README.md:18; docs/DECISIONS.md:85-87 (D015) |
-| LightGBM | push-lab docs/SPEC.md:42; docs/DECISIONS.md:102 (D008); pyproject.toml:12 |
-| faiss | site:src/content/projects/push-lab.json:111; push-lab docs/SPEC.md:38; docs/DECISIONS.md:98-100 (D007); pyproject.toml:11 |
+| LightGBM | push-lab docs/SPEC.md:42; docs/DECISIONS.md:106 (D008); pyproject.toml:12 |
+| faiss | site:src/content/projects/push-lab.json:111; push-lab docs/SPEC.md:38; docs/DECISIONS.md:102-104 (D007); pyproject.toml:11 |
 | GitHub Actions | site:src/content/projects/backtest-lab.json:143; backtest-lab docs/SPEC.md:35; .github/workflows/data.yml:3-4 |
 | This site: Astro | site:docs/SPEC.md:41; site:docs/DECISIONS.md:11-16 (D003); site:README.md:3 |
 | This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 100-102 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
@@ -178,5 +178,5 @@ Aaron's own paragraph, unchanged from the earlier About page and approved on 202
 | Commerce | The Education rows above |
 | How markets match orders: matching-engine | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
 | How a strategy can look good by chance: backtest-lab | backtest-lab README.md:3, 30-33 |
-| How to judge a decision without live data: push-lab | push-lab README.md:3; docs/DECISIONS.md:73 (D002: no live traffic) |
+| How to judge a decision without live data: push-lab | push-lab README.md:3; docs/DECISIONS.md:77 (D002: no live traffic) |
 | Numbers that trace back to their repositories | site:docs/project-sources/, one file per project |

@@ -316,6 +316,16 @@
         "en": "The Beta parameters in force at any time, the update interval and which version served a row are not in the data. Whether the recorded propensities of the BTS log are internally consistent is undetermined on both campaigns. All is not a clean hold-out from the development campaign: a check made after the results, without reading a click, finds all 34 Beta parameter pairs of Men's in the prior file among the 80 of All, identical and in the same order, and none of the 46 of Women's.",
         "zh": "任一时刻生效的 Beta 参数、更新间隔、每一行是哪个版本提供的，数据里都没有。BTS 日志记录的倾向分是否自洽，在两个活动上都是 undetermined。All 不是相对开发用活动的干净留出集：结果出来之后做的一项不读点击的核对发现，先验文件里 Men's 的 34 对 Beta 参数原样、按原顺序出现在 All 的 80 对里，Women's 的 46 对一对也没有。"
       }
+    },
+    {
+      "title": {
+        "en": "Coverage is counted only on simulated clicks",
+        "zh": "覆盖率只在模拟的点击上数过"
+      },
+      "body": {
+        "en": "A separately registered semi-synthetic study (`obd_coverage/`) keeps the rows of the logs and generates clicks from a known process, so that the coverage of a nominal 95% interval can be counted. With dependence that reaches one or two minutes, at the strength solved from published statistics of the logs, intervals of the IPS ratio on All and Women's cover 0.85 to 0.88 when rows or impressions are resampled and 0.945 to 0.953 with clock blocks of 5 to 180 minutes; this is an upper reading of short-range dependence: if part of the published variance ratio is a moving click rate, rows and impressions cover more. With added groups of sessions that span an hour, ten-minute blocks cover 0.907 on All and 0.850 on Women's, and with groups that span a day no block length is adequate. Both scenarios were tuned so that the true variance exceeds what ten-minute blocks see, so under-coverage by ten-minute blocks was expected there. On Women's the published widening of the intervals up to 180 minutes is more than the short-range scenario produces, so its ten-minute intervals are not shown to cover. The study does not show that the real logs have any of these structures.",
+        "zh": "另一项单独登记的半合成研究（`obd_coverage/`）保留日志的每一行，按已知的过程生成点击，这样就能数出名义 95% 区间的覆盖率。依赖延伸到一两分钟、强度由日志的已发表统计量解出时，All 和 Women's 上 IPS 比值的区间按行或按曝光重采样覆盖 0.85 到 0.88，按 5 到 180 分钟的时钟块覆盖 0.945 到 0.953；这是对短程依赖的上限读法：已发表的方差比里如果有一部分来自点击率本身在变，按行和按曝光的覆盖率会更高。再加上跨一小时的会话组，十分钟块在 All 上覆盖 0.907，在 Women's 上覆盖 0.850；会话组跨一天时，没有任何块长达标。这两种情形本来就调成真实方差超过十分钟块能看到的部分，所以十分钟块在其中覆盖不足是意料之中的。Women's 上已发表的区间变宽（到 180 分钟为止）超出了短程情形能产生的范围，所以它的十分钟区间没有显示达到覆盖率。这项研究并没有表明真实日志具有其中任何一种结构。"
+      }
     }
   ],
   "repo": "https://github.com/sHyanorn/ope-checks",

@@ -18,6 +18,9 @@ All paths are in github.com/sHyanorn/push-lab at commit 937ad77.
 | 23 of 24 sweep settings at which DR reverses the order of no pushes and one a day; post hoc | README.md:30 |
 | 43 of 64 settings won at half volume, 19 lost, none won without annoyance | README.md:70 |
 | Metrics note: Tier A is a measure of the estimators on real data; Tier C holds in the simulator with its sweep; 95% intervals; one model fit per setting | README.md:7, 12-16, 39; docs/SPEC.md:95 |
+| Metrics note: the ten-minute-block interval of IPS is 0.789 to 1.004 here and 0.790 to 1.005 on the ope-checks page | results/ope_obd_blocks.json (`full.validation.IPS.ratio_to_on_policy`: `ci_low` 0.7891, `ci_high` 1.0043); ope-checks at 6a276af obd/results/men.json (`quantities["h3.ips"].interval`: 0.7895, 1.0046) |
+| Metrics note: the two projects ran it separately | src/push_lab/ope/obd_blocks.py:1-9, 152-180 (its own code, writing `results/ope_obd_blocks.json`); ope-checks at 6a276af obd/results/men.json (`command`: `python -m obd.run men`; `code_commit` `581b29d`) |
+| Metrics note: their point estimates differ too, 0.8909 and 0.8913 | results/ope_obd_blocks.json (`full.validation.IPS.ratio_to_on_policy.value`); ope-checks at 6a276af obd/results/men.json (`quantities["h3.ips"].estimate`) |
 | Pipeline: two-tower recall with an ANN index, coarse and fine ranking, uplift models, delivery policy for send, slot and copy; 4 CPU cores | docs/SPEC.md:5, 11-12; README.md:77 |
 | Notebook and static report | docs/SPEC.md:226-227 |
 | Story registered as a hypothesis before the simulations; comparisons fixed in advance and reported as they came out | docs/SPEC.md:18-24 |

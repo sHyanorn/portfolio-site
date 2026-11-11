@@ -81,8 +81,8 @@
       }
     ],
     "note": {
-      "en": "The first figure is Tier A, a measure of the estimators on randomized real data. The other three are Tier C and hold only in the simulator, read across a sweep of its assumptions. Brackets give 95% intervals, and per-setting verdicts rest on one model fit.",
-      "zh": "第一个数是 A 级证据，是在随机化的真实数据上对估计器本身的度量。其余三个是 C 级证据，只在模拟器里成立，要结合对模拟器假设的参数扫描来读。括号里是 95% 区间；逐个设定的结论只基于一次模型拟合。"
+      "en": "The first figure is Tier A, a measure of the estimators on randomized real data. The other three are Tier C and hold only in the simulator, read across a sweep of its assumptions. Brackets give 95% intervals, and per-setting verdicts rest on one model fit. The ten-minute-block interval of IPS is 0.789 to 1.004 here and 0.790 to 1.005 on the ope-checks page: the two projects ran it separately, and their point estimates differ too (0.8909 and 0.8913).",
+      "zh": "第一个数是 A 级证据，是在随机化的真实数据上对估计器本身的度量。其余三个是 C 级证据，只在模拟器里成立，要结合对模拟器假设的参数扫描来读。括号里是 95% 区间；逐个设定的结论只基于一次模型拟合。IPS 按 10 分钟时间块的区间，这里是 0.789 到 1.004，ope-checks 页上是 0.790 到 1.005：两个项目是分开各自跑的，点估计也不相同（0.8909 和 0.8913）。"
     },
     "source": {
       "label": { "en": "Results summary", "zh": "结果摘要" },

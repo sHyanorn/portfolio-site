@@ -27,6 +27,7 @@
 - Rationale: none of these needs work in the browser, so an article page ships no more JS than any other page
 - Alternatives: Prism or highlight.js in the browser; MathJax or KaTeX auto-render in the browser (client JS for static content)
 - Amendment 2026-11-09: since Astro 7, `.md` and `.mdx` go through Sätteri by default, which runs only its own mdast and hast plugins. The site keeps the unified pipeline: `@astrojs/markdown-remark` is installed and `markdown.processor` is `unified({ remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] })`, which MDX inherits, with `shikiConfig` at the top level of `markdown`. Source: docs.astro.build as of 2026-11-09, which documents Astro 7 ("Since Astro v7, Sätteri is the default Markdown processor"; `unified()` added in `@astrojs/markdown-remark` 7.2.0). A test build with Astro 7.4.7, `@astrojs/mdx` 8.1.3 and `@astrojs/markdown-remark` 7.3.6 rendered the math article and dual-theme code blocks with these settings
+- Amendment 2026-11-11: a table cell may break a word that its column cannot hold (`overflow-wrap: anywhere`), so a table of four columns does not widen the page at 320 px
 
 ## D006 HTML whitespace follows HTML rules
 - Date: 2026-11-09
@@ -161,7 +162,7 @@
 ## D022 Algorithms and server-side systems first; earlier projects apart
 - Date: 2026-11-11
 - Decision:
-  1. The headline names the direction of the work, algorithm engineering and server-side systems. Home and About give three areas in place of four (D017): algorithms, server-side systems, backend systems. An area whose work has no project page yet links to its repository: a link under the area's text on the home page, and a name in the area's project line on About (`repo` in `home.json`, `repos` in `about.json`)
+  1. The headline names the direction of the work, algorithm engineering and server-side systems. The Chinese headline is one phrase of eleven characters, which a phone sets at 8.1vw so that it fits a line at 320 px. Home and About give three areas in place of four (D017): algorithms, server-side systems, backend systems. An area whose work has no project page yet links to its repository: a link under the area's text on the home page, and a name in the area's project line on About (`repo` in `home.json`, `repos` in `about.json`)
   2. A project marked `early` in its content file keeps its page and leaves the cards (D020): the home page lists it under them as a title, its summary and its tags, and About as a name and its summary, after the areas. The projects in security and quantitative research are the earlier ones
   3. Every article states its kind in a required `kind` field, `note` or `paper`, shown first in the list's details and beside the date on the article page. A paper is a preprint or a submitted or published paper; everything else is a note
   4. A pre-registered study uses the project template (D013) with two sections renamed in its content file (`headings`): the decisions become rules from its registration and amendments, numbered by section, proposition or amendment (`§4`, `H3`, `A7`), and the challenges become its limits. Its three figures take the place of the screenshots, each with a dark copy

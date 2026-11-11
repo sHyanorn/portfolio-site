@@ -10,7 +10,7 @@ The intro's two sentences, then the three areas.
 
 | Number or claim | Source |
 |---|---|
-| Commerce student at the University of Melbourne | site:docs/DECISIONS.md:123 (D017); site:src/lib/i18n.ts:39; site:src/lib/i18n.ts@b5c04e0:35, 47 |
+| Commerce student at the University of Melbourne | site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts:39; site:src/lib/i18n.ts@b5c04e0:35, 47 |
 | Each project below has tests in its repository | matching-engine cmd/engine/kill_test.go:197, README.md:75; vault-share docs/security/TEST_REPORT.md:377-381; backtest-lab README.md:59-66; local-ledger README.md:66-67; push-lab README.md:81; ope-checks README.md:112, .github/workflows/ci.yml:20 |
 | Each project below has a decision log or a pre-registration in its repository | docs/DECISIONS.md:1 in matching-engine, vault-share, backtest-lab, local-ledger and push-lab; ope-checks obd/PREREGISTRATION.md:1, README.md:9 |
 | Algorithms: two-tower recall | push-lab docs/SPEC.md:11, 37-38 |
@@ -40,11 +40,11 @@ Taken from the site's own earlier text and D017.
 
 | Number or claim | Source |
 |---|---|
-| The University of Melbourne | site:docs/SPEC.md:36; site:docs/DECISIONS.md:123 (D017); site:src/lib/i18n.ts@b5c04e0:52 |
-| Bachelor of Commerce | site:docs/DECISIONS.md:123 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| 2024 to 2027 | site:docs/DECISIONS.md:123 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| In progress | site:docs/DECISIONS.md:123 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
-| Based in Melbourne, Australia | Aaron, 2026-11-09. No repository source. site:docs/DECISIONS.md:125 (the D017 amendment) records only that About shows the city |
+| The University of Melbourne | site:docs/SPEC.md:36; site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts@b5c04e0:52 |
+| Bachelor of Commerce | site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| 2024 to 2027 | site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| In progress | site:docs/DECISIONS.md:124 (D017); site:src/lib/i18n.ts@b5c04e0:56 |
+| Based in Melbourne, Australia | Aaron, 2026-11-09. No repository source. site:docs/DECISIONS.md:126 (the D017 amendment) records only that About shows the city |
 
 ### Algorithms
 
@@ -183,13 +183,13 @@ Where each tool appears: site project tags first, then the repositories.
 | NumPy | ope-checks README.md:11, 17; pyproject.toml:13 |
 | GitHub Actions | site:src/content/projects/backtest-lab.json:144; backtest-lab docs/SPEC.md:35; .github/workflows/data.yml:3-4 |
 | This site: Astro | site:docs/SPEC.md:41; site:docs/DECISIONS.md:11-16 (D003); site:README.md:3 |
-| This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 107-109 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
+| This site: hand-written WebGL2 and GLSL | site:docs/SPEC.md:43; site:docs/DECISIONS.md:3-5 (D001), 108-110 (D015); site:src/gl/shaders/background.frag.glsl; site:README.md:3 |
 
 ### Where the work sits
 
 | Number or claim | Source |
 |---|---|
-| Algorithm engineering and server-side systems, with backend development next to them | site:docs/SPEC.md:10; site:docs/DECISIONS.md:164 (D022); the three area sections above |
+| Algorithm engineering and server-side systems, with backend development next to them | site:docs/SPEC.md:10; site:docs/DECISIONS.md:165 (D022); the three area sections above |
 | Recommendation models and off-policy evaluation | push-lab docs/SPEC.md:11-13; ope-checks README.md:3 |
 | Comparisons are registered before the results and reported as they came out | push-lab docs/SPEC.md:18; docs/DECISIONS.md:199 (D020); ope-checks README.md:9; obd/PREREGISTRATION.md:163 |
 | A ranking result that went the other way | push-lab docs/DECISIONS.md:201 (D020) |

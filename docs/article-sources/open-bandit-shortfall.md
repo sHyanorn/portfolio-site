@@ -52,6 +52,7 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af, except those 
 | Its interval excludes 0 only in the pooled unit, 0.072 (0.002 to 0.139); no change shown on All and on Women's alone | same keys; `h4.alignment`; README.md:35-36, 53-56, 71 |
 | The rule reads the gap only where H3 found one, and it found none | obd/PREREGISTRATION.md:116; README.md:71 |
 | A way the aligned estimate can be too high: BTS learning from clicks of the random bucket, or demand both buckets share | obd/PREREGISTRATION.md:151 |
+| A calculation made after the results does not support the second case: under shared demand the aligned estimate is too low within a period, so the direction of its bias is not established | README.md:90, 94 at commit 3b17cb9 |
 | H5: 0.099 (0.033 to 0.166) on All, 0.076 (0.022 to 0.130) on Women's; descriptive, cannot tell the two sources apart | all.json, women.json (`q["h5.after_minus_before"]`); obd/PREREGISTRATION.md:136, 151; README.md:38, 72 |
 | H2 undetermined on both campaigns; the statistic should average 1 | all.json, women.json (`h2.label`); obd/PREREGISTRATION.md:91; README.md:27, 69 |
 | 0.973 over 3 eligible cells on All, fewer than the rule needs; 0.967 over 7 on Women's | all.json, women.json (`h2.eligible_cells`, `q["h2.m"]`); obd/PREREGISTRATION.md:93; README.md:25-26, 69 |

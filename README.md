@@ -22,18 +22,18 @@ At 1440×900 ([D019](docs/DECISIONS.md)).
 | Light | Dark |
 | --- | --- |
 | ![Home page, light theme](docs/screenshots/home-light.png) | ![Home page, dark theme](docs/screenshots/home-dark.png) |
-| ![local-ledger project page, light theme](docs/screenshots/local-ledger-light.png) | ![local-ledger project page, dark theme](docs/screenshots/local-ledger-dark.png) |
+| ![ope-checks project page, light theme](docs/screenshots/ope-checks-light.png) | ![ope-checks project page, dark theme](docs/screenshots/ope-checks-dark.png) |
 
 ## Lighthouse
 
-The live site at `079f1b5` on 2026-11-11, with CI's settings ([D019](docs/DECISIONS.md)): the mobile preset three times per page, the median run kept, and the desktop preset once. Each cell is performance / accessibility / best practices / SEO. Mobile performance on the Chinese pages is the median of seven runs: on the live site their longest layout task runs after first contentful paint and counts as blocking time, and single runs of one page ranged from 85 to 100 ([D020](docs/DECISIONS.md)).
+The live site at `73c4188` on 2026-11-11, with CI's settings ([D019](docs/DECISIONS.md)): the mobile preset three times per page, the median run kept, and the desktop preset once. Each cell is performance / accessibility / best practices / SEO. Mobile performance on the Chinese pages is the median of seven runs: on the live site their longest layout task runs after first contentful paint and counts as blocking time, and single runs of one page ranged from 85 to 100 ([D020](docs/DECISIONS.md)).
 
 | Page | Mobile | Desktop |
 | --- | --- | --- |
 | `/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/about/` | 100 / 100 / 100 / 100 | 100 / 95 / 100 / 100 |
-| `/zh/about/` | 99 / 100 / 100 / 100 | 100 / 95 / 100 / 100 |
+| `/zh/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/about/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/about/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/articles/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/articles/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/articles/cryptography-held/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
@@ -42,20 +42,24 @@ The live site at `079f1b5` on 2026-11-11, with CI's settings ([D019](docs/DECISI
 | `/zh/articles/locking-ends-a-process/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/articles/low-pbo-easy-question/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/articles/low-pbo-easy-question/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/articles/open-bandit-shortfall/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/articles/open-bandit-shortfall/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/articles/order-book-cpu/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/articles/order-book-cpu/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/backtest-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/backtest-lab/` | 97 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/backtest-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/local-ledger/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/local-ledger/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/local-ledger/` | 100 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/matching-engine/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/matching-engine/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/matching-engine/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/ope-checks/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/ope-checks/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/projects/push-lab/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 | `/zh/projects/push-lab/` | 99 / 96 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/projects/vault-share/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| `/zh/projects/vault-share/` | 98 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/projects/vault-share/` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| `/zh/projects/vault-share/` | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 
-Where accessibility is below 100, the contrast check read text partway through its entrance fade: the About pages on desktop ([D020](docs/DECISIONS.md)) and the gallery captions of three Chinese project pages on mobile.
+Where accessibility is below 100, the contrast check read the gallery captions of three Chinese project pages partway through their entrance fade, on mobile.
 
 ## Development
 

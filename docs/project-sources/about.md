@@ -189,7 +189,7 @@ Where each tool appears: site project tags first, then the repositories.
 
 | Number or claim | Source |
 |---|---|
-| Algorithm engineering and server-side systems, with backend development next to them | site:docs/SPEC.md:10; site:docs/DECISIONS.md:165 (D022); the three area sections above |
+| Algorithm engineering and server-side systems, with backend development next to them | site:docs/SPEC.md:10; site:docs/DECISIONS.md:166 (D022); the three area sections above |
 | Recommendation models and off-policy evaluation | push-lab docs/SPEC.md:11-13; ope-checks README.md:3 |
 | Comparisons are registered before the results and reported as they came out | push-lab docs/SPEC.md:18; docs/DECISIONS.md:199 (D020); ope-checks README.md:9; obd/PREREGISTRATION.md:163 |
 | A ranking result that went the other way | push-lab docs/DECISIONS.md:201 (D020) |

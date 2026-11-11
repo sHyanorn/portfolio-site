@@ -77,8 +77,15 @@ const projects = defineCollection({
           .max(5),
         source: z.url(),
       }),
-      // 7. Challenges and how they were solved
-      challenges: z.array(item).min(1),
+      // 7. Challenges and how they were solved, each with an optional link
+      // to where it was taken further, such as a report upstream
+      challenges: z
+        .array(
+          item.extend({
+            link: z.strictObject({ label: text, url: z.url() }).optional(),
+          }),
+        )
+        .min(1),
       // 8. Links
       repo: z.url(),
       /** Titles a study gives sections 6 and 7 and the link under section 6,

@@ -1,0 +1,52 @@
+---
+// Architecture of retrieval-lab: the BM25 path along the first row, the
+// dense path along the second, both into the run files, and what the run
+// files are held against along the third.
+import GridDiagram from '../GridDiagram.astro'
+
+interface Props {
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+}
+
+const { labels, id } = Astro.props
+---
+
+<GridDiagram
+  {labels}
+  {id}
+  core="anchors"
+  parts={[
+    { key: 'data', path: 'scripts/data.sh', at: [0, 0] },
+    { key: 'encoder', path: 'cmd/embed', at: [0, 1] },
+    { key: 'vectors', path: 'internal/dense', at: [0, 2] },
+    { key: 'bm25', path: 'cmd/bm25', at: [1, 0] },
+    { key: 'search', path: 'cmd/dense', at: [1, 1] },
+    { key: 'runs', path: 'results/bm25-flat.sha256', at: [2, 0] },
+    { key: 'eval', path: 'cmd/eval', at: [2, 1] },
+    { key: 'anchors', path: 'results/anchors.tsv', at: [1, 2] },
+    { key: 'tables', path: 'cmd/table', at: [2, 2] },
+  ]}
+  wide={[
+    'M224 40.5H248',
+    'M472 40.5H496',
+    'M112.5 80V128',
+    'M224 168.5H248',
+    // The dense runs join the BM25 runs.
+    'M472 168.5H484.5V60.5H496',
+    'M608.5 80V128',
+    'M608.5 208V256',
+    'M112.5 208V256',
+    'M472 296.5H496',
+  ]}
+  narrow={{
+    unlinked: ['vectors', 'bm25', 'eval'],
+    lines: [
+      'M12 30.5H3.5V270.5H12',
+      'M12 280.5H3.5V430.5H12',
+      'M346 110.5H354.5V350.5H346',
+      'M346 510.5H354.5V670.5H346',
+    ],
+  }}
+/>

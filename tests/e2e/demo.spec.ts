@@ -189,6 +189,8 @@ for (const [project, columns] of [
   ['push-lab', 2],
   ['local-ledger', 2],
   ['ope-checks', 2],
+  ['recserve', 2],
+  ['retrieval-lab', 2],
 ] as const)
   test(`${project}: later screenshots in ${columns} column(s)`, async ({
     page,

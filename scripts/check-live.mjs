@@ -23,6 +23,8 @@ const routes = [
   'projects/matching-engine/',
   'projects/ope-checks/',
   'projects/push-lab/',
+  'projects/recserve/',
+  'projects/retrieval-lab/',
   'projects/vault-share/',
 ]
 const pages = routes.flatMap((r) => [r, `zh/${r}`])

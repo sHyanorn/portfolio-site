@@ -1,0 +1,40 @@
+---
+// Architecture of recserve: the request path along the first row, the event
+// path along the second, and the gateway between them.
+import GridDiagram from '../GridDiagram.astro'
+
+interface Props {
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+}
+
+const { labels, id } = Astro.props
+---
+
+<GridDiagram
+  {labels}
+  {id}
+  core="gateway"
+  parts={[
+    { key: 'bundle', path: 'internal/bundle', at: [0, 0] },
+    { key: 'gateway', path: 'cmd/gateway', at: [1, 0] },
+    { key: 'annshard', path: 'cmd/annshard', at: [2, 0] },
+    { key: 'kafka', path: 'internal/events', at: [0, 1] },
+    { key: 'ingest', path: 'cmd/ingest', at: [1, 1] },
+    { key: 'valkey', path: 'internal/history', at: [2, 1] },
+  ]}
+  wide={[
+    'M224 40.5H248',
+    'M472 40.5H496',
+    // The gateway produces events, and reads histories and the cache.
+    'M320.5 80V104.5H112.5V128',
+    'M224 168.5H248',
+    'M472 168.5H496',
+    'M608.5 128V104.5H400.5V80',
+  ]}
+  narrow={{
+    unlinked: ['annshard'],
+    lines: ['M12 110.5H3.5V270.5H12', 'M346 430.5H354.5V110.5H346'],
+  }}
+/>

@@ -1,9 +1,10 @@
 // Every internal link and asset in the built pages resolves under the base
 // path, so a link written without the base fails here, and every link to a
-// fragment names an id on the page it points to.
-import { readFileSync } from 'node:fs'
+// fragment names an id on the page it points to. A challenge's own link is
+// shown under it.
+import { readdirSync, readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
-import { pages } from './site'
+import { BASE, pages } from './site'
 
 const html = new Map(pages.map((p) => [p.path, readFileSync(p.file, 'utf8')]))
 
@@ -60,3 +61,22 @@ test('links to a fragment name an id on their page', () => {
     }
   expect(checked).toBeGreaterThan(0)
 })
+
+// A challenge may link to where it was taken further, such as a report
+// upstream; the link stands under the challenge in both languages.
+const CONTENT = 'src/content/projects'
+for (const file of readdirSync(CONTENT).filter((f) => f.endsWith('.json'))) {
+  const project = JSON.parse(readFileSync(`${CONTENT}/${file}`, 'utf8'))
+  const id = file.replace('.json', '')
+  for (const { link } of project.challenges)
+    if (link)
+      for (const lang of ['en', 'zh'] as const)
+        test(`${id}: ${lang} page links ${link.url}`, async ({ page }) => {
+          await page.goto(`${BASE}${lang === 'zh' ? 'zh/' : ''}projects/${id}/`)
+          const a = page.locator(
+            `section[aria-labelledby="challenges"] a[href="${link.url}"]`,
+          )
+          await expect(a).toHaveText(link.label[lang])
+          await expect(a).toBeVisible()
+        })
+}

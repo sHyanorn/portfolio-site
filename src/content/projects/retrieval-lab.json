@@ -1,0 +1,319 @@
+{
+  "title": "retrieval-lab",
+  "order": 3,
+  "summary": {
+    "en": "BM25 and dense retrieval in Go, where each component is accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0004 in nDCG@10 on five; TREC-COVID is not run.",
+    "zh": "用 Go 实现的 BM25 和稠密检索，每个组件都对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在五个数据集上的 nDCG@10 相差不超过 0.0004；TREC-COVID 没有跑。"
+  },
+  "tags": [
+    {
+      "en": "Go",
+      "zh": "Go"
+    },
+    {
+      "en": "Information retrieval",
+      "zh": "信息检索"
+    },
+    {
+      "en": "BM25",
+      "zh": "BM25"
+    },
+    {
+      "en": "Dense retrieval",
+      "zh": "稠密检索"
+    },
+    {
+      "en": "BEIR",
+      "zh": "BEIR"
+    }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./retrieval-lab/bm25-light.png",
+        "dark": "./retrieval-lab/bm25-dark.png",
+        "alt": {
+          "en": "Dot chart of nDCG@10 on six BEIR test sets: Pyserini's published BM25, this project's BM25 and Bleve's own BM25. Pyserini and this project coincide on all six: TREC-COVID 0.5947, NFCorpus 0.3218, FiQA 0.2361, ArguAna 0.3970, SCIDOCS 0.1490, SciFact 0.6789. Bleve's own: 0.3513, 0.3122, 0.1906, 0.5448, 0.1524, 0.6745.",
+          "zh": "点图，六个 BEIR 测试集上的 nDCG@10：Pyserini 公布的 BM25、本项目的 BM25 和 Bleve 自带的 BM25。Pyserini 和本项目在六个数据集上重合：TREC-COVID 0.5947，NFCorpus 0.3218，FiQA 0.2361，ArguAna 0.3970，SCIDOCS 0.1490，SciFact 0.6789。Bleve 自带的依次是 0.3513、0.3122、0.1906、0.5448、0.1524、0.6745。"
+        },
+        "caption": {
+          "en": "nDCG@10 on six BEIR test sets. This project's BM25, Lucene's scoring computed from a Bleve index, equals Pyserini's published value to four decimals on all six. Bleve's own BM25 scorer with the same k1 and b, shown for reference, differs from it by −0.243 on TREC-COVID to +0.148 on ArguAna.",
+          "zh": "六个 BEIR 测试集上的 nDCG@10。本项目的 BM25 在 Bleve 的索引上按 Lucene 的公式打分，在六个数据集上都与 Pyserini 公布的值四位小数相同。作为参考，Bleve 自带的 BM25 打分器在 k1 和 b 相同时与公布值的差距从 TREC-COVID 上的 −0.243 到 ArguAna 上的 +0.148。"
+        }
+      },
+      {
+        "src": "./retrieval-lab/bge-light.png",
+        "dark": "./retrieval-lab/bge-dark.png",
+        "alt": {
+          "en": "Dot chart of nDCG@10 of BGE-base-en-v1.5 with exact search minus Pyserini's flat condition, with the tolerance of ±0.005 shaded. NFCorpus −0.0003, FiQA −0.0003, ArguAna 0.0000, SCIDOCS 0.0000, SciFact −0.0004. TREC-COVID: not run.",
+          "zh": "点图，BGE-base-en-v1.5 加精确搜索的 nDCG@10 减去 Pyserini 的 flat 条件，阴影是 ±0.005 的容差。NFCorpus −0.0003，FiQA −0.0003，ArguAna 0.0000，SCIDOCS 0.0000，SciFact −0.0004。TREC-COVID：没有跑。"
+        },
+        "caption": {
+          "en": "nDCG@10 of BGE-base-en-v1.5 with exact search, minus Pyserini's flat condition: 0.0000 on ArguAna and SCIDOCS, −0.0003 on NFCorpus and FiQA, −0.0004 on SciFact, against a tolerance of 0.005 fixed before any BGE result existed. TREC-COVID is not run: at the measured rate its encoding would take 4.4 to 4.7 hours on four cores.",
+          "zh": "BGE-base-en-v1.5 加精确搜索的 nDCG@10，减去 Pyserini 的 flat 条件：ArguAna 和 SCIDOCS 上是 0.0000，NFCorpus 和 FiQA 上是 −0.0003，SciFact 上是 −0.0004；容差是 0.005，在任何 BGE 结果出来之前定下。TREC-COVID 没有跑：按实测速度，它的编码在四核上要 4.4 到 4.7 小时。"
+        }
+      },
+      {
+        "src": "./retrieval-lab/vectors-light.png",
+        "dark": "./retrieval-lab/vectors-dark.png",
+        "alt": {
+          "en": "Chart of the lowest cosine between a document vector of this project and Pyserini's, on a scale of one minus the cosine. On the first 160 SciFact documents: 0.939 with the text alone at 512 tokens, 0.960 with title and text at 256 tokens. Over all of SciFact and ArguAna with title and text at 512 tokens: 0.9936 before the format characters are removed, 0.999978 after.",
+          "zh": "本项目的文档向量与 Pyserini 的文档向量之间最低余弦的图，刻度是 1 减余弦。在 SciFact 的前 160 篇文档上：只编码正文、512 个 token 时是 0.939，标题加正文、256 个 token 时是 0.960。在 SciFact 和 ArguAna 的全部文档上，标题加正文、512 个 token：去掉格式字符之前是 0.9936，之后是 0.999978。"
+        },
+        "caption": {
+          "en": "How a document is encoded was read off Pyserini's own vectors, which it publishes without the command that made them. The lowest cosine to Pyserini's vector on the first 160 SciFact documents was 0.939 with the text alone and 0.960 with title and text cut at 256 tokens. With title and text at 512 tokens, 28 documents of SciFact and ArguAna stayed below 0.9999, the lowest at 0.9936, until Unicode format characters were removed; the lowest is then 0.999978.",
+          "zh": "文档怎么编码，是从 Pyserini 自己的向量上读出来的；它公布了这些向量，没有公布生成它们的命令。在 SciFact 的前 160 篇文档上，与 Pyserini 向量的最低余弦在只编码正文时是 0.939，标题加正文截到 256 个 token 时是 0.960。标题加正文、512 个 token 时，SciFact 和 ArguAna 还有 28 篇低于 0.9999，最低 0.9936；去掉 Unicode 格式字符之后，最低是 0.999978。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": {
+          "en": "6 of 6",
+          "zh": "6 / 6"
+        },
+        "label": {
+          "en": "BEIR test sets on which BM25's nDCG@10 and Recall@100 equal Pyserini's published values to four decimals. The six run files reproduce byte for byte from their committed SHA-256",
+          "zh": "BM25 的 nDCG@10 和 Recall@100 与 Pyserini 公布值四位小数相同的 BEIR 测试集数。六份 run 文件可以按已提交的 SHA-256 逐字节复现"
+        }
+      },
+      {
+        "value": {
+          "en": "−0.243 to +0.148",
+          "zh": "−0.243 到 +0.148"
+        },
+        "label": {
+          "en": "nDCG@10 of Bleve's own BM25 scorer minus the same anchors, with k1 and b set alike. Its rankings are not deterministic across index builds",
+          "zh": "Bleve 自带的 BM25 打分器在 k1 和 b 相同时，nDCG@10 与同一组锚点的差。每次建索引得到的排序结果不保证相同"
+        }
+      },
+      {
+        "value": {
+          "en": "0.0004",
+          "zh": "0.0004"
+        },
+        "label": {
+          "en": "the largest gap in nDCG@10 between BGE-base-en-v1.5 with exact search and Pyserini's flat condition, over five datasets. TREC-COVID is not run",
+          "zh": "BGE-base-en-v1.5 加精确搜索与 Pyserini 的 flat 条件在五个数据集上 nDCG@10 的最大差距。TREC-COVID 没有跑"
+        }
+      },
+      {
+        "value": {
+          "en": "28",
+          "zh": "28"
+        },
+        "label": {
+          "en": "documents of SciFact and ArguAna whose vector had a cosine below 0.9999 to Pyserini's, the lowest 0.9936. Every one held Unicode format characters; with those removed, none is below",
+          "zh": "SciFact 和 ArguAna 里文档向量与 Pyserini 的余弦低于 0.9999 的篇数，最低 0.9936。每一篇都含有 Unicode 格式字符；去掉这些字符后，一篇也没有"
+        }
+      }
+    ],
+    "note": {
+      "en": "The anchors are the four-decimal values in Pyserini's `beir.yaml` at one commit, and the tolerance of 0.005 in nDCG@10 was fixed for BM25 and for BGE before either had a result. The BM25 checksums hold on amd64. The BGE figures come from one machine; the vectors depend on the CPU in their last bits, so exact values can differ on another. Pyserini's own run files were not compared line by line. Approximate search, fusion and reranking are not built yet.",
+      "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的四位小数值；nDCG@10 的容差 0.005，对 BM25 和 BGE 都是在各自出结果之前定下的。BM25 的校验和在 amd64 上成立。BGE 的数字来自一台机器；向量的末几位取决于 CPU，换一台机器具体数值可能不同。Pyserini 自己的 run 文件没有逐行比过。近似搜索、融合和重排还没有做。"
+    },
+    "source": {
+      "label": {
+        "en": "Benchmarks",
+        "zh": "基准测试"
+      },
+      "url": "https://github.com/sHyanorn/retrieval-lab/blob/b1baad8174b2d0d9a1b235f1a79e291881a97947/docs/BENCHMARKS.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "Two implementations of one BM25 configuration still differ in details of tokenization and stemming, and can differ in stop words, in how title and text are joined, in how the document length is encoded and in how tied scores are ordered.",
+      "zh": "同一套 BM25 配置的两个实现，在分词和词干提取的细节上仍然会有差别，在停用词、标题和正文怎么拼接、文档长度怎么编码、同分的结果怎么排序上也可能不同。"
+    },
+    {
+      "en": "This project builds its retrieval components in Go and accepts each one against a published number that a third party can reproduce with public commands and data: the BEIR test sets with fewer than 200,000 documents, and the numbers on Pyserini's BEIR reproducibility page. A dataset outside the tolerance is not tuned toward the anchor. Its cause is found and recorded.",
+      "zh": "这个项目用 Go 实现检索的各个组件，每一个都对照一个已公布的数字验收，第三方用公开的命令和数据就能复现：文档数少于 20 万的 BEIR 测试集，和 Pyserini 的 BEIR 复现页面上的数字。超出容差的数据集不朝着锚点去调，要找到原因并记录下来。"
+    },
+    {
+      "en": "Done so far: the evaluation harness, BM25, and dense retrieval with exact search. Approximate search, fusion and reranking are next.",
+      "zh": "目前做完的有：评测台、BM25，以及精确搜索的稠密检索。接下来是近似搜索、融合和重排。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "data": {
+        "en": "BEIR data",
+        "zh": "BEIR 数据"
+      },
+      "dataSub": {
+        "en": "six test sets, by SHA-256",
+        "zh": "六个测试集，按 SHA-256 校验"
+      },
+      "bm25": {
+        "en": "BM25",
+        "zh": "BM25"
+      },
+      "bm25Sub": {
+        "en": "Bleve index, Lucene's scoring",
+        "zh": "Bleve 的索引，Lucene 的打分"
+      },
+      "runs": {
+        "en": "run files",
+        "zh": "run 文件"
+      },
+      "runsSub": {
+        "en": "TREC format, top 1000",
+        "zh": "TREC 格式，前 1000 名"
+      },
+      "encoder": {
+        "en": "encoder",
+        "zh": "编码器"
+      },
+      "encoderSub": {
+        "en": "BGE-base on ONNX Runtime",
+        "zh": "ONNX Runtime 上的 BGE-base"
+      },
+      "search": {
+        "en": "exact search",
+        "zh": "精确搜索"
+      },
+      "searchSub": {
+        "en": "dot-product similarity, every vector",
+        "zh": "点积相似度，逐个向量"
+      },
+      "eval": {
+        "en": "evaluation",
+        "zh": "评测"
+      },
+      "evalSub": {
+        "en": "as trec_eval, query by query",
+        "zh": "按 trec_eval 的规则，逐查询"
+      },
+      "vectors": {
+        "en": "vector check",
+        "zh": "向量核对"
+      },
+      "vectorsSub": {
+        "en": "cosine to Pyserini's index",
+        "zh": "与 Pyserini 索引里的向量算余弦"
+      },
+      "anchors": {
+        "en": "anchors",
+        "zh": "锚点"
+      },
+      "anchorsSub": {
+        "en": "Pyserini's published values",
+        "zh": "Pyserini 公布的数值"
+      },
+      "tables": {
+        "en": "tables",
+        "zh": "结果表"
+      },
+      "tablesSub": {
+        "en": "computed from the run files",
+        "zh": "由 run 文件算出"
+      }
+    },
+    "description": {
+      "en": "`scripts/data.sh` downloads the six BEIR datasets and checks them by SHA-256. `cmd/bm25` indexes the title and text of each document with Bleve and ranks the test queries with Lucene's BM25, computed from Bleve's postings. `cmd/embed` encodes each corpus with BGE-base-en-v1.5 on ONNX Runtime, and `cmd/dense` encodes the queries and searches every vector. `cmd/bm25` and `cmd/dense` each write a TREC run file of the top 1000 per query. `cmd/eval` scores a run as `trec_eval -c` does, and `scripts/check-eval.sh` compares its output with trec_eval v10.0 as text. `cmd/table` computes the metric tables from the run files and sets each figure beside Pyserini's published value; with `-dense` it also compares each document vector of SciFact, NFCorpus and ArguAna with the one in Pyserini's prebuilt index.",
+      "zh": "`scripts/data.sh` 下载六个 BEIR 数据集并按 SHA-256 校验。`cmd/bm25` 用 Bleve 给每篇文档的标题和正文建索引，再用 Lucene 的 BM25 公式在 Bleve 的倒排表上为测试查询排出结果。`cmd/embed` 用 ONNX Runtime 上的 BGE-base-en-v1.5 编码每个语料，`cmd/dense` 编码查询并与每个向量比较。`cmd/bm25` 和 `cmd/dense` 各自写出每个查询前 1000 名的 TREC run 文件。`cmd/eval` 按 `trec_eval -c` 的规则给 run 文件打分，`scripts/check-eval.sh` 把它的输出与 trec_eval v10.0 的输出按文本比较。`cmd/table` 从 run 文件算出指标表，把每个数字排在 Pyserini 公布的数值旁边；加上 `-dense` 时，它还把 SciFact、NFCorpus 和 ArguAna 每篇文档的向量与 Pyserini 预建索引里的向量比较。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D004",
+        "title": {
+          "en": "The anchors and the tolerance come first",
+          "zh": "先定锚点和容差"
+        },
+        "body": {
+          "en": "The anchors are the BM25 values in Pyserini's `beir.yaml` at one commit, to four decimals. The tolerance is 0.005 in nDCG@10 per dataset, fixed before any BM25 result existed: two implementations of one configuration differ in details of tokenization and stemming, which should move nDCG@10 far less than a change of method does.",
+          "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的 BM25 数值，取四位小数。容差是每个数据集 nDCG@10 相差不超过 0.005，在任何 BM25 结果出来之前定下：同一套配置的两个实现在分词和词干提取的细节上会有差别，但它对 nDCG@10 的影响应该远小于换一种方法。"
+        }
+      },
+      {
+        "id": "D003",
+        "title": {
+          "en": "Metrics in Go, checked against trec_eval",
+          "zh": "指标用 Go 实现，对照 trec_eval 检查"
+        },
+        "body": {
+          "en": "The anchors are trec_eval numbers, so its rules decide ties, grades and which queries count. The metrics are written in Go, and trec_eval v10.0 is built from source only to check them: a script compares the per-query output of the two as text. Owning the code keeps a C binary out of the pipeline, and the check keeps the code honest.",
+          "zh": "锚点是 trec_eval 算出的数字，所以同分怎么排、相关度等级怎么算、哪些查询计入，都按它的规则。指标用 Go 实现，trec_eval v10.0 只为检查而从源码编译：一个脚本把两者的逐查询输出按文本比较。代码在自己手里，流水线里就不必带一个 C 程序；有这项检查，代码就不会走样。"
+        }
+      },
+      {
+        "id": "D005",
+        "title": {
+          "en": "Bleve holds the index; the scoring is Lucene's",
+          "zh": "索引用 Bleve，打分用 Lucene 的公式"
+        },
+        "body": {
+          "en": "Bleve does the analysis and holds the inverted index. The score is a port of Lucene's `BM25Similarity`, computed from Bleve's postings, with Lucene's lossy one-byte encoding of the document length. In v2.6.3 Bleve's own BM25 differs from Lucene's in five ways: among them, it takes the square root of the term frequency, and its average length is built from per-segment counts of distinct terms, not from lengths, so it changes when segments merge.",
+          "zh": "Bleve 负责分析文本并保存倒排索引。分数是移植过来的 Lucene `BM25Similarity`，在 Bleve 的倒排表上计算，文档长度用 Lucene 那种有损的单字节编码。在 v2.6.3 里，Bleve 自带的 BM25 与 Lucene 的有五处不同，其中两处：它对词频取平方根；它的平均长度由各段里不同词项的个数算出，不是由长度算出，所以段合并时会变。"
+        }
+      },
+      {
+        "id": "D010",
+        "title": {
+          "en": "Document text and length, read off Pyserini's vectors",
+          "zh": "文档文本和长度，从 Pyserini 的向量上读出来"
+        },
+        "body": {
+          "en": "Pyserini publishes no encoding command for its prebuilt BGE indexes, and its own encoder defaults to 256 tokens. Its indexes hold the document vectors, so the choice was read off them: title and text joined by a space, at most 512 tokens, gave cosines of at least 0.999999 on the first 160 SciFact documents, where 256 tokens gave a lowest of 0.960.",
+          "zh": "Pyserini 没有公布它预建的 BGE 索引是用什么命令编码的，它自己的编码器默认是 256 个 token。它的索引里存着文档向量，所以选择是从向量上读出来的：标题和正文用空格拼接、最多 512 个 token，在 SciFact 的前 160 篇文档上余弦都不低于 0.999999；256 个 token 时最低是 0.960。"
+        }
+      },
+      {
+        "id": "D012",
+        "title": {
+          "en": "CI checks the dense results by tolerance, not by checksum",
+          "zh": "CI 按容差检查稠密检索的结果，不用校验和"
+        },
+        "body": {
+          "en": "ONNX Runtime chooses its kernels by the CPU's instruction set, so vectors can differ in their last bits from one machine to another, and a checksum would fail on another runner with nothing wrong. On every push CI encodes NFCorpus and fails if nDCG@10 is more than 0.005 from the anchor or if any document vector has a cosine below 0.9999 to Pyserini's.",
+          "zh": "ONNX Runtime 按 CPU 的指令集选择计算内核，所以不同机器上的向量在末几位可能不同，换一台机器校验和就会无故失败。每次推送，CI 编码 NFCorpus，只要 nDCG@10 与锚点相差超过 0.005，或者有文档向量与 Pyserini 的余弦低于 0.9999，就判失败。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/retrieval-lab/blob/b1baad8174b2d0d9a1b235f1a79e291881a97947/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "Bleve's BM25 is not Lucene's, and varies between builds",
+        "zh": "Bleve 的 BM25 和 Lucene 的不一样，两次建索引的结果也不一样"
+      },
+      "body": {
+        "en": "With k1 and b set alike, Bleve's own scorer is 0.243 below the anchor on TREC-COVID and 0.148 above it on ArguAna. Its run files also differ between two builds of the same index, even merged into one segment: on five of the six datasets in the pair of builds behind the table, and in a rerun ArguAna's nDCG@10 came out 0.5448 and 0.5442. The cause was not investigated. These runs are a reference, not this project's retrieval path, and are not checked in CI.",
+        "zh": "k1 和 b 设成相同时，Bleve 自带的打分器在 TREC-COVID 上比锚点低 0.243，在 ArguAna 上高 0.148。同一份数据建两次索引，即使都合并成单段，它的 run 文件也不相同：结果表所用的那一对索引里，六个数据集有五个如此，重跑时 ArguAna 的 nDCG@10 分别是 0.5448 和 0.5442。原因没有查。这些运行只作参考，本项目的检索不走这条路，也不进 CI。"
+      },
+      "link": {
+        "label": {
+          "en": "Reported to Bleve: blevesearch/bleve#2415",
+          "zh": "已向 Bleve 报告：blevesearch/bleve#2415"
+        },
+        "url": "https://github.com/blevesearch/bleve/issues/2415"
+      }
+    },
+    {
+      "title": {
+        "en": "A logarithm one unit in the last place lower",
+        "zh": "对数低了一个末位单位"
+      },
+      "body": {
+        "en": "Go's `math.Log2` is one unit in the last place lower than C's for 3 and 9, which can move the fourth decimal trec_eval prints. The discounts of ranks 1 to 10 are therefore C's correctly rounded values. Beyond rank 10 they still come from `math.Log2`, so nDCG@k for k above 10 can differ from trec_eval in the fourth decimal in rare cases.",
+        "zh": "对 3 和 9，Go 的 `math.Log2` 比 C 的结果低一个末位单位，这可能改变 trec_eval 打印的第四位小数。所以第 1 到 10 名的折扣用的是 C 那边正确舍入的值。第 10 名之后的折扣仍然来自 `math.Log2`，所以 k 大于 10 的 nDCG@k 在少数情况下可能与 trec_eval 在第四位小数上不同。"
+      }
+    },
+    {
+      "title": {
+        "en": "Twenty-eight documents with characters nobody sees",
+        "zh": "28 篇文档里有看不见的字符"
+      },
+      "body": {
+        "en": "With the document encoding settled, 28 documents of SciFact and ArguAna still had a cosine below 0.9999 to Pyserini's vector, and every one held soft hyphens, zero-width spaces or left-to-right marks. Hugging Face's BERT normalizer, which Pyserini's encoder uses, removes such characters; the Go tokenizer library removes only control characters. Documents now lose every character of Unicode category C but tab, newline and carriage return before encoding. Queries keep format characters, as the anchor's query tokenizer does.",
+        "zh": "文档的编码方式定下之后，SciFact 和 ArguAna 仍有 28 篇与 Pyserini 向量的余弦低于 0.9999，每一篇都含有软连字符、零宽空格或从左到右标记。Pyserini 的编码器用的 Hugging Face BERT 规范化器会删掉这类字符；Go 的分词库只删控制字符。现在文档在编码前先删掉 Unicode C 类的所有字符，制表符、换行和回车除外。查询保留格式字符，和锚点的查询分词器一样。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/retrieval-lab"
+}

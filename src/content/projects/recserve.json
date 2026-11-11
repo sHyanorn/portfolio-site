@@ -1,0 +1,298 @@
+{
+  "title": "recserve",
+  "order": 4,
+  "summary": {
+    "en": "A recommendation serving system in Go: retrieval, features, ranking and rerank behind one HTTP API, with the item vectors on gRPC shard replicas. In kind at 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap, 15,000 of 15,000 responses were neither failed nor degraded, with stage budgets of 100 ms.",
+    "zh": "用 Go 写的推荐服务系统：召回、特征、排序和重排在同一个 HTTP 接口后面，物品向量分片放在 gRPC 副本上。在 kind 集群里每秒 100 个请求下，经过网关滚动重启、副本滚动重启和一次换包，15,000 个响应里没有一个失败或降级；各阶段的时间预算设为 100 ms。"
+  },
+  "tags": [
+    {
+      "en": "Go",
+      "zh": "Go"
+    },
+    {
+      "en": "Recommender systems",
+      "zh": "推荐系统"
+    },
+    {
+      "en": "gRPC",
+      "zh": "gRPC"
+    },
+    {
+      "en": "Kafka",
+      "zh": "Kafka"
+    },
+    {
+      "en": "Kubernetes",
+      "zh": "Kubernetes"
+    }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./recserve/kind-check-light.png",
+        "dark": "./recserve/kind-check-dark.png",
+        "alt": {
+          "en": "Chart of the kind check at 100 requests/s. Responses that failed or were degraded: as deployed, 0 of 15,000; with 30 s between DNS resolutions, 815 of 15,000 degraded; with no shutdown delay, 56 failed. Duration of each step as deployed: the gateways roll in 9 to 11 s, the replicas in 38 to 40 s, the bundle swap in 15 to 17 s.",
+          "zh": "kind 检查的图，每秒 100 个请求。失败或降级的响应数：按现在的部署，15,000 个里 0 个；DNS 每 30 秒才重新解析一次时，15,000 个里 815 个降级；不留关停延迟时，56 个失败。按现在的部署各步骤的用时：网关滚动重启 9 到 11 秒，副本滚动重启 38 到 40 秒，换包 15 到 17 秒。"
+        },
+        "caption": {
+          "en": "The kind check: 100 requests/s while the gateways roll, then the replicas, then the gateways swap bundles. As deployed, none of 15,000 responses failed or was degraded; the gateways rolled in 9 to 11 s, the replicas in 38 to 40 s, and a swap took 15 to 17 s. Two of the broken variants, each run once: with gRPC's default of 30 s between DNS resolutions, 815 of 15,000 were degraded; with no shutdown delay, 56 failed with a connection reset.",
+          "zh": "kind 检查：每秒 100 个请求，其间网关滚动重启，然后副本滚动重启，然后网关换包。按现在的部署，15,000 个响应里没有一个失败或降级；网关滚动用了 9 到 11 秒，副本滚动 38 到 40 秒，一次换包 15 到 17 秒。写坏的变体里有两个，各跑了一次：用 gRPC 默认的 30 秒 DNS 解析间隔，15,000 个里 815 个降级；不留关停延迟，56 个因连接被重置而失败。"
+        }
+      },
+      {
+        "src": "./recserve/inner-product-light.png",
+        "dark": "./recserve/inner-product-dark.png",
+        "alt": {
+          "en": "Range chart, before and after the inner product moved to AVX2, three runs each, in ms. p99 at 200 requests/s: 5.14 to 5.32 before, 3.93 to 4.39 after; at 400: 6.90 to 7.79 before, 4.27 to 4.64 after. The replicas' CPU per request at 200: 1.94 to 1.98 before, 1.23 to 1.29 after; at 400: 1.80 to 1.87 before, 1.10 to 1.16 after. The gateway's CPU per request at 200: 1.52 to 1.57 before, 1.46 to 1.52 after; at 400: 1.29 to 1.33 before, 1.26 to 1.32 after, marked not resolved.",
+          "zh": "区间图，内积改用 AVX2 前后各三次运行，单位 ms。每秒 200 个请求时的 p99：之前 5.14 到 5.32，之后 3.93 到 4.39；每秒 400 个时：之前 6.90 到 7.79，之后 4.27 到 4.64。副本每个请求的 CPU 时间，每秒 200 个时：之前 1.94 到 1.98，之后 1.23 到 1.29；每秒 400 个时：之前 1.80 到 1.87，之后 1.10 到 1.16。网关每个请求的 CPU 时间，每秒 200 个时：之前 1.52 到 1.57，之后 1.46 到 1.52；每秒 400 个时：之前 1.29 到 1.33，之后 1.26 到 1.32，标为分辨不了。"
+        },
+        "caption": {
+          "en": "Before and after the inner product of exact search moved to AVX2: three runs each, alternating, and a bar spans the three. p99 and the replicas' CPU per request are lower after at 200 and at 400 requests/s. The gateway's CPU per request at 400 requests/s is not resolved on this machine: 1.29 to 1.33 ms before, 1.26 to 1.32 ms after.",
+          "zh": "精确搜索的内积改用 AVX2 的前后对比：前后交替各跑三次，每条线段覆盖这三次。每秒 200 个和 400 个请求下，p99 和副本每个请求的 CPU 时间都是之后更低。每秒 400 个请求时网关每个请求的 CPU 时间在这台机器上分辨不了：之前 1.29 到 1.33 ms，之后 1.26 到 1.32 ms。"
+        }
+      },
+      {
+        "src": "./recserve/ranker-light.png",
+        "dark": "./recserve/ranker-dark.png",
+        "alt": {
+          "en": "Bar chart of the ranker on the 680 held-out users, before MMR. Recall@10: 0.091 for the ranker, 0.026 for retrieval order. Mean per-user AUC: 0.726 for the ranker, 0.388 for retrieval order, with a line at 0.5.",
+          "zh": "条形图，排序模型在 680 个留出用户上的结果，在 MMR 之前。recall@10：排序模型 0.091，召回顺序 0.026。按用户平均的 AUC：排序模型 0.726，召回顺序 0.388，图上有一条 0.5 的参考线。"
+        },
+        "caption": {
+          "en": "The logistic-regression ranker on the 680 held-out users, measured before MMR: recall@10 0.091 against 0.026 for retrieval order, mean per-user AUC 0.726 against 0.388. Users none of whose valid items were among the candidates are left out, which leaves 3,402 of 14,239, and 20% of those are held out.",
+          "zh": "逻辑回归排序模型在 680 个留出用户上的结果，在 MMR 之前测得：recall@10 是 0.091，召回顺序是 0.026；按用户平均的 AUC 是 0.726，召回顺序是 0.388。验证集里的物品一个都没进候选的用户被排除，14,239 个用户剩下 3,402 个，其中 20% 留出。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": {
+          "en": "0 of 15,000",
+          "zh": "0 / 15,000"
+        },
+        "label": {
+          "en": "responses failed or degraded in kind at 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap. The stage budgets there are 100 ms, where the specification has 3 to 15 ms",
+          "zh": "kind 集群里每秒 100 个请求下，网关滚动重启、副本滚动重启和一次换包期间失败或降级的响应数。那里各阶段的时间预算是 100 ms，规格里是 3 到 15 ms"
+        }
+      },
+      {
+        "value": {
+          "en": "0.091",
+          "zh": "0.091"
+        },
+        "label": {
+          "en": "recall@10 of the logistic-regression ranker on 680 held-out users, against 0.026 for retrieval order, measured before MMR. The weight it gives the vector score is negative",
+          "zh": "逻辑回归排序模型在 680 个留出用户上的 recall@10，召回顺序是 0.026，在 MMR 之前测得。模型给向量分的权重是负的"
+        }
+      },
+      {
+        "value": {
+          "en": "4.27–4.64 ms",
+          "zh": "4.27–4.64 ms"
+        },
+        "label": {
+          "en": "p99 at 400 requests/s after the inner product of exact search moved to AVX2, from 6.90–7.79 ms before, three runs each. At that rate the gateway's CPU per request is not resolved on this machine",
+          "zh": "精确搜索的内积改用 AVX2 之后，每秒 400 个请求时的 p99，之前是 6.90–7.79 ms，前后各三次运行。这个速率下网关每个请求的 CPU 时间在这台机器上分辨不了"
+        }
+      },
+      {
+        "value": {
+          "en": "0.2–0.3%",
+          "zh": "0.2–0.3%"
+        },
+        "label": {
+          "en": "of responses fell back to the request's own items at 200 requests/s on Valkey and Kafka: the history read ran past its 3 ms budget. In a separate check with the four CPUs saturated, that stage missed the budget in the round that computes, at a p99 of 2.9 to 5.8 ms over three runs. All these runs carried a Kafka health check that kept about two thirds of a CPU busy",
+          "zh": "每秒 200 个请求、接上 Valkey 和 Kafka 时，因为读用户历史超出 3 ms 预算而退回到用请求自带物品的响应占比。另一项检查里四个 CPU 被占满，这个阶段在需要计算的那一轮超出了预算，三次运行的 p99 是 2.9 到 5.8 ms。这些运行都带着 Kafka 健康检查的负载，它占掉约三分之二个 CPU"
+        }
+      }
+    ],
+    "note": {
+      "en": "The latency and load figures come from cloud VMs with 4 vCPUs. The kind cluster is one node, which the control plane and the load generator share. The catalog has 25.6k items, where exact search takes about 2 ms on one core, so the shards show the mechanism and are not needed for speed. The kind check and the ranker's figures are in the decision log (D047, D027). The load sweep and the fault runs have no results in the repository yet.",
+      "zh": "延迟和负载的数字来自 4 个 vCPU 的云主机。kind 集群只有一个节点，控制面和压测程序都在上面。物品库有 2.56 万个物品，这个规模下精确搜索在单核上约 2 ms，所以分片只是演示机制，速度上并不需要。kind 检查和排序模型的数字在决策记录里（D047、D027）。负载扫描和故障注入的运行在仓库里还没有结果。"
+    },
+    "source": {
+      "label": {
+        "en": "Benchmarks",
+        "zh": "基准测试"
+      },
+      "url": "https://github.com/sHyanorn/recserve/blob/77069acd0dfd4962ca0fbae4b5705629c818c7d5/docs/BENCHMARKS.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "recserve is the serving side of a recommender: a request passes multi-source retrieval, a point-in-time feature lookup, model ranking and re-ranking under a latency budget. Serving engineering is the focus: latency, throughput, availability, distribution and observability. The models it serves so far are simple.",
+      "zh": "recserve 是推荐系统的服务端：一个请求在延迟预算内依次经过多路召回、按请求时间点取特征、模型排序和重排。重点是服务工程：延迟、吞吐、可用性、分布式和可观测性。目前它服务的模型都很简单。"
+    },
+    {
+      "en": "The goal is behaviour that a test can state. A response never mixes two bundle versions. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget. With Valkey unavailable, every response is still a 200 that uses the request's own recent items and says so. An event delivered more than once, in any order, leaves every history and every response unchanged.",
+      "zh": "目标是测试能说清楚的行为。一个响应绝不会混用两个版本的模型包。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立。Valkey 不可用时，每个响应仍然是 200，用请求自带的最近物品，并在响应里说明。同一个事件重复送达多次，不论先后顺序，每个用户历史和每个响应都不变。"
+    },
+    {
+      "en": "The scale is small and stated plainly. The catalog has 25.6k items, so neither approximate search nor sharding is needed at this size; the service shards it anyway to exercise the mechanism. All load tests run on one VM with 4 vCPUs, so the figures show behaviour under load and relative effects. They do not predict the capacity of a deployment on several machines.",
+      "zh": "规模很小，照实说明。物品库有 2.56 万个物品，这个规模既不需要近似搜索也不需要分片；服务仍然分片，是为了把这套机制跑起来。所有压测都在一台 4 个 vCPU 的虚拟机上跑，所以这些数字反映的是负载下的行为和相对变化，不能用来推断多机部署的容量。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "bundle": {
+        "en": "model bundle",
+        "zh": "模型包"
+      },
+      "bundleSub": {
+        "en": "version is the digest of its files",
+        "zh": "版本号是文件的摘要"
+      },
+      "gateway": {
+        "en": "gateway",
+        "zh": "网关"
+      },
+      "gatewaySub": {
+        "en": "HTTP API, a deadline per stage",
+        "zh": "HTTP 接口，每个阶段一个期限"
+      },
+      "annshard": {
+        "en": "annshard replicas",
+        "zh": "annshard 副本"
+      },
+      "annshardSub": {
+        "en": "gRPC, failover, one hedge",
+        "zh": "gRPC，故障转移，一次对冲"
+      },
+      "kafka": {
+        "en": "Kafka",
+        "zh": "Kafka"
+      },
+      "kafkaSub": {
+        "en": "events, keyed by user",
+        "zh": "事件，以用户为键"
+      },
+      "ingest": {
+        "en": "ingest",
+        "zh": "ingest"
+      },
+      "ingestSub": {
+        "en": "applies idempotently, then commits",
+        "zh": "幂等写入，然后提交"
+      },
+      "valkey": {
+        "en": "Valkey",
+        "zh": "Valkey"
+      },
+      "valkeySub": {
+        "en": "histories, cache, circuit breaker",
+        "zh": "用户历史、结果缓存、熔断器"
+      }
+    },
+    "description": {
+      "en": "The gateway (`cmd/gateway`) loads a model bundle, whose version is the digest of its files, and answers `POST /v1/recommend`. It assigns the A/B arm, reads the user's history and the result cache from Valkey through a circuit breaker, encodes the user with ONNX Runtime, retrieves from co-occurrence, popularity and the item vectors, drops the items the user has seen, ranks them in the arm that uses the ranker, then applies MMR. Each stage has its own deadline: a stage that runs out is skipped or falls back, and the response lists the reasons. The item vectors are split into shards, which the gateway holds itself or, as in compose and kind, searches on `annshard` replicas over gRPC: a failed call goes to the next replica at once, and a slow one gets at most one hedge. `POST /v1/events` produces to Kafka, and the ingest consumer applies each event to the histories idempotently, then commits. In a bundle swap the gateway loads and verifies the new version and has every replica prepare it, one replica per shard being enough to go on, then activates it with one atomic store.",
+      "zh": "网关（`cmd/gateway`）加载一个模型包，包的版本号是其中文件的摘要，对外应答 `POST /v1/recommend`。它先分配 A/B 实验组，经熔断器从 Valkey 读用户历史和结果缓存，用 ONNX Runtime 编码用户，从共现、热门和物品向量三路召回，去掉用户看过的物品，在使用排序模型的实验组里排序，再做 MMR。每个阶段有自己的期限：超时的阶段被跳过或退回备用做法，响应里列出原因。物品向量分成若干分片，由网关自己持有，或者像 compose 和 kind 里那样放在 `annshard` 副本上经 gRPC 搜索：调用失败立刻转到下一个副本，慢的调用最多补发一次对冲。`POST /v1/events` 把事件写入 Kafka，ingest 消费程序把每个事件幂等地写进用户历史，然后提交。换包时，网关先加载并校验新版本，再让每个副本备好它，每个分片有一个副本备好就可以继续，最后用一次原子写入切换过去。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "D029",
+        "title": {
+          "en": "A deadline per stage, and a reason for every fallback",
+          "zh": "每个阶段一个期限，每次退回都给出原因"
+        },
+        "body": {
+          "en": "Each stage of a request runs under its own budget. A stage that times out or fails is skipped or falls back: without the stored history the request's own recent items are the history, without a user vector the vector retrieval is skipped, and a ranker that fails leaves the retrieval scores. The response lists the reasons. A caller's own deadline is never reported as a stage's timeout.",
+          "zh": "请求的每个阶段在自己的预算内运行。超时或失败的阶段被跳过或退回备用做法：读不到存储的历史，就把请求自带的最近物品当作历史；没有用户向量，就跳过向量召回；排序模型失败，就保留召回分数。响应里列出这些原因。调用方自己的期限到了，绝不会被报成某个阶段超时。"
+        }
+      },
+      {
+        "id": "D041",
+        "title": {
+          "en": "Failover at once, hedges on a budget",
+          "zh": "故障立刻转移，对冲受预算限制"
+        },
+        "body": {
+          "en": "A shard search asks one replica. When the call fails, the search goes to the next replica at once. When the first replica has not answered after 5 ms, the search asks one more and takes the first answer. Hedges come from a token bucket per shard, at most 10 plus one for every ten searches, so slow replicas are not sent twice the load. The gateway does the hedging itself: grpc-go implements retries and not hedging.",
+          "zh": "一次分片搜索只问一个副本。调用失败时，搜索立刻转到下一个副本。第一个副本 5 ms 还没应答时，搜索再问一个副本，取先到的结果。对冲从每个分片自己的令牌桶里取，最多 10 个再加每十次搜索一个，所以慢的副本不会被压上两倍的负载。对冲由网关自己做：grpc-go 实现了重试，没有实现对冲。"
+        }
+      },
+      {
+        "id": "D042",
+        "title": {
+          "en": "A response never mixes two versions",
+          "zh": "一个响应绝不会混用两个版本"
+        },
+        "body": {
+          "en": "A request runs on one bundle version and names it in every shard search, so a replica answers from that version or fails. A swap sends `Prepare` to every replica and goes on when each shard has at least one that holds the version; if a shard has none, the swap is rejected and the active version stays. A replica keeps two versions and never drops the one the gateway serves.",
+          "zh": "一个请求只在一个模型包版本上运行，每次分片搜索都带上这个版本号，所以副本要么按这个版本应答，要么失败。换包时网关向每个副本发 `Prepare`，每个分片至少有一个副本备好新版本才继续；有分片一个都没有，换包就被拒绝，当前版本不变。副本保留两个版本，绝不丢掉网关正在用的那个。"
+        }
+      },
+      {
+        "id": "D027",
+        "title": {
+          "en": "A ranker checked when its bundle loads",
+          "zh": "排序模型在模型包加载时接受检查"
+        },
+        "body": {
+          "en": "`ranker.onnx` is a logistic regression over six features. Every call passes 512 rows, so loading checks that each row's score depends on that row only. The bundle carries golden cases with their features, computed by the Python code that computed the training features; the gateway recomputes them with its own code and rejects the bundle if any differs by more than 1e-6. If the ranker times out or fails, the retrieval scores are kept.",
+          "zh": "`ranker.onnx` 是六个特征上的逻辑回归。每次调用都传 512 行，所以加载时检查每一行的分数只取决于这一行。模型包带着黄金用例和它们的特征，由计算训练特征的同一份 Python 代码算出；网关用自己的代码重算一遍，只要有一个相差超过 1e-6 就拒绝这个包。排序模型超时或失败时，保留召回分数。"
+        }
+      },
+      {
+        "id": "D047",
+        "title": {
+          "en": "kind checks behaviour, with budgets of 100 ms",
+          "zh": "kind 检查的是行为，预算设为 100 ms"
+        },
+        "body": {
+          "en": "The zero-error check runs in kind on one node, whose CPUs the control plane, the Pods and the load generator share. With the specification's budgets of 3 to 15 ms, 3 of 24,000 responses timed out with no rollout at all, the slowest taking 22 ms. The check's budgets are 100 ms, about five times that, so that a degraded response means a failure. With these budgets the check does not see what a rollout does to latency.",
+          "zh": "零错误检查在 kind 的单个节点上跑，节点的 CPU 由控制面、各个 Pod 和压测程序共用。用规格里 3 到 15 ms 的预算，完全不做滚动时 24,000 个响应里也有 3 个超时，最慢的一个 22 ms。检查的预算因此设为 100 ms，约是它的五倍，这样降级的响应就意味着失败。用这样的预算，检查看不到滚动对延迟的影响。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/recserve/blob/77069acd0dfd4962ca0fbae4b5705629c818c7d5/docs/DECISIONS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "Gateways that kept dialing the old address",
+        "zh": "网关一直在连旧地址"
+      },
+      "body": {
+        "en": "A replica restarted under its name comes back on another address. With gRPC's default of 30 s between DNS resolutions, two of three gateways reached the new address 30 s after the Pod was deleted, though the replica was ready after 1 s, and in the kind check 815 of 15,000 responses were degraded. The gateway now lets a name be resolved again after one second, and all three gateways reached the replica within 2 to 3 s.",
+        "zh": "副本按原名重启后会换一个地址。用 gRPC 默认的 30 秒 DNS 解析间隔，三个网关里有两个在 Pod 被删除 30 秒后才连上新地址，而副本 1 秒后就已就绪；kind 检查里 15,000 个响应有 815 个降级。现在网关允许一个名字在一秒后重新解析，三个网关都在 2 到 3 秒内连上了副本。"
+      }
+    },
+    {
+      "title": {
+        "en": "A hand-written HNSW that failed its latency criterion",
+        "zh": "手写的 HNSW 没有通过自己的延迟标准"
+      },
+      "body": {
+        "en": "The pure-Go library tried first reached a recall@100 of at most 0.064, so the index is written by hand. On glove it reaches a recall@100 of 0.95 only with M = 32 at ef = 800, with a p99 of 15.48 ms, above the 5 ms of the criterion: the criterion fails as written, and no threshold was changed. Its recall agrees with faiss's within 0.007, and its p99 on glove is 1.3 to 2.4 times faiss's. Exact search is the default.",
+        "zh": "先试的纯 Go 库 recall@100 最高只有 0.064，所以索引是手写的。在 glove 上，它只有在 M = 32、ef = 800 时 recall@100 才到 0.95，p99 是 15.48 ms，高于标准里的 5 ms：按写下的标准判为不通过，没有改任何阈值。它的召回率与 faiss 相差不超过 0.007，在 glove 上的 p99 是 faiss 的 1.3 到 2.4 倍。默认用精确搜索。"
+      }
+    },
+    {
+      "title": {
+        "en": "A ranker whose weight on the vector score is negative",
+        "zh": "排序模型给向量分的权重是负的"
+      },
+      "body": {
+        "en": "On the 680 held-out users the ranker's recall@10 is 0.091 against 0.026 for retrieval order. The weight it gives the vector score is negative: among the candidates, the items a user went on to choose came more from co-occurrence and popularity than from the vector score. Both figures are measured before MMR; the ranker's effect on the served lists is for an A/B experiment to show.",
+        "zh": "在 680 个留出用户上，排序模型的 recall@10 是 0.091，召回顺序是 0.026。模型给向量分的权重是负的：在候选里，用户后来选的物品来自共现和热门的多，来自向量分的少。两个数都是在 MMR 之前测的；排序模型对最终列表的影响，要由 A/B 实验来回答。"
+      }
+    },
+    {
+      "title": {
+        "en": "An idle Kafka that used two thirds of a CPU",
+        "zh": "空闲的 Kafka 占掉三分之二个 CPU"
+      },
+      "body": {
+        "en": "In compose an idle Kafka used 639 to 686 ms of CPU per second: its health check started a JVM every 2 s. One unrecorded profile run with that check had a p99 of 10.97 ms, against 6.41 ms with a check that runs every 2 s only until the broker is healthy and every 10 minutes after. The earlier load runs in compose carried that load, and none was rerun.",
+        "zh": "在 compose 里，空闲的 Kafka 每秒用掉 639 到 686 ms 的 CPU：它的健康检查每 2 秒启动一次 JVM。带着这个检查做过一次没有留下记录的剖析运行，p99 是 10.97 ms；改成 broker 健康之前每 2 秒检查一次、之后每 10 分钟一次，是 6.41 ms。更早在 compose 里做的压测都带着这份负载，没有重跑。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/recserve"
+}

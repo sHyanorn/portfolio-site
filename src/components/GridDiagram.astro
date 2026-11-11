@@ -1,0 +1,254 @@
+---
+// An architecture diagram of boxes on a grid, in two variants: a wide one
+// drawn at 720 px, three boxes a row, and scaled to fit containers from
+// 664 px up, where its smallest text is still above 11 px; and a narrow one
+// drawn at 358 px, one box a row, for narrower ones. The arrows are drawn by
+// hand for each diagram.
+interface Part {
+  /** Its labels are `<key>` and `<key>Sub`. */
+  key: string
+  /** Where the part lives in the repository. */
+  path: string
+  /** Column and row in the wide variant. */
+  at: [column: number, row: number]
+}
+
+interface Props {
+  /** The parts, in the order the narrow variant lists them. */
+  parts: Part[]
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+  /** The part drawn in the accent. */
+  core: string
+  /** Arrows of the wide variant, as path data. */
+  wide: string[]
+  /** Parts with no arrow to the next one in the narrow variant, and its
+   * arrows between parts that are not neighbours, as path data. */
+  narrow: { unlinked: string[]; lines: string[] }
+}
+
+const { parts, labels, id, core, wide, narrow } = Astro.props
+const missing = parts
+  .flatMap(({ key }) => [key, `${key}Sub`])
+  .filter((key) => !labels[key])
+if (missing.length > 0)
+  throw new Error(
+    `GridDiagram: missing label${missing.length > 1 ? 's' : ''} ${missing.join(', ')}`,
+  )
+
+// A box over whole pixels x..x+w, y..y+h, with its 1 px stroke inside.
+const box = (x: number, y: number, w: number, h: number) => ({
+  x: x + 0.5,
+  y: y + 0.5,
+  width: w - 1,
+  height: h - 1,
+})
+
+// Wide: columns of 224 px, rows of 80 px with 48 px between them.
+const COLUMN = 248
+const ROW = 128
+const rows = Math.max(...parts.map((p) => p.at[1])) + 1
+const wideHeight = rows * ROW - 48 + 1
+// Narrow: boxes of 60 px every 80 px, with a lane for arrows on each side.
+const STEP = 80
+const narrowHeight = parts.length * STEP - 20 + 1
+
+// Marker ids are per instance and per variant: a hidden SVG's markers do not render.
+const head = { wide: `${id}-head-wide`, narrow: `${id}-head-narrow` }
+// Text goes in through set:text, so formatting adds no spaces that would
+// shift centred labels.
+---
+
+<div class="diagram">
+  <svg
+    class="wide"
+    width="720"
+    height={wideHeight}
+    viewBox={`0 0 720 ${wideHeight}`}
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.wide}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    {parts.map(({ key, path, at }) => {
+      const x = at[0] * COLUMN
+      const y = at[1] * ROW
+      return (
+        <>
+          <rect
+            {...box(x, y, 224, 80)}
+            rx="7.5"
+            class:list={['box', { core: key === core }]}
+          />
+          <text x={x + 112} y={y + 26} class="label" set:text={labels[key]} />
+          <text
+            x={x + 112}
+            y={y + 45}
+            class="sub middle"
+            set:text={labels[`${key}Sub`]}
+          />
+          <text x={x + 112} y={y + 63} class="path" set:text={path} />
+        </>
+      )
+    })}
+    {wide.map((d) => (
+      <path class="line" {d} marker-end={`url(#${head.wide})`} />
+    ))}
+  </svg>
+
+  <svg
+    class="narrow"
+    width="358"
+    height={narrowHeight}
+    viewBox={`0 0 358 ${narrowHeight}`}
+    aria-hidden="true"
+  >
+    <defs>
+      <marker
+        id={head.narrow}
+        viewBox="0 0 8 7"
+        refX="8"
+        refY="3.5"
+        markerWidth="8"
+        markerHeight="7"
+        markerUnits="userSpaceOnUse"
+        orient="auto"
+      >
+        <path class="head" d="M0 0L8 3.5L0 7Z"></path>
+      </marker>
+    </defs>
+
+    {parts.map(({ key, path }, i) => (
+      <>
+        <rect
+          {...box(12, i * STEP, 334, 60)}
+          rx="7.5"
+          class:list={['box', { core: key === core }]}
+        />
+        <text
+          x="24"
+          y={i * STEP + 25}
+          class="label start"
+          set:text={labels[key]}
+        />
+        <text x="334" y={i * STEP + 25} class="path end" set:text={path} />
+        <text
+          x="24"
+          y={i * STEP + 45}
+          class="sub"
+          set:text={labels[`${key}Sub`]}
+        />
+      </>
+    ))}
+    {parts
+      .slice(0, -1)
+      .map(
+        ({ key }, i) =>
+          !narrow.unlinked.includes(key) && (
+            <path
+              class="line"
+              d={`M179.5 ${i * STEP + 60}V${(i + 1) * STEP}`}
+              marker-end={`url(#${head.narrow})`}
+            />
+          ),
+      )}
+    {narrow.lines.map((d) => (
+      <path class="line" {d} marker-end={`url(#${head.narrow})`} />
+    ))}
+  </svg>
+</div>
+
+<style>
+  .diagram {
+    container-type: inline-size;
+  }
+
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+    font-family: inherit;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  @container (min-width: 664px) {
+    .wide {
+      display: block;
+      width: 100%;
+    }
+
+    .narrow {
+      display: none;
+    }
+  }
+
+  .box {
+    fill: var(--color-bg-subtle);
+    stroke: var(--color-border-strong);
+  }
+
+  /* The one use of the accent: the part the others are built around. */
+  .core {
+    fill: var(--color-accent-subtle);
+    stroke: var(--color-accent-line);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--color-border-strong);
+  }
+
+  .head {
+    fill: var(--color-text-muted);
+  }
+
+  /* Text is centred on its x in the wide variant; the narrow one sets a
+     name and the line under it from the left and the path from the right. */
+  .label,
+  .path,
+  .middle {
+    text-anchor: middle;
+  }
+
+  .start {
+    text-anchor: start;
+  }
+
+  .end {
+    text-anchor: end;
+  }
+
+  .label {
+    fill: var(--color-text);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .path {
+    fill: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .sub {
+    fill: var(--color-text-muted);
+    font-size: 12px;
+  }
+</style>

@@ -143,6 +143,11 @@ const labels = Object.fromEntries(
               <p>
                 <Text value={c.body[lang]} />
               </p>
+              {c.link && (
+                <p>
+                  <a href={c.link.url}>{c.link.label[lang]}</a>
+                </p>
+              )}
             </li>
           ))}
         </ul>

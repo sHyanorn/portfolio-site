@@ -13,6 +13,8 @@ Live at [shyanorn.github.io](https://shyanorn.github.io/).
 
 Every page but the 404 page also exists in Chinese under `/zh/` ([D011](docs/DECISIONS.md)). The pages sit in a 1280 px container: from 768 px the home page sets its areas and cards two a row and About puts its headings beside the text, from 1024 px project and article pages add side columns, and below about 736 px every page is one column, apart from the metrics ([D020](docs/DECISIONS.md)).
 
+Browsers: Chrome and Edge 123, Firefox 120 and Safari 17.5, desktop and iOS, or later, set by `light-dark()`, which like `color-mix()`, `svh`, `lh` and AVIF images has no fallback. Without scroll-driven animations (Chrome before 115, Firefox before 159, Safari before 26) the first screen fades in on load and blocks further down show at once ([D014](docs/DECISIONS.md)).
+
 ## Screenshots
 
 At 1440×900 ([D019](docs/DECISIONS.md)).

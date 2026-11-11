@@ -98,6 +98,9 @@ const articles = defineCollection({
       project: z.string(),
       date: z.coerce.date(),
       summary: z.string().min(1),
+      /** Shown with the article: a paper is a preprint or a submitted or
+       * published paper, a note is anything else. */
+      kind: z.enum(['note', 'paper']),
       math: z.boolean(),
       draft: z.boolean().default(false),
     })

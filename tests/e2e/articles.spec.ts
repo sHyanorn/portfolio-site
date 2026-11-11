@@ -37,6 +37,13 @@ for (const p of articles) {
     ).toHaveCount(1)
   })
 
+  test(`${p.name}: says what kind of article it is`, async ({ page }) => {
+    await page.goto(p.path)
+    await expect(page.locator('.facts .kind')).toHaveText(
+      zh ? /^(短文|论文)$/ : /^(Note|Paper)$/,
+    )
+  })
+
   test(`${p.name}: KaTeX styles only with math`, async ({ page }) => {
     await page.goto(p.path)
     const math = await page.locator('.prose .katex').count()
@@ -64,6 +71,9 @@ for (const [path, zh] of [
       .evaluateAll((ts) => ts.map((t) => t.getAttribute('datetime')!))
     expect(dates).toEqual(dates.toSorted().toReversed())
     await expect(items.locator('.english')).toHaveCount(zh ? own.length : 0)
+    await expect(items.locator('.meta > .kind:first-child')).toHaveText(
+      own.map(() => (zh ? /^(短文|论文)$/ : /^(Note|Paper)$/)),
+    )
     await expect(page.locator('header a[aria-current="page"]')).toHaveAttribute(
       'href',
       path,

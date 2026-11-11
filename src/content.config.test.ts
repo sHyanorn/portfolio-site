@@ -37,6 +37,27 @@ describe('project schema', () => {
   })
 })
 
+describe('article schema', () => {
+  const schema = collections.articles.schema as z.ZodType
+  const article = {
+    title: 'A title',
+    project: 'push-lab',
+    date: '2026-11-09',
+    summary: 'A summary.',
+    math: false,
+    kind: 'note',
+  }
+
+  it('needs a kind, a note or a paper', () => {
+    expect(schema.safeParse(article).success).toBe(true)
+    expect(schema.safeParse({ ...article, kind: 'paper' }).success).toBe(true)
+    expect(schema.safeParse({ ...article, kind: 'essay' }).success).toBe(false)
+    expect(schema.safeParse({ ...article, kind: undefined }).success).toBe(
+      false,
+    )
+  })
+})
+
 describe('content text', () => {
   it('keeps numbers on the same line as their units', () => {
     const unit =

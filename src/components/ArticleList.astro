@@ -32,6 +32,7 @@ const articles = await Promise.all(
           {article.data.summary}
         </p>
         <p class="meta">
+          <span class="kind">{t(lang, article.data.kind)}</span>
           <span>{project.data.title}</span>
           <time datetime={article.data.date.toISOString().slice(0, 10)}>
             {formatDate(lang, article.data.date)}

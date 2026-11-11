@@ -54,6 +54,9 @@ const ui = {
   project: { en: 'Project', zh: '项目' },
   contents: { en: 'Contents', zh: '目录' },
   article: { en: 'Article', zh: '文章（英文）' },
+  // The kinds of article, by their names in the content schema.
+  note: { en: 'Note', zh: '短文' },
+  paper: { en: 'Paper', zh: '论文' },
 } satisfies Record<string, Record<Lang, string>>
 
 export type UiKey = keyof typeof ui

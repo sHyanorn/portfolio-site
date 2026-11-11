@@ -45,6 +45,8 @@ const sections = headings.filter((h) => h.depth === 2)
           </a>
         </p>
         <p class="meta">
+          <span class="kind">{t(lang, a.kind)}</span>
+          <span aria-hidden="true">·</span>
           <time datetime={a.date.toISOString().slice(0, 10)}>
             {formatDate(lang, a.date)}
           </time>

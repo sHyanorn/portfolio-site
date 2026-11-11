@@ -3,6 +3,7 @@ title: "The order book was 2% of the CPU"
 project: matching-engine
 date: 2026-11-09
 summary: "The matching core applies a command in 144 to 198 ns, but end to end the order book is 1.4% to 2% of the engine's CPU, and the latency gains came from a JSON key check and an fsync moved off the matching goroutine."
+kind: note
 math: false
 ---
 

@@ -10,6 +10,7 @@ import DemoPreload from './DemoPreload.astro'
 import RepoLink from './RepoLink.astro'
 import Tags from './Tags.astro'
 import Text from './Text.astro'
+import Zoom from './Zoom.astro'
 
 interface Props {
   project: CollectionEntry<'projects'>
@@ -165,6 +166,7 @@ const labels = Object.fromEntries(
       </div>
     </footer>
   </article>
+  {'images' in p.demo && <Zoom {lang} />}
 </Base>
 
 <style>

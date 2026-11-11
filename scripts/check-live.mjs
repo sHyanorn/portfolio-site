@@ -16,6 +16,7 @@ const routes = [
   'articles/cryptography-held/',
   'articles/locking-ends-a-process/',
   'articles/low-pbo-easy-question/',
+  'articles/open-bandit-shortfall/',
   'articles/order-book-cpu/',
   'projects/backtest-lab/',
   'projects/local-ledger/',

@@ -14,13 +14,14 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af, except those 
 | No shortfall established, so the main question has no reading | obd/PREREGISTRATION.md:116; all.json, women.json, pooled.json (`h4.reading`); README.md:37, 71 |
 | Rules committed before any outcome of All and Women's was computed | obd/PREREGISTRATION.md:58, 63; obd/AMENDMENTS.md:3; README.md:9-10 |
 | Men's is the development campaign and enters no verdict | obd/PREREGISTRATION.md:62; README.md:13 |
-| Five analyses made after the results were known, marked post hoc | obd/posthoc/README.md:3, and its Sections 1 to 6 at :11, 63, 95, 159, 213, 310 (Sections 4 and 5 are one item in the article); README.md:81 |
+| Everything made after the results were known is marked post hoc: the five analyses, the calculation on the direction of the bias and the check of the prior file | obd/posthoc/README.md:3, 379; README.md:81; README.md:92, 94 at commit 3b17cb9 |
 | One week of logs from two policies on ZOZOTOWN, uniform random and BTS, in three campaigns; what the benchmark compares | obd/PREREGISTRATION.md:5, 12; README.md:7 |
 | BTS target from the published Beta prior by Monte Carlo draws, no updates | obd/PREREGISTRATION.md:5, 72 |
 | Full Men's campaign: IPS 0.891 of the on-policy value | men.json (`q["h3.ips"].estimate`); obd/PREREGISTRATION.md:24; README.md:77 |
 | Two public computations arrive at the same figure | obd/PREREGISTRATION.md:5, 24, 56 (0.006011 against 0.006743); push-lab: README.md:55 |
-| The interval from impressions is a 95% interval and lies below the on-policy value (0.815 to 0.966 of it) | obd/PREREGISTRATION.md:22, 24; push-lab: README.md:55; results/ope_obd.json (`full.validation.IPS.ratio_to_on_policy`); src/push_lab/ope/obd.py:181-182 (2.5th and 97.5th percentiles) |
-| The interval from rows lies below the on-policy value (0.005612 to 0.006472 against 0.006743) | obd/PREREGISTRATION.md:5, 56 |
+| In one, the interval for IPS is 0.815 to 0.966 of the on-policy value and lies below it | obd/PREREGISTRATION.md:24; push-lab: README.md:55; results/ope_obd.json (`full.validation.IPS.ratio_to_on_policy`) |
+| In the other, the interval for IPS is 0.005612 to 0.006472 against 0.006743 and lies below it | obd/PREREGISTRATION.md:56 |
+| Both are bootstrap intervals; they resample impressions or rows | obd/PREREGISTRATION.md:5, 22; push-lab: README.md:55 |
 | 30% to 37% of complete impressions show the same list as the impression before, in each of the six logs | units.json (`<campaign>.dependence.<log>.same_list_as_previous`, 0.299 to 0.370); obd/posthoc/README.md:46, 51-56 |
 | Variance of the difference in click rate between adjacent ten-minute blocks 1.85 to 2.45 times that of independent impressions | units.json (`<campaign>.dependence.<log>.variance_ratio["10"].clicks`, 1.851 to 2.449); obd/posthoc/README.md:47, 51-56 |
 | The ratio carries no interval and does not separate clustering from drift | obd/posthoc/README.md:61 |
@@ -51,18 +52,18 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af, except those 
 | Paired change positive in every unit and at every period width | all.json, women.json (`q["h4.d.1"]`, `["h4.d.3"]`, `["h4.d.6"]`, `["h4.d.24"]`, 0.013 to 0.083); pooled.json (`q["h4.d"]`); README.md:53-56, 71 |
 | Its interval excludes 0 only in the pooled unit, 0.072 (0.002 to 0.139); no change shown on All and on Women's alone | same keys; `h4.alignment`; README.md:35-36, 53-56, 71 |
 | The rule reads the gap only where H3 found one, and it found none | obd/PREREGISTRATION.md:116; README.md:71 |
-| A way the aligned estimate can be too high: BTS learning from clicks of the random bucket, or demand both buckets share | obd/PREREGISTRATION.md:151 |
+| A way the aligned estimate can be too high: BTS learning from clicks of both buckets, or demand both buckets share | obd/PREREGISTRATION.md:151 |
 | A calculation made after the results does not support the second case: under shared demand the aligned estimate is too low within a period, so the direction of its bias is not established | README.md:90, 94 at commit 3b17cb9 |
 | H5: 0.099 (0.033 to 0.166) on All, 0.076 (0.022 to 0.130) on Women's; descriptive, cannot tell the two sources apart | all.json, women.json (`q["h5.after_minus_before"]`); obd/PREREGISTRATION.md:136, 151; README.md:38, 72 |
 | H2 undetermined on both campaigns; the statistic should average 1 | all.json, women.json (`h2.label`); obd/PREREGISTRATION.md:91; README.md:27, 69 |
 | 0.973 over 3 eligible cells on All, fewer than the rule needs; 0.967 over 7 on Women's | all.json, women.json (`h2.eligible_cells`, `q["h2.m"]`); obd/PREREGISTRATION.md:93; README.md:25-26, 69 |
 | The two files write one value of each user feature differently; amendment made before any confirmatory result; matched in three of the four features on each campaign | obd/AMENDMENTS.md:3, 48-50; all.json, women.json (`h7.values_matched`, three pairs and one null); README.md:74 |
 | The fourth feature compared as written; registered joint distances 0.360 and 0.236 cannot be read as a difference in the users | obd/AMENDMENTS.md:49; all.json, women.json (`q["h7.tv.joint"]`); README.md:74 |
-| The post hoc analyses were fixed after the results, are descriptive and change no registered label | obd/posthoc/README.md:3; README.md:81 |
+| All five post hoc analyses were fixed after the results, are descriptive and change no registered label | obd/posthoc/README.md:3, and its Sections 1 to 6 at :11, 63, 95, 159, 213, 310 (Sections 4 and 5 are one item in the article); README.md:81 |
 | For the block lengths and the distances, the settings and the reading were committed before the runs | obd/posthoc/README.md:161, 215, 312; README.md:86-88 |
 | One-minute variance ratio of 1.2 to 1.5 for Men's lacks a small-sample factor; with it 1.18 and 1.20 | obd/PREREGISTRATION.md:38; units.json (`men.dependence.<log>.variance_ratio["1"].clicks` 1.176 and 1.202, `.clicks_without_factor` 1.523 and 1.230); obd/posthoc/README.md:47, 51-52, 59 |
 | That figure entered no rule | reported in Section 3, obd/PREREGISTRATION.md:38; the rules, obd/PREREGISTRATION.md:85, 93, 100, 113-116, 136-137, do not use it |
-| The factor changes the ten-minute ratios by at most 0.04 | units.json (`<campaign>.dependence.<log>.variance_ratio["10"].clicks` against `.clicks_without_factor`: differences of 0.001 to 0.042, the largest on the Men's random log, 2.449 against 2.491) |
+| The factor changes the ten-minute ratios by less than 0.05 | units.json (`<campaign>.dependence.<log>.variance_ratio["10"].clicks` against `.clicks_without_factor`: differences of 0.001 to 0.042; the largest, 0.042, is on the Men's random log, 2.449 against 2.491) |
 | One more rare value in the BTS log (30 and 14 rows), so the amendment's condition failed; the other value sits on exactly the rows the matched features mark | features.json (`<campaign>.values`, `.rows_marked`); obd/posthoc/README.md:65, 69-74, 76, 78-79 |
 | With the two taken as one value: joint distance 0.007 and 0.009; change 0.001 (-0.003 to 0.005) and -0.001 (-0.014 to 0.005) | features.json (`<campaign>.h7["h7.tv.joint"].post_hoc`, `["h7.rho_change"].post_hoc`); obd/posthoc/README.md:86, 88, 90-91 |
 | Registered: 0.360 and 0.236; -0.058 (-0.136 to 0.013) and -0.116 (-0.178 to -0.063) | all.json, women.json (`q["h7.tv.joint"]`, `q["h7.rho_change"]`); obd/posthoc/README.md:86, 88; README.md:74 |
@@ -72,17 +73,17 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af, except those 
 | The hours are picked by the statistic itself; on Men's, where it is at 1.005, the same selection finds 0.002 | propensities.json (`men.by_bound["0.001"]`: `.m.estimate` 1.005, `.shortfall_in_low_hours["0.1"].mean` 0.002); obd/posthoc/README.md:106, 117-118 |
 | The cause is not identified | obd/posthoc/README.md:119 |
 | Block length: clock blocks of 5 to 180 minutes; the interval of each H3 ratio contains 1 at every length on All, Women's and pooled | blocks.json (`minutes`; `<unit>.<L>.<ratio>.interval`); obd/posthoc/README.md:163, 183-188, 203 |
-| From ten minutes upward the standard deviation of the ratio grows with the length on All, Women's and pooled | blocks.json (`<unit>.<L>.<ratio>.sd_over_ten_minutes`; pooled IPS 1.00, 1.04, 1.09, 1.10, 1.31); obd/posthoc/README.md:196-201, 207 |
+| From ten minutes upward the estimated standard deviation of the ratio is larger at every longer length on All, Women's and pooled; the rise is not tested against sampling error | blocks.json (`<unit>.<L>.<ratio>.sd_over_ten_minutes`; pooled IPS 1.00, 1.04, 1.09, 1.10, 1.31); obd/posthoc/README.md:196-201, 207-208 |
 | Pooled interval 0.915 to 1.036 with ten-minute blocks and 0.897 to 1.056 with three-hour blocks, on 56 blocks; 8.5% becomes 10.3% | blocks.json (`pooled["10"].ips.interval`; `pooled["180"].ips.interval` 0.8968 and 1.0561, so 1 - 0.8968 = 0.103; `pooled["180"].blocks` 56); obd/posthoc/README.md:165, 187, 209 |
 | On Men's the standard deviation stays within 3% of the one at ten minutes | blocks.json (`men.<L>.<ratio>.sd_over_ten_minutes`, 0.978 to 1.030); obd/posthoc/README.md:194-195, 206 |
 | The interval of the aligned estimate contains 1 in every unit at every length | lengths.json (`<unit>.<L>["h4.rho"].interval`); obd/posthoc/README.md:239, 241, 243, 245, 298 |
 | Lower end of the pooled paired change between 0.001 and 0.004; within two Monte Carlo standard errors of 0 at three of the six lengths | lengths.json (`pooled.<L>["h4.d"].interval[0]`, 0.0011 to 0.0040); obd/posthoc/README.md:228, 270, 300 |
-| H5 difference above 0 with blocks of 5 to 20 minutes on both campaigns; interval contains 0 with 60-minute blocks on both and with three-hour blocks on Women's | lengths.json (`<campaign>.<L>["h5.after_minus_before"].interval`); obd/posthoc/README.md:252-253, 301 |
+| H5 difference above 0 with blocks of 5 to 20 minutes on both campaigns; on Women's the lower end of its interval at 0 with 30-minute blocks; interval contains 0 with 60-minute blocks on both and with three-hour blocks on Women's | lengths.json (`<campaign>.<L>["h5.after_minus_before"].interval`; Women's at 30 minutes: lower end -0.0012, less than two Monte Carlo standard errors from 0); obd/posthoc/README.md:228, 252-253, 301; README.md:87 |
 | The analysis does not separate dependence beyond ten minutes from change over the week | obd/posthoc/README.md:175, 209 |
 | Three distances that read no click, fixed before they were computed | obd/posthoc/README.md:312, 314 |
 | Whole-week frequencies at 0.386 (All) and 0.413 (Women's) from the prior | distances.json (`<campaign>.bts.prior_to_week`); obd/posthoc/README.md:339, 341, 367 |
 | Hourly frequencies at 0.410 and 0.394 from those of the whole week, 3.0 and 3.4 times the noise floor | distances.json (`<campaign>.bts.hours_to_week`, `.d0`); obd/posthoc/README.md:339, 341, 368 |
-| In the random logs, whose policy is fixed, 0.52 to 0.55 of the noise floor | distances.json (`<campaign>.random.hours_to_week` over `.d0`: 0.52 on All, 0.53 on Women's, 0.55 on Men's); obd/posthoc/README.md:338, 340, 342, 371 |
+| In the random logs of the same two campaigns, whose policy is fixed, 0.52 and 0.53 of the noise floor | distances.json (`<campaign>.random.hours_to_week` over `.d0`: 0.52 on All, 0.53 on Women's); obd/posthoc/README.md:340, 342, 371 |
 | By the thresholds of the registered rule, and without an interval, the hourly frequencies differ from those of the whole week | obd/posthoc/README.md:326, 328, 368, 375 |
 | The distances bound the 0.53 of H1 and do not say how much of it is change | obd/posthoc/README.md:322, 330, 370; README.md:88 |
 | First hour: three of the six distances from the prior at most the floor of that hour, three between the floor and twice the floor | distances.json (`<campaign>.bts.first_hour.distance`, `.floor`, All and Women's); obd/posthoc/README.md:354-356, 360-362, 372 |

@@ -101,3 +101,11 @@ for (const p of pages)
       expect(res.headers()['content-type'], href!).toContain(type)
     }
   })
+
+test('robots.txt names the sitemap index', async ({ request }) => {
+  const res = await request.get(`${BASE}robots.txt`)
+  expect(res.status()).toBe(200)
+  expect((await res.text()).trim()).toBe(
+    `Sitemap: ${new URL('sitemap-index.xml', ROOT).href}`,
+  )
+})

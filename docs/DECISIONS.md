@@ -130,6 +130,7 @@
 - Rationale: three of the five sources are smaller than 1200×630 (800×840, 800×500 and 1100×720), and Astro's image service resizes with sharp's `withoutEnlargement`, so `getImage` cannot reach the size; enlarged interface text blurs anyway. Cropping the two large sources cut a heading or a line of text, so every source is shown whole. sharp is the library Astro's image service already uses: `package.json` declares it at the version the lockfile held, and the lockfile gains no package. The same source gives the same bytes
 - Alternatives: `getImage` with `fit: 'cover'` (never enlarges); cropping the large sources (cuts text); rendering cards in a browser during the build (a browser in every build)
 - Amendment 2026-11-09: with the new home introduction (D017) the site images show the headline and the introduction without the four areas, whose titles the headline already lists. They are captured on a Linux machine with Noto Sans CJK SC installed, which Chrome there picks for Chinese text when no font of the stack is present, so the Chinese image shows a face close to PingFang SC instead of WenQuanYi Zen Hei
+- Amendment 2026-11-11: the site now lives at the host root (D021), so a `robots.txt` there names the sitemap index, built from the site URL and base like the rest of the site's absolute links
 
 ## D019 Screenshots and Lighthouse scores in the README
 - Date: 2026-11-09

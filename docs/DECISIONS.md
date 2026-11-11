@@ -137,6 +137,7 @@
 - Decision: the README shows the home page and the local-ledger project page in both themes, at 1440×900, and a table of the live site's Lighthouse scores: date, commit, page and the four categories. The scores come from CI's settings on all 24 pages, the mobile preset three times per page with the median kept and the desktop preset once, and are measured again after a deploy that changes the pages. This replaces the report screenshots of SPEC §5
 - Rationale: 24 pages in two presets do not fit in report screenshots, while a table names the commit it measured and shows in a diff; CI keeps the full reports of every push as artifacts
 - Note: on the Linux machine that runs Lighthouse, Chinese pages spend about twice as long in style and layout as English ones, because it has none of the stack's CJK fonts and finds WenQuanYi Zen Hei through fontconfig; under the mobile preset's CPU slowdown this can cost a point of performance. Naming that font cut the time by a third, but readers' devices do not have it, so the stack stays as D010 sets it
+- Amendment 2026-11-11: mobile performance on the Chinese pages is the median of seven runs instead of three. On the live site their longest layout task runs after first contentful paint and counts as blocking time, and single runs of one page ranged from 85 to 100
 
 ## D020 Wide-screen layout
 - Date: 2026-11-09

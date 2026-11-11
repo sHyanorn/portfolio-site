@@ -163,3 +163,18 @@ for (const colorScheme of ['light', 'dark'] as const) {
       expect(href).toMatch(new RegExp(`-${colorScheme}\\.`))
   })
 }
+
+// A click anywhere on a video's poster starts it, before anything has loaded.
+for (const path of [
+  `${BASE}projects/matching-engine/`,
+  `${BASE}zh/projects/vault-share/`,
+])
+  test(`${path}: a click on the poster plays the video`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto(path)
+    const video = page.locator('.demo video')
+    await video.click()
+    await expect
+      .poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused))
+      .toBe(true)
+  })

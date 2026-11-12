@@ -25,10 +25,10 @@ Fixed structure:
 8. GitHub link, and a link to the project's article when there is one
 
 ### Articles
-- List page `/articles`: newest first; each entry shows the title, a one-sentence summary, its kind (a note or a paper), the project, the date and the reading time
+- List page `/articles`: newest first; each entry shows the title, a one-sentence summary, its kind (a note or a paper), the project, the date and the reading time, and below them the project's technical report when it has one
 - Article page `/articles/<slug>`: one per project, on one finding that runs against expectation. It opens with the conclusion, then covers how it was found, the evidence and numbers, the limits, and when the conclusion does not hold
 - Every number can be traced to a file in the project's repository
-- Names its kind and its project at the top, the project linked to its page; the repository link sits below the body
+- Names its kind and its project at the top, the project linked to its page; the project's technical report, when it has one, and the repository link sit below the body
 - English only. In the Chinese version the interface is translated, the body stays in English with `lang="en"`, and the list marks articles as English
 - Published on this site only, with a full-text RSS feed at `/rss.xml`
 

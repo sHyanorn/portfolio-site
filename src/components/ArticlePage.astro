@@ -73,7 +73,20 @@ const sections = headings.filter((h) => h.depth === 2)
     </div>
 
     <footer class="links">
-      <RepoLink href={project.data.repo} {lang} />
+      {
+        // One expression, so a page without a report gains no whitespace.
+        [
+          project.data.report && (
+            <p class="report">
+              <span>{t(lang, 'report')}</span>
+              <a href={project.data.report.url} lang="en">
+                {project.data.report.title}
+              </a>
+            </p>
+          ),
+          <RepoLink href={project.data.repo} {lang} />,
+        ]
+      }
     </footer>
   </article>
 </Base>
@@ -234,6 +247,32 @@ const sections = headings.filter((h) => h.depth === 2)
 
   .links {
     margin-top: var(--space-6);
+  }
+
+  /* The report row of the project page. */
+  .report {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: var(--width-prose);
+    margin-bottom: var(--space-4);
+  }
+
+  .report span {
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+  }
+
+  .report a {
+    color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .report a:hover {
+    color: var(--color-text);
   }
 
   /* A wide screen keeps the measure in the middle of the page and moves

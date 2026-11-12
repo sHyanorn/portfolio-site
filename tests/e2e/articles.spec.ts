@@ -1,7 +1,9 @@
 // Article pages name their project and link to it, the project page links
 // back, the body stays English on Chinese pages, only pages with math load
 // KaTeX's stylesheet (D005), and the lists and the feed describe the articles.
+import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
+import { t } from '../../src/lib/i18n'
 import { BASE, pages } from './site'
 
 const articles = pages.filter((p) => /^(zh-)?articles-.+/.test(p.name))
@@ -19,7 +21,7 @@ for (const p of articles) {
     const project = page.locator('.project a')
     const href = await project.getAttribute('href')
     expect(href).toMatch(new RegExp(`^${prefix}projects/[\\w-]+/$`))
-    await expect(page.locator('article > footer a')).toHaveAttribute(
+    await expect(page.locator('article > footer .repo')).toHaveAttribute(
       'href',
       /^https:\/\/github\.com\//,
     )
@@ -105,3 +107,66 @@ test('the article lists and the feed describe the articles', async ({
   )
   expect(channel).toBe(en)
 })
+
+// Built articles only, so a draft naming a project yet to come is skipped.
+const reports = articles
+  .filter((p) => !p.name.startsWith('zh-'))
+  .map((p) => {
+    const slug = p.name.replace(/^articles-/, '')
+    const mdx = readFileSync(`src/content/articles/${slug}.mdx`, 'utf8')
+    const project = /^project:\s*["']?([\w-]+)/m.exec(mdx)![1]
+    const { report } = JSON.parse(
+      readFileSync(`src/content/projects/${project}.json`, 'utf8'),
+    )
+    return {
+      slug,
+      report: report as { title: string; url: string } | undefined,
+    }
+  })
+const reported = reports.flatMap(({ slug, report }) =>
+  report ? [{ slug, report }] : [],
+)
+
+for (const { slug, report } of reports)
+  if (!report)
+    for (const lang of ['', 'zh/'])
+      test(`${lang}${slug}: no report row`, async ({ page }) => {
+        await page.goto(`${BASE}${lang}articles/${slug}/`)
+        await expect(page.locator('main .report')).toHaveCount(0)
+      })
+
+test('an article links its project report', () => {
+  expect(reported.length).toBeGreaterThan(0)
+})
+
+for (const { slug, report } of reported)
+  for (const lang of ['en', 'zh'] as const) {
+    const prefix = `${BASE}${lang === 'zh' ? 'zh/' : ''}articles/`
+    for (const path of [prefix, `${prefix}${slug}/`])
+      test(`${path}: links the report of ${slug}`, async ({ page }) => {
+        await page.goto(path)
+        const main = page.locator('main')
+        const link = main.locator(`a[href="${report.url}"]`)
+        await expect(link).toHaveCount(1)
+        await expect(link).toHaveText(report.title)
+        await expect(link).toHaveAttribute('lang', 'en')
+        await expect(link).toBeVisible()
+        await expect(main.getByText(report.title, { exact: true })).toHaveCount(
+          1,
+        )
+        await expect(
+          main.getByText(t(lang, 'report'), { exact: true }),
+        ).toHaveCount(1)
+        await expect(main).not.toContainText(
+          t(lang === 'en' ? 'zh' : 'en', 'report'),
+        )
+        // The label stands right before the link, in the same row.
+        await expect(link.locator('xpath=..')).toContainText(t(lang, 'report'))
+        if (path === prefix)
+          await expect(
+            main.locator('.list > li', {
+              has: page.locator(`h2 a[href="${prefix}${slug}/"]`),
+            }),
+          ).toContainText(report.title)
+      })
+  }

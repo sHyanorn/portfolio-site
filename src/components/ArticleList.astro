@@ -31,15 +31,30 @@ const articles = await Promise.all(
         <p class="summary" lang="en">
           {article.data.summary}
         </p>
-        <p class="meta">
-          <span class="kind">{t(lang, article.data.kind)}</span>
-          <span>{project.data.title}</span>
-          <time datetime={article.data.date.toISOString().slice(0, 10)}>
-            {formatDate(lang, article.data.date)}
-          </time>
-          <span>{formatMinutes(lang, minutes)}</span>
-          {lang === 'zh' && <span class="english">{t(lang, 'english')}</span>}
-        </p>
+        {
+          // One expression, so an entry without a report gains no whitespace.
+          [
+            <p class="meta">
+              <span class="kind">{t(lang, article.data.kind)}</span>
+              <span>{project.data.title}</span>
+              <time datetime={article.data.date.toISOString().slice(0, 10)}>
+                {formatDate(lang, article.data.date)}
+              </time>
+              <span>{formatMinutes(lang, minutes)}</span>
+              {lang === 'zh' && (
+                <span class="english">{t(lang, 'english')}</span>
+              )}
+            </p>,
+            project.data.report && (
+              <p class="report">
+                <span>{t(lang, 'report')}</span>
+                <a href={project.data.report.url} lang="en">
+                  {project.data.report.title}
+                </a>
+              </p>
+            ),
+          ]
+        }
       </li>
     ))}
   </ol>
@@ -110,6 +125,33 @@ const articles = await Promise.all(
     content: '·';
     content: '·' / '';
     text-align: center;
+  }
+
+  /* Below the facts and smaller than the summary, as the project page
+     gives it under the article link; the measure is the summary's. */
+  .report {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--width-prose);
+    margin-top: var(--space-1);
+  }
+
+  .report > * {
+    font-size: var(--step--1);
+  }
+
+  .report span {
+    color: var(--color-text-muted);
+  }
+
+  .report a {
+    width: fit-content;
+    color: var(--color-accent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .report a:hover {
+    color: var(--color-text);
   }
 
   .english {

@@ -114,7 +114,7 @@
 
 ## D016 Articles and the RSS feed
 - Date: 2026-11-09
-- Decision: `/articles/` lists published articles newest first, articles of one day by title, with the summary, the project, the date and the reading time; a draft (`draft: true`) is built nowhere and needs no project page yet. `/rss.xml` is a full-text feed from `@astrojs/rss`: each body is rendered with Astro's Container API, every link is absolute and includes the base, and math keeps only KaTeX's MathML, since feed readers load no stylesheet and would show the visual markup beside it. Every page links the feed in its head. Bodies stay in English on both language versions of the site, with `lang="en"`
+- Decision: `/articles/` lists published articles newest first, articles of one day by title, with the summary, the project, the date and the reading time, and a link to the project's technical report when it has one; a draft (`draft: true`) is built nowhere and needs no project page yet. `/rss.xml` is a full-text feed from `@astrojs/rss`: each body is rendered with Astro's Container API, every link is absolute and includes the base, and math keeps only KaTeX's MathML, since feed readers load no stylesheet and would show the visual markup beside it. Every page links the feed in its head. Bodies stay in English on both language versions of the site, with `lang="en"`
 - Rationale: a reader of the feed gets the whole article with no visit to the site, and the feed needs no client JS or build step beyond the pages
 - Alternatives: summaries only in the feed (a reader has to leave the feed reader); KaTeX's HTML with an inline stylesheet (feed readers strip styles)
 - Borrowed: the full-content recipe with the Container API from Astro's RSS guide

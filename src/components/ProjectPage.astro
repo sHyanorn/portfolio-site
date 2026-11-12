@@ -167,6 +167,14 @@ const labels = Object.fromEntries(
             </a>
           </p>
         )}
+        {p.report && (
+          <p class="article">
+            <span>{t(lang, 'report')}</span>
+            <a href={p.report.url} lang="en">
+              {p.report.title}
+            </a>
+          </p>
+        )}
         <RepoLink href={p.repo} {lang} />
       </div>
     </footer>

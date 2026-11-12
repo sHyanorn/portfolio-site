@@ -88,6 +88,8 @@ const projects = defineCollection({
         .min(1),
       // 8. Links
       repo: z.url(),
+      /** A written report of the study, linked under its article. */
+      report: z.strictObject({ title: z.string(), url: z.url() }).optional(),
       /** Titles a study gives sections 6 and 7 and the link under section 6,
        * in place of "Key decisions", "Challenges" and "Decision log". */
       headings: z

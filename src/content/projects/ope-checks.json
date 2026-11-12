@@ -329,6 +329,10 @@
     }
   ],
   "repo": "https://github.com/sHyanorn/ope-checks",
+  "report": {
+    "title": "A Pre-Registered Check of the Off-Policy Evaluation Benchmark on the Open Bandit Dataset",
+    "url": "https://github.com/sHyanorn/ope-checks/blob/c5ed86f1a52d59dadef9de19103c9f2e688ac2df/obd/report.pdf"
+  },
   "headings": {
     "decisions": {
       "en": "Registered rules",

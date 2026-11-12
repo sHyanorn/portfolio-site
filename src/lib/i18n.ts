@@ -55,6 +55,10 @@ const ui = {
   project: { en: 'Project', zh: '项目' },
   contents: { en: 'Contents', zh: '目录' },
   article: { en: 'Article', zh: '文章（英文）' },
+  report: {
+    en: 'Technical report, PDF, not peer-reviewed',
+    zh: '技术报告（英文 PDF，未经同行评审）',
+  },
   close: { en: 'Close', zh: '关闭' },
   // The kinds of article, by their names in the content schema.
   note: { en: 'Note', zh: '短文' },

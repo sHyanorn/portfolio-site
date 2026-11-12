@@ -97,3 +97,4 @@ All paths are in github.com/sHyanorn/ope-checks at commit 7a097af.
 | Coverage: H and U were tuned so that the true variance exceeds what ten-minute blocks see, so under-coverage by ten-minute blocks was expected there | at 6a276af: obd_coverage/README.md:124 |
 | Coverage: on Women's the published widening of the intervals up to 180 minutes is more than M produces (1.365 against a 97.5th percentile of 1.239), so its ten-minute intervals are not shown to cover | at 6a276af: obd_coverage/README.md:107, 114, 119; obd_coverage/results/coverage.json (`women.M.sd_of_ips_ratio.over_ten_minutes["180"]`; `reading.by_campaign.women["5_published_widening_above_M"]`) |
 | Coverage: the study does not show that the real logs have any of these structures | at 6a276af: obd_coverage/README.md:171 |
+| Report: technical report, PDF, its title | at c5ed86f: obd/report.pdf, title page |

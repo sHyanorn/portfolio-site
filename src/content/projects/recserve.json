@@ -75,8 +75,8 @@
           "zh": "0 / 15,000"
         },
         "label": {
-          "en": "responses failed or degraded in kind at 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap. The stage budgets there are 100 ms, where the specification has 3 to 15 ms",
-          "zh": "kind 集群里每秒 100 个请求下，网关滚动重启、副本滚动重启和一次换包期间失败或降级的响应数。那里各阶段的时间预算是 100 ms，规格里是 3 到 15 ms"
+          "en": "responses failed or degraded in kind at 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap. The stage budgets there are 100 ms, where the specification has 5 to 15 ms",
+          "zh": "kind 集群里每秒 100 个请求下，网关滚动重启、副本滚动重启和一次换包期间失败或降级的响应数。那里各阶段的时间预算是 100 ms，规格里是 5 到 15 ms"
         }
       },
       {
@@ -105,21 +105,21 @@
           "zh": "0.2–0.3%"
         },
         "label": {
-          "en": "of responses fell back to the request's own items at 200 requests/s on Valkey and Kafka: the history read ran past its 3 ms budget. In a separate check with the four CPUs saturated, the p99 of the stage of history read and cache lookup was above the budget in two of three runs in the round that computes, 4.3 and 5.8 ms; in the other it was 2.9 ms. All these runs carried a Kafka health check that kept about two thirds of a CPU busy",
-          "zh": "每秒 200 个请求、接上 Valkey 和 Kafka 时，因为读用户历史超出 3 ms 预算而退回到用请求自带物品的响应占比。另一项检查里四个 CPU 被占满，读用户历史加查缓存这个阶段在需要计算的那一轮，三次运行里有两次 p99 超出预算，分别是 4.3 和 5.8 ms，另一次是 2.9 ms。这些运行都带着 Kafka 健康检查的负载，它占掉约三分之二个 CPU"
+          "en": "of responses fell back to the request's own items at 200 requests/s on Valkey and Kafka: the history read ran past its 3 ms budget at the time (5 ms now). In a separate check with the four CPUs saturated, the p99 of the stage of history read and cache lookup was above the 3 ms budget in two of three runs in the round that computes, 4.3 and 5.8 ms; in the other it was 2.9 ms. All these runs carried a Kafka health check that kept about two thirds of a CPU busy",
+          "zh": "每秒 200 个请求、接上 Valkey 和 Kafka 时，因为读用户历史超出当时 3 ms 的预算（现在是 5 ms）而退回到用请求自带物品的响应占比。另一项检查里四个 CPU 被占满，读用户历史加查缓存这个阶段在需要计算的那一轮，三次运行里有两次 p99 超出 3 ms 的预算，分别是 4.3 和 5.8 ms，另一次是 2.9 ms。这些运行都带着 Kafka 健康检查的负载，它占掉约三分之二个 CPU"
         }
       }
     ],
     "note": {
-      "en": "The latency and load figures come from cloud VMs with 4 vCPUs. The kind cluster is one node, which the control plane and the load generator share. The catalog has 25.6k items, where exact search takes about 2 ms on one core, so the shards show the mechanism and are not needed for speed. The kind check and the ranker's figures are in the decision log (D047, D027). The load sweep and the fault runs have no results in the repository yet.",
-      "zh": "延迟和负载的数字来自 4 个 vCPU 的云主机。kind 集群只有一个节点，控制面和压测程序都在上面。物品库有 2.56 万个物品，这个规模下精确搜索在单核上约 2 ms，所以分片只是演示机制，速度上并不需要。kind 检查和排序模型的数字在决策记录里（D047、D027）。负载扫描和故障注入的运行在仓库里还没有结果。"
+      "en": "The latency and load figures come from cloud VMs with 4 vCPUs. The kind cluster is one node, which the control plane and the load generator share. The catalog has 25.6k items, where exact search takes about 2 ms on one core, so the shards show the mechanism and are not needed for speed. The kind check and the ranker's figures are in the decision log (D047, D027). In the load sweep (replay, result cache off, three runs per rate), the highest rate at which every run had p99 at most 50 ms and at most 1% of responses degraded was 550 requests/s, p99 4.6 to 5.1 ms, with the history budget then at 3 ms. In the latest fault runs (275 requests/s on one 4-vCPU VM, result cache off, three runs per fault), four faults passed their criteria with no error and a fault-phase p99 of 6.8 to 20.5 ms: a replica killed, a replica paused, a replica whose searches hang, and 50 ms of latency on a shard. Valkey down failed: one run took 7 s to recover with 5 s allowed. The ingest consumer paused was not judged: one of its runs had no valid attempt. The sweep and these fault runs come from different VMs and are not compared.",
+      "zh": "延迟和负载的数字来自 4 个 vCPU 的云主机。kind 集群只有一个节点，控制面和压测程序都在上面。物品库有 2.56 万个物品，这个规模下精确搜索在单核上约 2 ms，所以分片只是演示机制，速度上并不需要。kind 检查和排序模型的数字在决策记录里（D047、D027）。负载扫描（回放，关闭结果缓存，每个速率三次运行）里，每次运行都满足 p99 不超过 50 ms、降级响应不超过 1% 的最高速率是每秒 550 个请求，p99 为 4.6 到 5.1 ms，当时读历史的预算是 3 ms。最近一组故障注入运行（一台 4 vCPU 的虚拟机上每秒 275 个请求，关闭结果缓存，每种故障三次运行）里，四种故障按标准通过，没有错误，故障阶段的 p99 为 6.8 到 20.5 ms：杀掉一个副本、暂停一个副本、一个副本的搜索挂起、一个分片加 50 ms 延迟。Valkey 不可用没有通过：有一次运行用了 7 秒才恢复，标准是 5 秒。暂停 ingest 消费程序没有判定：它有一次运行的几次尝试都无效。负载扫描和这组故障运行来自不同的虚拟机，不互相比较。"
     },
     "source": {
       "label": {
         "en": "Benchmarks",
         "zh": "基准测试"
       },
-      "url": "https://github.com/sHyanorn/recserve/blob/77069acd0dfd4962ca0fbae4b5705629c818c7d5/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/recserve/blob/c3c564a9b706adccc9e780bac3a8ca2f9b0f3552/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -128,12 +128,12 @@
       "zh": "recserve 是推荐系统的服务端：一个请求在延迟预算内依次经过多路召回、按请求时间点取特征、模型排序和重排。重点是服务工程：延迟、吞吐、可用性、分布式和可观测性。目前它服务的模型都很简单。"
     },
     {
-      "en": "The goal is behaviour that a test can state. A response never mixes two bundle versions. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget. With Valkey unavailable, every response is still a 200 that uses the request's own recent items and says so. An event delivered more than once, in any order, leaves every history and every response unchanged.",
-      "zh": "目标是测试能说清楚的行为。一个响应绝不会混用两个版本的模型包。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立。Valkey 不可用时，每个响应仍然是 200，用请求自带的最近物品，并在响应里说明。同一个事件重复送达多次，不论先后顺序，每个用户历史和每个响应都不变。"
+      "en": "The goal is behaviour that a test can state. A response never mixes two bundle versions. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget, and once five of its calls in a row have ended at the shard deadline it is left out, and tried again with one search a second, while the other replica of its shard answers in time. With Valkey unavailable, every response is still a 200 that uses the request's own recent items and says so. An event delivered more than once, in any order, leaves every history and every response unchanged.",
+      "zh": "目标是测试能说清楚的行为。一个响应绝不会混用两个版本的模型包。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立；它的调用连续五次到分片期限都没应答后，只要同分片另一个副本按时应答，它就被摘除，每秒只再试一次。Valkey 不可用时，每个响应仍然是 200，用请求自带的最近物品，并在响应里说明。同一个事件重复送达多次，不论先后顺序，每个用户历史和每个响应都不变。"
     },
     {
-      "en": "The scale is small and stated plainly. The catalog has 25.6k items, so neither approximate search nor sharding is needed at this size; the service shards it anyway to exercise the mechanism. All load tests run on one VM with 4 vCPUs, so the figures show behaviour under load and relative effects. They do not predict the capacity of a deployment on several machines.",
-      "zh": "规模很小，照实说明。物品库有 2.56 万个物品，这个规模既不需要近似搜索也不需要分片；服务仍然分片，是为了把这套机制跑起来。所有压测都在一台 4 个 vCPU 的虚拟机上跑，所以这些数字反映的是负载下的行为和相对变化，不能用来推断多机部署的容量。"
+      "en": "The scale is small and stated plainly. The catalog has 25.6k items, so neither approximate search nor sharding is needed at this size; the service shards it anyway to exercise the mechanism. Each load test runs on one VM with 4 vCPUs, so the figures show behaviour under load and relative effects. They do not predict the capacity of a deployment on several machines.",
+      "zh": "规模很小，照实说明。物品库有 2.56 万个物品，这个规模既不需要近似搜索也不需要分片；服务仍然分片，是为了把这套机制跑起来。每次压测都在一台 4 个 vCPU 的虚拟机上跑，所以这些数字反映的是负载下的行为和相对变化，不能用来推断多机部署的容量。"
     }
   ],
   "architecture": {
@@ -159,8 +159,8 @@
         "zh": "annshard 副本"
       },
       "annshardSub": {
-        "en": "gRPC, failover, one hedge",
-        "zh": "gRPC，故障转移，一次对冲"
+        "en": "gRPC, failover, one hedge, ejection",
+        "zh": "gRPC，故障转移，一次对冲，摘除"
       },
       "kafka": {
         "en": "Kafka",
@@ -188,8 +188,8 @@
       }
     },
     "description": {
-      "en": "The gateway (`cmd/gateway`) loads a model bundle, whose version is the digest of its files, and answers `POST /v1/recommend`. It assigns the A/B arm, reads the user's history and the result cache from Valkey through a circuit breaker, encodes the user with ONNX Runtime, retrieves from co-occurrence, popularity and the item vectors, drops the items the user has seen, ranks them in the arm that uses the ranker, then applies MMR. Each stage has its own deadline: a stage that runs out is skipped or falls back, and the response lists the reasons. The item vectors are split into shards, which the gateway holds itself or, as in compose and kind, searches on `annshard` replicas over gRPC: a failed call goes to the next replica at once, and a slow one gets at most one hedge. `POST /v1/events` produces to Kafka, and the ingest consumer applies each event to the histories idempotently, then commits. In a bundle swap the gateway loads and verifies the new version and has every replica prepare it, one replica per shard being enough to go on, then activates it with one atomic store.",
-      "zh": "网关（`cmd/gateway`）加载一个模型包，包的版本号是其中文件的摘要，对外应答 `POST /v1/recommend`。它先分配 A/B 实验组，经熔断器从 Valkey 读用户历史和结果缓存，用 ONNX Runtime 编码用户，从共现、热门和物品向量三路召回，去掉用户看过的物品，在使用排序模型的实验组里排序，再做 MMR。每个阶段有自己的期限：超时的阶段被跳过或退回备用做法，响应里列出原因。物品向量分成若干分片，由网关自己持有，或者像 compose 和 kind 里那样放在 `annshard` 副本上经 gRPC 搜索：调用失败立刻转到下一个副本，慢的调用最多补发一次对冲。`POST /v1/events` 把事件写入 Kafka，ingest 消费程序把每个事件幂等地写进用户历史，然后提交。换包时，网关先加载并校验新版本，再让每个副本备好它，每个分片有一个副本备好就可以继续，最后用一次原子写入切换过去。"
+      "en": "The gateway (`cmd/gateway`) loads a model bundle, whose version is the digest of its files, and answers `POST /v1/recommend`. It assigns the A/B arm, reads the user's history and the result cache from Valkey through a circuit breaker, encodes the user with ONNX Runtime, retrieves from co-occurrence, popularity and the item vectors, drops the items the user has seen, ranks them in the arm that uses the ranker, then applies MMR. Each stage has its own deadline: a stage that runs out is skipped or falls back, and the response lists the reasons. The item vectors are split into shards, which the gateway holds itself or, as in compose and kind, searches on `annshard` replicas over gRPC: a failed call goes to the next replica at once, a slow one gets at most one hedge, and a replica whose calls end at the shard deadline five times in a row is left out, and tried again with one search a second, while the other replica of its shard answers in time. `POST /v1/events` produces to Kafka, and the ingest consumer applies each event to the histories idempotently, then commits. In a bundle swap the gateway loads and verifies the new version and has every replica prepare it, one replica per shard being enough to go on, then activates it with one atomic store.",
+      "zh": "网关（`cmd/gateway`）加载一个模型包，包的版本号是其中文件的摘要，对外应答 `POST /v1/recommend`。它先分配 A/B 实验组，经熔断器从 Valkey 读用户历史和结果缓存，用 ONNX Runtime 编码用户，从共现、热门和物品向量三路召回，去掉用户看过的物品，在使用排序模型的实验组里排序，再做 MMR。每个阶段有自己的期限：超时的阶段被跳过或退回备用做法，响应里列出原因。物品向量分成若干分片，由网关自己持有，或者像 compose 和 kind 里那样放在 `annshard` 副本上经 gRPC 搜索：调用失败立刻转到下一个副本，慢的调用最多补发一次对冲；调用连续五次到分片期限都没应答的副本，在同分片另一个副本按时应答时被摘除，每秒只再试一次。`POST /v1/events` 把事件写入 Kafka，ingest 消费程序把每个事件幂等地写进用户历史，然后提交。换包时，网关先加载并校验新版本，再让每个副本备好它，每个分片有一个副本备好就可以继续，最后用一次原子写入切换过去。"
     }
   },
   "decisions": {
@@ -212,8 +212,8 @@
           "zh": "故障立刻转移，对冲受预算限制"
         },
         "body": {
-          "en": "A shard search asks one replica. When the call fails, the search goes to the next replica at once. When the first replica has not answered after 5 ms, the search asks one more and takes the first answer. Hedges come from a token bucket per shard, at most 10 plus one for every ten searches, so slow replicas are not sent twice the load. The gateway does the hedging itself: grpc-go implements retries and not hedging.",
-          "zh": "一次分片搜索只问一个副本。调用失败时，搜索立刻转到下一个副本。第一个副本 5 ms 还没应答时，搜索再问一个副本，取先到的结果。对冲从每个分片自己的令牌桶里取，最多 10 个再加每十次搜索一个，所以慢的副本不会被压上两倍的负载。对冲由网关自己做：grpc-go 实现了重试，没有实现对冲。"
+          "en": "A shard search asks one replica. When the call fails, the search goes to the next replica at once. When the first replica has not answered after 2.5 ms, the search asks one more and takes the first answer. Hedges come from a token bucket per shard, at most 10 plus one for every ten searches, so slow replicas are not sent twice the load. A replica whose calls end at the shard deadline five times in a row is left out while another replica of its shard answers in time; once a second one search asks it first, and an answer brings it back. The gateway does the hedging itself: grpc-go implements retries and not hedging.",
+          "zh": "一次分片搜索只问一个副本。调用失败时，搜索立刻转到下一个副本。第一个副本 2.5 ms 还没应答时，搜索再问一个副本，取先到的结果。对冲从每个分片自己的令牌桶里取，最多 10 个再加每十次搜索一个，所以慢的副本不会被压上两倍的负载。一个副本的调用连续五次到分片期限都没应答、而同分片另一个副本按时应答时，它就被摘除；之后每秒有一次搜索先问它，它一应答就回到选择里。对冲由网关自己做：grpc-go 实现了重试，没有实现对冲。"
         }
       },
       {
@@ -245,12 +245,12 @@
           "zh": "kind 检查的是行为，预算设为 100 ms"
         },
         "body": {
-          "en": "The zero-error check runs in kind on one node, whose CPUs the control plane, the Pods and the load generator share. With the specification's budgets of 3 to 15 ms, 3 of 24,000 responses timed out with no rollout at all, the slowest taking 22 ms. The check's budgets are 100 ms, about five times that, so that a degraded response means a failure. With these budgets the check does not see what a rollout does to latency.",
-          "zh": "零错误检查在 kind 的单个节点上跑，节点的 CPU 由控制面、各个 Pod 和压测程序共用。用规格里 3 到 15 ms 的预算，完全不做滚动时 24,000 个响应里也有 3 个超时，最慢的一个 22 ms。检查的预算因此设为 100 ms，约是它的五倍，这样降级的响应就意味着失败。用这样的预算，检查看不到滚动对延迟的影响。"
+          "en": "The zero-error check runs in kind on one node, whose CPUs the control plane, the Pods and the load generator share. With the specification's budgets, then 3 to 15 ms, 3 of 24,000 responses timed out with no rollout at all, the slowest taking 22 ms. The check's budgets are 100 ms, about five times that, so that a degraded response means a failure. With these budgets the check does not see what a rollout does to latency. Three later runs of its rollouts and swap with the specification's budgets had no error and at most 0.133% of a phase's responses degraded, with p99 at most 9.91 ms; they are reported, not judged, and the check keeps 100 ms.",
+          "zh": "零错误检查在 kind 的单个节点上跑，节点的 CPU 由控制面、各个 Pod 和压测程序共用。用规格里当时 3 到 15 ms 的预算，完全不做滚动时 24,000 个响应里也有 3 个超时，最慢的一个 22 ms。检查的预算因此设为 100 ms，约是它的五倍，这样降级的响应就意味着失败。用这样的预算，检查看不到滚动对延迟的影响。后来用规格里的预算把同样的滚动和换包跑了三次：没有错误，每个阶段降级的响应最多 0.133%，p99 最高 9.91 ms；这几次只报告不判定，检查仍用 100 ms。"
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/recserve/blob/77069acd0dfd4962ca0fbae4b5705629c818c7d5/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/recserve/blob/c3c564a9b706adccc9e780bac3a8ca2f9b0f3552/docs/DECISIONS.md"
   },
   "challenges": [
     {
@@ -269,8 +269,8 @@
         "zh": "手写的 HNSW 没有通过自己的延迟标准"
       },
       "body": {
-        "en": "The pure-Go library tried first reached a recall@100 of at most 0.064, so the index is written by hand. On glove it reaches a recall@100 of 0.95 only with M = 32 at ef = 800, with a p99 of 15.48 ms, above the 5 ms of the criterion: the criterion fails as written, and no threshold was changed. Its recall agrees with faiss's within 0.007, and its p99 on glove is 1.3 to 2.4 times faiss's. Exact search is the default.",
-        "zh": "先试的纯 Go 库 recall@100 最高只有 0.064，所以索引是手写的。在 glove 上，它只有在 M = 32、ef = 800 时 recall@100 才到 0.95，p99 是 15.48 ms，高于标准里的 5 ms：按写下的标准判为不通过，没有改任何阈值。它的召回率与 faiss 相差不超过 0.007，在 glove 上的 p99 是 faiss 的 1.3 到 2.4 倍。默认用精确搜索。"
+        "en": "The pure-Go library tried first reached a recall@100 of at most 0.064, so the index is written by hand. On glove it reaches a recall@100 of 0.95 only with M = 32 at ef = 800, with a p99 of 7.66 ms, above the 5 ms of the criterion: the criterion fails as written, and no threshold was changed. Its recall agrees with faiss's within 0.007, and its p99 on glove is 1.0 to 1.3 times faiss's at the same ef. Exact search is the default.",
+        "zh": "先试的纯 Go 库 recall@100 最高只有 0.064，所以索引是手写的。在 glove 上，它只有在 M = 32、ef = 800 时 recall@100 才到 0.95，p99 是 7.66 ms，高于标准里的 5 ms：按写下的标准判为不通过，没有改任何阈值。它的召回率与 faiss 相差不超过 0.007，在 glove 上相同 ef 下的 p99 是 faiss 的 1.0 到 1.3 倍。默认用精确搜索。"
       }
     },
     {
@@ -279,8 +279,8 @@
         "zh": "排序模型给向量分的权重是负的"
       },
       "body": {
-        "en": "On the 680 held-out users the ranker's recall@10 is 0.091 against 0.026 for retrieval order. The weight it gives the vector score is negative: among the candidates, the items a user went on to choose came more from co-occurrence and popularity than from the vector score. Both figures are measured before MMR; the ranker's effect on the served lists is for an A/B experiment to show.",
-        "zh": "在 680 个留出用户上，排序模型的 recall@10 是 0.091，召回顺序是 0.026。模型给向量分的权重是负的：在候选里，用户后来选的物品来自共现和热门的多，来自向量分的少。两个数都是在 MMR 之前测的；排序模型对最终列表的影响，要由 A/B 实验来回答。"
+        "en": "On the 680 held-out users the ranker's recall@10 is 0.091 against 0.026 for retrieval order. The weight it gives the vector score is negative: among the candidates, the items a user went on to choose came more from co-occurrence and popularity than from the vector score. Both figures are measured before MMR. In an offline run of the whole pipeline, MMR included, on 43,249 test events, recall@10 is 0.0181, and 0.0050 with the ranker forced to fail, which keeps retrieval order: a difference of −0.0131, 95% interval −0.0143 to −0.0119. With co-occurrence forced to fail it is 0.0098; with the encoder forced to fail, no metric moves by more than 0.0004. Its effect on users is for an A/B experiment to show.",
+        "zh": "在 680 个留出用户上，排序模型的 recall@10 是 0.091，召回顺序是 0.026。模型给向量分的权重是负的：在候选里，用户后来选的物品来自共现和热门的多，来自向量分的少。两个数都是在 MMR 之前测的。离线把整条管线（含 MMR）跑在 43,249 个测试事件上，recall@10 是 0.0181；强制排序模型失败、保留召回顺序时是 0.0050，相差 −0.0131，95% 区间为 −0.0143 到 −0.0119。强制共现失败时是 0.0098；强制编码器失败时，各项指标的变化都不超过 0.0004。它对用户的实际影响仍要由 A/B 实验来回答。"
       }
     },
     {

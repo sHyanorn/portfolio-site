@@ -74,16 +74,16 @@
           "zh": "用 Go 写的推荐服务系统：召回、特征、排序和重排在同一个 HTTP 接口后面，用户编码器和排序模型通过 ONNX Runtime 运行。"
         },
         {
-          "en": "Item vectors split into shards on replicas over gRPC: a search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget.",
-          "zh": "物品向量分片后放在 gRPC 副本上：一个副本失败时查询立刻转到下一个，第一个慢时再发给第二个，每次查询最多一次对冲。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立。"
+          "en": "Item vectors split into shards on replicas over gRPC: a search goes to the next replica when one fails and to a second when the first is slow, at most one hedge per search. With one replica of every shard lost, every response equals the one with all replicas healthy; for a replica that goes silent, this holds within the hedge budget, and once five of its calls in a row have ended at the shard deadline it is left out, and tried again with one search a second, while the other replica of its shard answers in time.",
+          "zh": "物品向量分片后放在 gRPC 副本上：一个副本失败时查询立刻转到下一个，第一个慢时再发给第二个，每次查询最多一次对冲。每个分片各丢一个副本时，每个响应都与副本全部正常时相同；副本不应答的那种情况，在对冲预算之内成立；它的调用连续五次到分片期限都没应答后，只要同分片另一个副本按时应答，它就被摘除，每秒只再试一次。"
         },
         {
           "en": "Model bundles swapped while serving: every replica prepares the new version, activation is atomic, and a version is the digest of its files, checked by the gateway and by every replica.",
           "zh": "模型包在服务期间替换：每个副本先备好新版本，切换是原子的；版本号是包内文件的摘要，网关和每个副本都校验。"
         },
         {
-          "en": "Events through Kafka to an ingest consumer that applies them idempotently; user histories and the result cache on Valkey, with a circuit breaker that keeps the gateway answering while Valkey is down.",
-          "zh": "事件经 Kafka 进入幂等的消费程序；用户历史和结果缓存放在 Valkey，Valkey 不可用时由熔断器保证网关继续应答。"
+          "en": "Events through Kafka to an ingest consumer that applies them idempotently; user histories and the result cache on Valkey; while Valkey is down the gateway answers from the request's own items, and a circuit breaker stops it waiting on Valkey once at least half of 100 or more calls in a second fail.",
+          "zh": "事件经 Kafka 进入幂等的消费程序；用户历史和结果缓存放在 Valkey；Valkey 不可用时网关用请求自带的物品应答，一秒内至少有 100 次调用结束、其中至少一半失败时，熔断器让网关不再等 Valkey。"
         },
         {
           "en": "Deployed in kind: replicas as a StatefulSet, gateways with an HPA, Pod Security `restricted`, and a NetworkPolicy whose enforcement CI checks. At 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap, no response failed or was degraded, with stage budgets of 100 ms on one node.",
@@ -98,8 +98,8 @@
           "zh": "六个特征上的逻辑回归排序模型，模型包带着黄金特征，网关加载时重算核对。在 680 个留出用户上，它的 recall@10 是 0.091，召回顺序是 0.026，在 MMR 之前测得；它给向量分的权重是负的。"
         },
         {
-          "en": "A CPU profile at 400 requests/s put 54% of a replica's CPU in the inner product of exact search. Rewritten in AVX2 with a fixed order of additions, it takes 4.5 to 5 times less time, and p99 at 400 requests/s fell from 6.90–7.79 ms to 4.27–4.64 ms; at that rate the gateway's CPU per request is not resolved on this machine.",
-          "zh": "每秒 400 个请求下的 CPU 剖析显示，副本 54% 的 CPU 花在精确搜索的内积上。改用 AVX2 并固定加法顺序后，内积的速度是原来的 4.5 到 5 倍，每秒 400 个请求时的 p99 从 6.90–7.79 ms 降到 4.27–4.64 ms；这个速率下网关每个请求的 CPU 时间在这台机器上分辨不了。"
+          "en": "A CPU profile at 400 requests/s put 54% of a replica's CPU in the inner product of exact search. Rewritten in AVX2 with a fixed order of additions, it takes 4.2 to 5.4 times less time, and p99 at 400 requests/s fell from 6.90–7.79 ms to 4.27–4.64 ms; at that rate the gateway's CPU per request is not resolved on this machine.",
+          "zh": "每秒 400 个请求下的 CPU 剖析显示，副本 54% 的 CPU 花在精确搜索的内积上。改用 AVX2 并固定加法顺序后，内积的速度是原来的 4.2 到 5.4 倍，每秒 400 个请求时的 p99 从 6.90–7.79 ms 降到 4.27–4.64 ms；这个速率下网关每个请求的 CPU 时间在这台机器上分辨不了。"
         }
       ],
       "projects": ["recserve"]

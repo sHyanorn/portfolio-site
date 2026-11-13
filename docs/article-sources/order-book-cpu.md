@@ -2,7 +2,7 @@
 
 Article: `src/content/articles/order-book-cpu.mdx`.
 
-All paths are in github.com/sHyanorn/matching-engine at commit 26ff705.
+All paths are in github.com/sHyanorn/matching-engine at commit d13e727.
 
 | Number | Source |
 |---|---|
@@ -15,24 +15,25 @@ All paths are in github.com/sHyanorn/matching-engine at commit 26ff705.
 | Valid run: 99% of rate sent, no failed request, every trade pushed once in order | docs/BENCHMARKS.md:30 |
 | `Book.Apply` 1.4% to 2% of the engine's CPU across the profiles before and after both changes; 0.6 allocations per command; pooling not done | docs/BENCHMARKS.md:82, 115, 119 |
 | One goroutine per symbol (D003) | docs/DECISIONS.md:19 |
-| Three prototypes: red-black tree, skip list, sorted slice; same model tests and benchmarks | bench-results/d004/README.md:12-13, 30; docs/DECISIONS.md:26 (D004) |
+| Three prototypes: red-black tree, skip list, sorted slice; same model tests and benchmarks | bench-results/d004/README.md:12-13, 30; docs/DECISIONS.md:27 (D004) |
 | D004 prototypes on a separate VM of the same type | bench-results/d004/README.md:5 |
-| 250 ns vs 405 ns at 10,000 levels | docs/DECISIONS.md:26 (D004); bench-results/d004/README.md |
-| Skip list writes 26% to 101% slower | docs/DECISIONS.md:27 (D004) |
-| Lookup steps 18 to 517 | docs/DECISIONS.md:26 (D004) |
-| Open-loop method, due time t0 + i/rate; three runs per rate on a fresh engine | docs/DECISIONS.md:179, 181 (D030); docs/BENCHMARKS.md:28, 30 |
+| 250 ns vs 405 ns at 10,000 levels | docs/DECISIONS.md:27 (D004); bench-results/d004/README.md |
+| Skip list writes 26% to 101% slower | docs/DECISIONS.md:28 (D004) |
+| Lookup steps 18 to 517 | docs/DECISIONS.md:27 (D004) |
+| Open-loop method, due time t0 + i/rate; three runs per rate on a fresh engine | docs/DECISIONS.md:185, 187 (D030); docs/BENCHMARKS.md:28, 30 |
 | Optimizations measured on a slower VM of the same type | docs/BENCHMARKS.md:3, 52, 90 |
 | Key check 5.79 µs, 79 allocs → 0.51 µs, 0 allocs | docs/BENCHMARKS.md:105; bench-results/m5-opt/checkkeys.txt |
 | 9.2% → 1.1% of profile; CPU per request −5% to −8%; 30k/s sustainable | docs/BENCHMARKS.md:106-107 |
-| fsync every 10 ms, 0.8 ms average, tens of milliseconds at times | docs/BENCHMARKS.md:109; docs/DECISIONS.md:188 (D031) |
+| fsync every 10 ms, 0.8 ms average, tens of milliseconds at times | docs/BENCHMARKS.md:109; docs/DECISIONS.md:195 (D031) |
 | 10k/s p90 0.91 → 0.57 ms, p99 5.32 → 3.82 ms | docs/BENCHMARKS.md:111 |
 | CPU per request up to +3% | docs/BENCHMARKS.md:113 |
 | 25k/s p99 20.0, 36.4, 215 → 19.6, 19.8, 28.7 ms | docs/BENCHMARKS.md:112 |
-| Crash window: one interval plus an fsync in progress | docs/DECISIONS.md:187 (D031) |
-| p99 1.76 ms at 10k/s in the headline end-to-end runs; 50k/s near saturation: a median p99 of 41.1 ms over the three headline runs, 141.1 ms on a second 4 vCPU VM, 40 to 150 ms on the two machines | docs/BENCHMARKS.md:5, 38, 44, 56, 58; README.md:14 |
+| Crash window: one interval plus an fsync in progress | docs/DECISIONS.md:194 (D031) |
+| p99 1.76 ms at 10k/s in the headline end-to-end runs; 50k/s near saturation: a median p99 of 41.1 ms over the three headline runs, 141.1 ms on a second 4 vCPU VM; at 50k/s the p99 depends on the machine | docs/BENCHMARKS.md:5, 38, 44, 56, 58; README.md:14 |
 | 64 keep-alive connections | docs/BENCHMARKS.md:28 |
 | One symbol per run | docs/BENCHMARKS.md:30 |
 | One 4 vCPU VM; the load generator and the engine share the 4 vCPUs | docs/BENCHMARKS.md:5 |
+| Limits, earlier code: the headline end-to-end runs used Go 1.24.7 and predate later changes to the API code; no end-to-end run on that VM after them; the project now builds with Go 1.27.4 | bench-results/e2e-review/default/env.txt:1-2 (98ad32a, go1.24.7); docs/BENCHMARKS.md:5; `git log 98ad32a..d13e727 -- internal/api` (eight commits that change its non-test code); bench-results/ws-backlog/README.md:5, 7 (the only end-to-end runs after 98ad32a, on another machine) |
 | A second 4 vCPU VM reproduced the 10k/s p99 (1.75 ms against 1.76 ms) but not the 50k/s one; its reports are not in the repository | docs/BENCHMARKS.md:56 |
 | A 1 ms sleep loop records pauses | docs/BENCHMARKS.md:31 |
 | Pauses up to 53 ms | docs/BENCHMARKS.md:41, 51 |

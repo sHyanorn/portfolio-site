@@ -35,6 +35,7 @@ The intro's two sentences, then the three areas.
 | Backend: open-loop load testing | matching-engine docs/DECISIONS.md:179-181 (D030); docs/BENCHMARKS.md:28 |
 | Backend: 5.05M to 6.95M commands/s in the matching core | matching-engine docs/BENCHMARKS.md:13-18 (README.md:13 rounds these to 5.0M to 6.9M) |
 | Backend: p99 1.76 ms at 10k requests/s, from order to trade push | matching-engine docs/BENCHMARKS.md:29, 38 |
+| Backend: 50k requests/s is near saturation, at 41 ms | matching-engine at d13e727: README.md:14; docs/BENCHMARKS.md:44, 58 |
 
 ## About
 
@@ -223,6 +224,6 @@ Where each tool appears: site project tags first, then the repositories.
 | Comparisons are registered before the results and reported as they came out | push-lab docs/SPEC.md:18; docs/DECISIONS.md:199 (D020); ope-checks README.md:9; obd/PREREGISTRATION.md:163 |
 | A ranking result that went the other way | push-lab docs/DECISIONS.md:201 (D020) |
 | A benchmark shortfall that the confirmatory campaigns did not show | ope-checks README.md:7, 28-29, 70 |
-| Retrieval, where each component is accepted against a published number | retrieval-lab README.md:3; docs/SPEC.md:5 |
+| Retrieval, where BM25, exact dense search and fusion are each accepted against a published number | retrieval-lab at 323634b: README.md:3; docs/SPEC.md:5 |
 | A recommendation serving system checked under load through rolling restarts and a bundle swap | recserve README.md:53, 82; docs/DECISIONS.md:486 (D047) |
 | Every number on this site traces back to a project repository | site:docs/project-sources/, one file per project |

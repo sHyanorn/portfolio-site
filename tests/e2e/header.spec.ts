@@ -80,6 +80,13 @@ for (const [name, path, sticky] of [
       const bottom = await headerBottom(page)
       const tops = await page.locator(sticky).evaluateAll((els) =>
         els
+          // Above its own `top`, an element is being pushed off by the end
+          // of its container, which is how a sticky column leaves.
+          .filter(
+            (el) =>
+              el.getBoundingClientRect().top >=
+              parseFloat(getComputedStyle(el).top) - 0.5,
+          )
           .map((el) => el.getBoundingClientRect())
           .filter((r) => r.bottom > 0 && r.top < innerHeight)
           .map((r) => r.top),

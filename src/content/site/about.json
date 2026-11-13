@@ -150,8 +150,8 @@
       "zh": "我的方向"
     },
     "body": {
-      "en": "My work is algorithm engineering and server-side systems, with backend development next to them. On the algorithm side: recommendation models and off-policy evaluation, where comparisons are registered before the results and reported as they came out, including a ranking result that went the other way and a benchmark shortfall that the confirmatory campaigns did not show; and retrieval, where each component is accepted against a published number. On the server side: a recommendation serving system checked under load through rolling restarts and a bundle swap. Every number on this site traces back to a project repository.",
-      "zh": "我的方向是算法工程和服务端系统，其次是后端开发。算法方面做推荐模型和离策略评估：比较方案在出结果之前登记，结果原样报告，包括一个方向与预期相反的排序结果，和一个在确认性活动上没有显示出来的基准偏低；也做检索，每个组件都对照已公布的数字验收。服务端方面做了一个推荐服务系统，在持续请求下经过了滚动重启和换包的检验。站上的每个数字都能追溯到项目仓库。"
+      "en": "My work is algorithm engineering and server-side systems, with backend development next to them. On the algorithm side: recommendation models and off-policy evaluation, where comparisons are registered before the results and reported as they came out, including a ranking result that went the other way and a benchmark shortfall that the confirmatory campaigns did not show; and retrieval, where BM25, exact dense search and fusion are each accepted against a published number. On the server side: a recommendation serving system checked under load through rolling restarts and a bundle swap. Every number on this site traces back to a project repository.",
+      "zh": "我的方向是算法工程和服务端系统，其次是后端开发。算法方面做推荐模型和离策略评估：比较方案在出结果之前登记，结果原样报告，包括一个方向与预期相反的排序结果，和一个在确认性活动上没有显示出来的基准偏低；也做检索，BM25、用精确搜索的稠密检索和融合各自对照已公布的数字验收。服务端方面做了一个推荐服务系统，在持续请求下经过了滚动重启和换包的检验。站上的每个数字都能追溯到项目仓库。"
     }
   }
 }

@@ -2,8 +2,8 @@
   "title": "retrieval-lab",
   "order": 3,
   "summary": {
-    "en": "BM25 and dense retrieval in Go, where each component is accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0006 in nDCG@10 on all six, and within 0.0004 on all but TREC-COVID.",
-    "zh": "用 Go 实现的 BM25 和稠密检索，每个组件都对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在六个数据集上的 nDCG@10 相差都不超过 0.0006，除 TREC-COVID 外不超过 0.0004。"
+    "en": "BM25 and dense retrieval in Go, where BM25, exact dense search and fusion are each accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0006 in nDCG@10 on all six, and within 0.0004 on all but TREC-COVID.",
+    "zh": "用 Go 实现的 BM25 和稠密检索，其中 BM25、用精确搜索的稠密检索和融合各自对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在六个数据集上的 nDCG@10 相差都不超过 0.0006，除 TREC-COVID 外不超过 0.0004。"
   },
   "tags": [
     {
@@ -49,8 +49,8 @@
           "zh": "点图，BGE-base-en-v1.5 加精确搜索的 nDCG@10 减去 Pyserini 的 flat 条件，阴影是 ±0.005 的容差。TREC-COVID −0.0006，NFCorpus −0.0003，FiQA −0.0003，ArguAna 0.0000，SCIDOCS 0.0000，SciFact −0.0004。"
         },
         "caption": {
-          "en": "nDCG@10 of BGE-base-en-v1.5 with exact search, minus Pyserini's flat condition: 0.0000 on ArguAna and SCIDOCS, −0.0003 on NFCorpus and FiQA, −0.0004 on SciFact and −0.0006 on TREC-COVID, against a tolerance of 0.005 fixed before any BGE result existed.",
-          "zh": "BGE-base-en-v1.5 加精确搜索的 nDCG@10，减去 Pyserini 的 flat 条件：ArguAna 和 SCIDOCS 上是 0.0000，NFCorpus 和 FiQA 上是 −0.0003，SciFact 上是 −0.0004，TREC-COVID 上是 −0.0006；容差是 0.005，在任何 BGE 结果出来之前定下。"
+          "en": "nDCG@10 of BGE-base-en-v1.5 with exact search, minus Pyserini's flat condition: 0.0000 on ArguAna and SCIDOCS, −0.0003 on NFCorpus and FiQA, −0.0004 on SciFact and −0.0006 on TREC-COVID, against a tolerance of 0.005.",
+          "zh": "BGE-base-en-v1.5 加精确搜索的 nDCG@10，减去 Pyserini 的 flat 条件：ArguAna 和 SCIDOCS 上是 0.0000，NFCorpus 和 FiQA 上是 −0.0003，SciFact 上是 −0.0004，TREC-COVID 上是 −0.0006；容差是 0.005。"
         }
       },
       {
@@ -111,15 +111,15 @@
       }
     ],
     "note": {
-      "en": "The anchors are the four-decimal values in Pyserini's `beir.yaml` at one commit, and the tolerance of 0.005 in nDCG@10 was fixed for BM25 and for BGE before either had a result. The BM25 checksums hold on amd64. The BGE, HNSW and fused figures come from one machine; the vectors depend on the CPU in their last bits, so exact values can differ on another. Pyserini's own run files were not compared line by line. Approximate search uses recserve's HNSW graph over the same vectors: at ef 200, 400 and 800, it holds on average at least 0.9912 of a query's exact top 10 on every dataset. Fusing the BM25 and BGE runs as Pyserini does, by RRF and by the sum of min-max normalised scores (Normalize), gives nDCG@10 within 0.005 of Pyserini's published fusion numbers on all six datasets; the largest differences, 0.0036 and 0.0043 above, are on ArguAna. Against the BGE run alone, neither fused run's 95% bootstrap interval lies above zero on any dataset; it lies below zero for RRF on FiQA, ArguAna and SCIDOCS and for Normalize on ArguAna and SCIDOCS. Reranking is not built yet.",
-      "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的四位小数值；nDCG@10 的容差 0.005，对 BM25 和 BGE 都是在各自出结果之前定下的。BM25 的校验和在 amd64 上成立。BGE、HNSW 和融合的数字来自一台机器；向量的末几位取决于 CPU，换一台机器具体数值可能不同。Pyserini 自己的 run 文件没有逐行比过。近似搜索用 recserve 的 HNSW 图，向量相同：在 ef 为 200、400 和 800 时，每个数据集上 HNSW 的前 10 名平均至少包含精确前 10 名中的 0.9912。融合按 Pyserini 的做法把 BM25 和 BGE 的 run 合起来，用 RRF 和 min-max 归一化后相加（Normalize）两种方法，六个数据集上的 nDCG@10 与 Pyserini 公布的融合结果相差都在 0.005 以内；差得最多的是 ArguAna，分别高 0.0036 和 0.0043。和单独的 BGE run 相比，两种融合在任何数据集上的 95% bootstrap 区间都不在零以上；RRF 在 FiQA、ArguAna 和 SCIDOCS 上、Normalize 在 ArguAna 和 SCIDOCS 上，区间整体在零以下。重排还没有做。"
+      "en": "The anchors are the four-decimal values in Pyserini's `beir.yaml` at one commit, and for fusion the numbers of its BEIR fusion page at that commit. The tolerance of 0.005 in nDCG@10 was fixed for BM25 before any BM25 result existed; for BGE it was committed together with the first BGE results. The BM25 checksums hold on amd64. The BGE, HNSW and fused figures come from one machine; the vectors depend on the CPU in their last bits, so exact values can differ on another. Pyserini's own run files were not compared line by line. Approximate search uses recserve's HNSW graph over the same vectors: at ef 200, 400 and 800, it holds on average at least 0.9912 of a query's exact top 10 on every dataset. Fusing the BM25 and BGE runs as Pyserini does, by RRF and by the sum of min-max normalised scores (Normalize), gives nDCG@10 within 0.005 of Pyserini's published fusion numbers on all six datasets; the largest differences, 0.0036 and 0.0043 above, are on ArguAna. Against the BGE run alone, neither fused run's 95% bootstrap interval lies above zero on any dataset; it lies below zero for RRF on FiQA, ArguAna and SCIDOCS and for Normalize on ArguAna and SCIDOCS. Reranking is not built yet.",
+      "zh": "锚点是 Pyserini 的 `beir.yaml` 在某一个提交上的四位小数值，融合的锚点是同一提交上它的 BEIR 融合页面的数字。nDCG@10 的容差 0.005，对 BM25 是在任何 BM25 结果出来之前定下的，对 BGE 是和第一批 BGE 结果一起提交的。BM25 的校验和在 amd64 上成立。BGE、HNSW 和融合的数字来自一台机器；向量的末几位取决于 CPU，换一台机器具体数值可能不同。Pyserini 自己的 run 文件没有逐行比过。近似搜索用 recserve 的 HNSW 图，向量相同：在 ef 为 200、400 和 800 时，每个数据集上 HNSW 的前 10 名平均至少包含精确前 10 名中的 0.9912。融合按 Pyserini 的做法把 BM25 和 BGE 的 run 合起来，用 RRF 和 min-max 归一化后相加（Normalize）两种方法，六个数据集上的 nDCG@10 与 Pyserini 公布的融合结果相差都在 0.005 以内；差得最多的是 ArguAna，分别高 0.0036 和 0.0043。和单独的 BGE run 相比，两种融合在任何数据集上的 95% bootstrap 区间都不在零以上；RRF 在 FiQA、ArguAna 和 SCIDOCS 上、Normalize 在 ArguAna 和 SCIDOCS 上，区间整体在零以下。重排还没有做。"
     },
     "source": {
       "label": {
         "en": "Benchmarks",
         "zh": "基准测试"
       },
-      "url": "https://github.com/sHyanorn/retrieval-lab/blob/1c82956ddfc0efc8be876efe9c900ad3b0d82d2d/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/retrieval-lab/blob/323634b3942c357b97859804424d98745a6274ea/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -128,12 +128,12 @@
       "zh": "同一套 BM25 配置的两个实现，在分词和词干提取的细节上仍然会有差别，在停用词、标题和正文怎么拼接、文档长度怎么编码、同分的结果怎么排序上也可能不同。"
     },
     {
-      "en": "This project builds its retrieval components in Go and accepts each one against a published number that a third party can reproduce with public commands and data: the BEIR test sets with fewer than 200,000 documents, and the numbers on Pyserini's BEIR reproducibility page. A dataset outside the tolerance is not tuned toward the anchor. Its cause is found and recorded.",
-      "zh": "这个项目用 Go 实现检索的各个组件，每一个都对照一个已公布的数字验收，第三方用公开的命令和数据就能复现：文档数少于 20 万的 BEIR 测试集，和 Pyserini 的 BEIR 复现页面上的数字。超出容差的数据集不朝着锚点去调，要找到原因并记录下来。"
+      "en": "This project builds its retrieval components in Go. BM25, exact dense search and fusion are each accepted against a published number that a third party can reproduce with public commands and data: the BEIR test sets with fewer than 200,000 documents, and the numbers on Pyserini's BEIR reproducibility page and, for fusion, on its BEIR fusion page. A dataset outside the tolerance is not tuned toward the anchor. Its cause is found and recorded. HNSW is measured against exact search on the same vectors and has no pass threshold.",
+      "zh": "这个项目用 Go 实现检索的各个组件。BM25、用精确搜索的稠密检索和融合各自对照一个已公布的数字验收，第三方用公开的命令和数据就能复现：文档数少于 20 万的 BEIR 测试集，以及 Pyserini 的 BEIR 复现页面上的数字，融合用的是它的 BEIR 融合页面上的数字。超出容差的数据集不朝着锚点去调，要找到原因并记录下来。HNSW 对照同一批向量上的精确搜索来度量，不设通过阈值。"
     },
     {
-      "en": "Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion of the BM25 and BGE runs. Reranking is next.",
-      "zh": "目前做完的有：评测台、BM25，用精确搜索和用 recserve 的 HNSW 图做的稠密检索，以及 BM25 与 BGE 两路 run 的融合。接下来是重排。"
+      "en": "Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion of the BM25 and BGE runs. Cross-encoder reranking is not built yet. A study of approximate search and the comparison of embedding models on BEIR is pre-registered; none of its hypotheses has a result yet.",
+      "zh": "目前做完的有：评测台、BM25，用精确搜索和用 recserve 的 HNSW 图做的稠密检索，以及 BM25 与 BGE 两路 run 的融合。交叉编码器重排还没有做。另有一项关于近似搜索与 BEIR 上嵌入模型比较的研究已经预注册，它的各项假设目前都还没有结果。"
     }
   ],
   "architecture": {
@@ -274,7 +274,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/retrieval-lab/blob/1c82956ddfc0efc8be876efe9c900ad3b0d82d2d/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/retrieval-lab/blob/323634b3942c357b97859804424d98745a6274ea/docs/DECISIONS.md"
   },
   "challenges": [
     {

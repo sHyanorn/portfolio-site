@@ -44,7 +44,7 @@
         }
       },
       {
-        "value": { "en": "92%", "zh": "92%" },
+        "value": { "en": "93%", "zh": "93%" },
         "label": {
           "en": "of statements covered by tests",
           "zh": "语句测试覆盖率"
@@ -52,12 +52,12 @@
       }
     ],
     "note": {
-      "en": "Measured on one 4 vCPU cloud VM; in the end-to-end runs the engine shares it with the load generator.",
-      "zh": "均在一台 4 vCPU 的云虚拟机上测得；端到端测试时，引擎和压测程序共用这台机器。"
+      "en": "The throughput, latency and memory figures were measured on one 4 vCPU cloud VM with Go 1.24.7, at earlier commits; in the end-to-end runs the engine shares it with the load generator. The project now builds with Go 1.27.4, and the end-to-end runs predate later changes to the API code; the repository holds no end-to-end run on that VM after them.",
+      "zh": "吞吐、延迟和内存的数字都在一台 4 vCPU 的云虚拟机上、用 Go 1.24.7 在较早的提交上测得；端到端测试时，引擎和压测程序共用这台机器。项目现在用 Go 1.27.4 构建；端到端测试早于接口代码后来的修改，仓库里没有这些修改之后在这台机器上做的端到端测试。"
     },
     "source": {
       "label": { "en": "Benchmark report", "zh": "基准测试报告" },
-      "url": "https://github.com/sHyanorn/matching-engine/blob/26ff70555ee5de5e8962e1bdb7bfb397198a919e/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/matching-engine/blob/d13e727475f2311ddc20fa5b5e9911722cc72158/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -70,8 +70,8 @@
       "zh": "项目定了三个目标：撮合核心在单个交易对上每秒超过 100 万次操作；每秒 5 万笔订单时，从 REST 下单到收到成交推送的 p99 延迟低于 5 ms；测出挂单 100 万笔时的内存占用。"
     },
     {
-      "en": "The core meets its target 5 to 7 times over. The end-to-end target, about 71k requests/s in this order flow, is out of reach on the 4 vCPU test machine, where the p99 stays under 5 ms up to 15k requests/s.",
-      "zh": "撮合核心的吞吐是目标的 5 到 7 倍。端到端目标折合这套订单流约每秒 7.1 万个请求，在这台 4 vCPU 的测试机上达不到；每秒 1.5 万个请求以内，p99 延迟都低于 5 ms。"
+      "en": "The core meets its target 5 to 7 times over. The end-to-end target, about 71k requests/s in this order flow, is out of reach on the 4 vCPU test machine, where the p99 stays under 5 ms up to 15k requests/s. At 50k requests/s, near saturation, the p99 was 41 ms, a figure that depends on the machine.",
+      "zh": "撮合核心的吞吐是目标的 5 到 7 倍。端到端目标折合这套订单流约每秒 7.1 万个请求，在这台 4 vCPU 的测试机上达不到；每秒 1.5 万个请求以内，p99 延迟都低于 5 ms。每秒 5 万个请求时接近饱和，p99 为 41 ms，这个数因机器而异。"
     }
   ],
   "architecture": {
@@ -142,7 +142,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/matching-engine/blob/26ff70555ee5de5e8962e1bdb7bfb397198a919e/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/matching-engine/blob/d13e727475f2311ddc20fa5b5e9911722cc72158/docs/DECISIONS.md"
   },
   "challenges": [
     {

@@ -40,11 +40,12 @@ Both were measured on the slower VM, with a full sweep for each step.
 
 **Running the fsync beside the matching goroutine (D031).** The command log is fsynced every 10 ms. At first the symbol's goroutine did this itself and stopped for about 0.8 ms on average, sometimes for tens of milliseconds, while every queued command waited. A helper goroutine now runs the fsync, which is also how Redis, Kafka and PostgreSQL handle their logs. At 10k/s, p90 fell from 0.91 to 0.57 ms and p99 from 5.32 to 3.82 ms. At 25k/s the three runs' p99 went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. CPU per request rose by up to 3%. The crash window also grew: a machine crash can now lose up to one interval of commands, plus any taken while an fsync was still running.
 
-On the faster VM, the headline end-to-end runs reached a p99 from order to trade push of 1.76 ms at 10k requests/s. 50k/s is near saturation for this setup: the three headline runs had a median p99 of 41.1 ms, and the same sweep on a second 4 vCPU VM had 141.1 ms, so at 50k/s the p99 was 40 to 150 ms on the two machines measured.
+On the faster VM, the headline end-to-end runs reached a p99 from order to trade push of 1.76 ms at 10k requests/s. 50k/s is near saturation for this setup: the three headline runs had a median p99 of 41.1 ms, and the same sweep on a second 4 vCPU VM had 141.1 ms. At 50k/s the p99 depends on the machine.
 
 ## Limits
 
 - **One machine.** The headline end-to-end figures come from one 4 vCPU VM, and the load generator shares those 4 vCPUs with the engine. The D004 prototype benchmarks were run separately, on a VM of the same type. A second VM of the same size reproduced the 10k/s figure (1.75 ms against 1.76 ms) but not the 50k/s one; its reports are not in the repository.
+- **Earlier code.** The headline end-to-end runs used Go 1.24.7 and predate later changes to the engine's API code; the repository holds no end-to-end run on that VM after them. The project now builds with Go 1.27.4.
 - **Two VMs.** The optimization comparisons ran on a slower VM of the same type. Its absolute latencies are not comparable with the headline end-to-end figures.
 - **A noisy host.** A 1 ms sleep loop in the load generator recorded pauses of up to 53 ms in one run on the faster VM, and a run on the slower VM recorded a stall of about 128 ms. Anything above p99 depends on single pauses like these. Three runs per rate show the spread; they do not remove it.
 - **One symbol, one protocol.** Every end-to-end run used one symbol, JSON over HTTP, and 64 keep-alive connections.

@@ -111,15 +111,15 @@
       }
     ],
     "note": {
-      "en": "The latency and load figures come from cloud VMs with 4 vCPUs. The kind cluster is one node, which the control plane and the load generator share. The catalog has 25.6k items, where exact search takes about 2 ms on one core, so the shards show the mechanism and are not needed for speed. The kind check and the ranker's figures are in the decision log (D047, D027). In the load sweep (replay, result cache off, three runs per rate), the highest rate at which every run had p99 at most 50 ms and at most 1% of responses degraded was 550 requests/s, p99 4.6 to 5.1 ms, with the history budget then at 3 ms. In the latest fault runs (275 requests/s on one 4-vCPU VM, result cache off, three runs per fault), four faults passed their criteria with no error and a fault-phase p99 of 6.8 to 20.5 ms: a replica killed, a replica paused, a replica whose searches hang, and 50 ms of latency on a shard. Valkey down failed: one run took 7 s to recover with 5 s allowed. The ingest consumer paused was not judged: one of its runs had no valid attempt. The sweep and these fault runs come from different VMs and are not compared.",
-      "zh": "延迟和负载的数字来自 4 个 vCPU 的云主机。kind 集群只有一个节点，控制面和压测程序都在上面。物品库有 2.56 万个物品，这个规模下精确搜索在单核上约 2 ms，所以分片只是演示机制，速度上并不需要。kind 检查和排序模型的数字在决策记录里（D047、D027）。负载扫描（回放，关闭结果缓存，每个速率三次运行）里，每次运行都满足 p99 不超过 50 ms、降级响应不超过 1% 的最高速率是每秒 550 个请求，p99 为 4.6 到 5.1 ms，当时读历史的预算是 3 ms。最近一组故障注入运行（一台 4 vCPU 的虚拟机上每秒 275 个请求，关闭结果缓存，每种故障三次运行）里，四种故障按标准通过，没有错误，故障阶段的 p99 为 6.8 到 20.5 ms：杀掉一个副本、暂停一个副本、一个副本的搜索挂起、一个分片加 50 ms 延迟。Valkey 不可用没有通过：有一次运行用了 7 秒才恢复，标准是 5 秒。暂停 ingest 消费程序没有判定：它有一次运行的几次尝试都无效。负载扫描和这组故障运行来自不同的虚拟机，不互相比较。"
+      "en": "The latency and load figures come from cloud VMs with 4 vCPUs. The kind cluster is one node, which the control plane and the load generator share. The catalog has 25.6k items, where exact search takes about 2 ms on one core, so the shards show the mechanism and are not needed for speed. The kind check and the ranker's figures are in the decision log (D047, D027). While gateways start on a new version, as in a rollout, a replica that holds the version the running gateways serve and the one before it, and was last sent a search or `Prepare` of the one before, drops the version they serve when a starting gateway has it prepare a third. Their searches then go to the shard's next replica until the replica has prepared that version again; while no replica of a shard holds it, their responses report `shards_partial`, or `vector_error` when that holds for every shard. The drop was checked once, by hand, at one replica. In the load sweep (replay, result cache off, three runs per rate), the highest rate at which every run had p99 at most 50 ms and at most 1% of responses degraded was 550 requests/s, p99 4.6 to 5.1 ms, with the history budget then at 3 ms. In the latest fault runs (275 requests/s on one 4-vCPU VM, result cache off, three runs per fault), four faults passed their criteria with no error and a fault-phase p99 of 6.8 to 20.5 ms: a replica killed, a replica paused, a replica whose searches hang, and 50 ms of latency on a shard. Valkey down failed: one run took 7 s to recover with 5 s allowed. The ingest consumer paused was not judged: one of its runs had no valid attempt. The sweep and these fault runs come from different VMs and are not compared.",
+      "zh": "延迟和负载的数字来自 4 个 vCPU 的云主机。kind 集群只有一个节点，控制面和压测程序都在上面。物品库有 2.56 万个物品，这个规模下精确搜索在单核上约 2 ms，所以分片只是演示机制，速度上并不需要。kind 检查和排序模型的数字在决策记录里（D047、D027）。网关以新版本启动时（如滚动发布），如果一个副本持有运行中网关所用的版本和它之前的版本，并且最后收到的是之前那个版本的搜索或 `Prepare`，那么启动中的网关让它备好第三个版本时，它会丢掉运行中网关所用的版本。这些网关的搜索转到同分片的下一个副本，直到该副本重新备好这个版本；某个分片没有副本持有这个版本时，这些网关的响应报告 `shards_partial`，所有分片都如此时报告 `vector_error`。丢掉版本这一步在一个副本上手工核对过一次。负载扫描（回放，关闭结果缓存，每个速率三次运行）里，每次运行都满足 p99 不超过 50 ms、降级响应不超过 1% 的最高速率是每秒 550 个请求，p99 为 4.6 到 5.1 ms，当时读历史的预算是 3 ms。最近一组故障注入运行（一台 4 vCPU 的虚拟机上每秒 275 个请求，关闭结果缓存，每种故障三次运行）里，四种故障按标准通过，没有错误，故障阶段的 p99 为 6.8 到 20.5 ms：杀掉一个副本、暂停一个副本、一个副本的搜索挂起、一个分片加 50 ms 延迟。Valkey 不可用没有通过：有一次运行用了 7 秒才恢复，标准是 5 秒。暂停 ingest 消费程序没有判定：它有一次运行的几次尝试都无效。负载扫描和这组故障运行来自不同的虚拟机，不互相比较。"
     },
     "source": {
       "label": {
         "en": "Benchmarks",
         "zh": "基准测试"
       },
-      "url": "https://github.com/sHyanorn/recserve/blob/c3c564a9b706adccc9e780bac3a8ca2f9b0f3552/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/recserve/blob/9b17c175afec54de86af02380419b7eeb2bb4ba6/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -223,8 +223,8 @@
           "zh": "一个响应绝不会混用两个版本"
         },
         "body": {
-          "en": "A request runs on one bundle version and names it in every shard search, so a replica answers from that version or fails. A swap sends `Prepare` to every replica and goes on when each shard has at least one that holds the version; if a shard has none, the swap is rejected and the active version stays. A replica keeps two versions and never drops the one the gateway serves.",
-          "zh": "一个请求只在一个模型包版本上运行，每次分片搜索都带上这个版本号，所以副本要么按这个版本应答，要么失败。换包时网关向每个副本发 `Prepare`，每个分片至少有一个副本备好新版本才继续；有分片一个都没有，换包就被拒绝，当前版本不变。副本保留两个版本，绝不丢掉网关正在用的那个。"
+          "en": "A request runs on one bundle version and names it in every shard search, so a replica answers from that version or fails. A swap sends `Prepare` to every replica and goes on when each shard has at least one that holds the version; if a shard has none, the swap is rejected and the active version stays. A replica keeps two versions and never drops the one that the last `Prepare` to reach it names as served. That is the version the gateway serves, except for about a second after a swap, with several gateways, or after a `Prepare` the replica ran late.",
+          "zh": "一个请求只在一个模型包版本上运行，每次分片搜索都带上这个版本号，所以副本要么按这个版本应答，要么失败。换包时网关向每个副本发 `Prepare`，每个分片至少有一个副本备好新版本才继续；有分片一个都没有，换包就被拒绝，当前版本不变。副本保留两个版本，绝不丢掉最后送达它的 `Prepare` 所指定的在用版本。除了换包后约一秒内、有多个网关时，以及副本晚执行了某个 `Prepare` 之后，这就是网关在用的版本。"
         }
       },
       {
@@ -250,7 +250,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/recserve/blob/c3c564a9b706adccc9e780bac3a8ca2f9b0f3552/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/recserve/blob/9b17c175afec54de86af02380419b7eeb2bb4ba6/docs/DECISIONS.md"
   },
   "challenges": [
     {
@@ -279,8 +279,8 @@
         "zh": "排序模型给向量分的权重是负的"
       },
       "body": {
-        "en": "On the 680 held-out users the ranker's recall@10 is 0.091 against 0.026 for retrieval order. The weight it gives the vector score is negative: among the candidates, the items a user went on to choose came more from co-occurrence and popularity than from the vector score. Both figures are measured before MMR. In an offline run of the whole pipeline, MMR included, on 43,249 test events, recall@10 is 0.0181, and 0.0050 with the ranker forced to fail, which keeps retrieval order: a difference of −0.0131, 95% interval −0.0143 to −0.0119. With co-occurrence forced to fail it is 0.0098; with the encoder forced to fail, no metric moves by more than 0.0004. Its effect on users is for an A/B experiment to show.",
-        "zh": "在 680 个留出用户上，排序模型的 recall@10 是 0.091，召回顺序是 0.026。模型给向量分的权重是负的：在候选里，用户后来选的物品来自共现和热门的多，来自向量分的少。两个数都是在 MMR 之前测的。离线把整条管线（含 MMR）跑在 43,249 个测试事件上，recall@10 是 0.0181；强制排序模型失败、保留召回顺序时是 0.0050，相差 −0.0131，95% 区间为 −0.0143 到 −0.0119。强制共现失败时是 0.0098；强制编码器失败时，各项指标的变化都不超过 0.0004。它对用户的实际影响仍要由 A/B 实验来回答。"
+        "en": "On the 680 held-out users the ranker's recall@10 is 0.091 against 0.026 for retrieval order. The weight it gives the vector score is negative: among the candidates, the items a user went on to choose came more from co-occurrence and popularity than from the vector score. Both figures are measured before MMR. In an offline run of the pipeline in process, with no stage budgets and MMR included, on 43,249 test events, recall@10 is 0.0181, and 0.0050 with the ranker forced to fail, which keeps the retrieval scores: a difference of −0.0131, 95% interval over test events −0.0143 to −0.0119. With co-occurrence forced to fail it is 0.0098; with the encoder forced to fail, no metric moves by more than 0.0004. Its effect on users is for an A/B experiment to show.",
+        "zh": "在 680 个留出用户上，排序模型的 recall@10 是 0.091，召回顺序是 0.026。模型给向量分的权重是负的：在候选里，用户后来选的物品来自共现和热门的多，来自向量分的少。两个数都是在 MMR 之前测的。在进程内离线运行管线，不设阶段预算，含 MMR，在 43,249 个测试事件上 recall@10 是 0.0181；强制排序模型失败、保留召回分数时是 0.0050，相差 −0.0131，按测试事件计算的 95% 区间为 −0.0143 到 −0.0119。强制共现失败时是 0.0098；强制编码器失败时，各项指标的变化都不超过 0.0004。它对用户的实际影响仍要由 A/B 实验来回答。"
       }
     },
     {

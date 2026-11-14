@@ -31,24 +31,24 @@
         }
       },
       {
-        "value": { "en": "55", "zh": "55" },
+        "value": { "en": "68", "zh": "68" },
         "label": {
-          "en": "security findings logged during development, a production readiness review and a code review, 5 of them High; 49 fixed, 2 accepted, 4 open at Low or below",
-          "zh": "开发过程、生产就绪评审和代码评审中记录的安全问题，其中 5 个高危；49 个已修复，2 个评估后接受，4 个尚未修复，最高为低危"
+          "en": "security findings logged during development, a production readiness review and code review, 5 of them High; 61 fixed, 3 accepted, 4 open at Low or below",
+          "zh": "开发过程、生产就绪评审和代码评审中记录的安全问题，其中 5 个高危；61 个已修复，3 个评估后接受，4 个尚未修复，最高为低危"
         }
       },
       {
-        "value": { "en": "170", "zh": "170" },
+        "value": { "en": "171", "zh": "171" },
         "label": {
           "en": "black-box checks passing against the Docker Compose stack, and 30 browser checks",
           "zh": "在 Docker Compose 部署上通过的黑盒检查；另有 30 项浏览器检查通过"
         }
       },
       {
-        "value": { "en": "161", "zh": "161" },
+        "value": { "en": "173", "zh": "173" },
         "label": {
-          "en": "Go tests passing under the race detector, S3 tests included, and 108 Vitest tests",
-          "zh": "开启竞态检测后通过的 Go 测试，含 S3 测试；另有 108 个 Vitest 测试通过"
+          "en": "Go tests passing under the race detector, S3 tests included, and 113 Vitest tests",
+          "zh": "开启竞态检测后通过的 Go 测试，含 S3 测试；另有 113 个 Vitest 测试通过"
         }
       }
     ],
@@ -58,7 +58,7 @@
     },
     "source": {
       "label": { "en": "Security test report", "zh": "安全测试报告" },
-      "url": "https://github.com/sHyanorn/vault-share/blob/d5f69e6d8cd251412b3c7786f87216ca5bd5e066/docs/security/TEST_REPORT.md"
+      "url": "https://github.com/sHyanorn/vault-share/blob/bc14051f06413742b5696249c751feedf0c99afa/docs/security/TEST_REPORT.md"
     }
   },
   "problem": [
@@ -67,12 +67,12 @@
       "zh": "vault-share 是一个文件分享服务，存放文件的服务器读不到文件内容。文件和文件名在上传前就在浏览器里加密，密钥只放在链接中 `#` 之后的部分，浏览器不会发送这一部分。链接可以设为 1 小时、1 天或 7 天后过期，允许下载 1 到 100 次，也可以阅后即焚。"
     },
     {
-      "en": "The specification asked for files up to 1 GB, encrypted in streamed chunks instead of loaded into memory at once; an optional password the server never sees; an optional account that lists the files you shared without the server reading them; and a threat model and a self-assessment against the OWASP Top 10, written up as a report.",
-      "zh": "规格定下的要求有：支持最大 1 GB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
+      "en": "The specification asked for files up to 1 GiB, encrypted in streamed chunks instead of loaded into memory at once; an optional password the server never sees; an optional account that lists the files you shared without the server reading them; and a threat model and a self-assessment against the OWASP Top 10, written up as a report.",
+      "zh": "规格定下的要求有：支持最大 1 GiB 的文件，分块流式加密，不一次性读进内存；可选的密码保护，服务器同样不知道密码；可选的账号，能列出自己分享过的文件，服务器仍然读不到它们；另外要做威胁建模，对照 OWASP Top 10 自评，并写成测试报告。"
     },
     {
-      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GB can be heavy on a low-memory device. On download, Chromium-based browsers write the decrypted file straight to disk; other browsers hold it in browser storage until the download is complete. A compromised server could still send JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and when it is uploaded and downloaded. Monitoring and backups are left to the operator: the health check covers the database, the storage and free disk space but not the database's integrity, and nothing alerts or backs up automatically.",
-      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GB 的文件在内存小的设备上会比较吃力。下载时，Chromium 系浏览器把解密后的文件直接写入磁盘，其他浏览器先把它放在浏览器存储里，下载完成后再保存。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，大多数网页端加密工具都有这个弱点；服务器也能看到每个文件的大小，以及上传和下载的时间。监控和备份由运维者负责：健康检查覆盖数据库、存储和剩余磁盘空间，不检查数据库完整性，也没有告警和自动备份。"
+      "en": "Encryption and decryption stream in 64 KiB records with constant memory, but the upload sends the ciphertext as one Blob, which browsers may keep in memory, so a file near 1 GiB can be heavy on a low-memory device. On download, Chromium-based browsers write the decrypted file straight to disk; other browsers hold it in browser storage until the download is complete. A compromised server could still send JavaScript that steals keys, as with most web-based encryption tools, and the server sees each file's size and when it is uploaded and downloaded, and can tell whether it has a password. The metadata holding the name is padded to whole KiB, so a name's length shows only beyond about 900 bytes. Monitoring and backups are left to the operator: the health check covers the database, the storage and free disk space but not the database's integrity, and nothing alerts or backs up automatically.",
+      "zh": "加密和解密都按 64 KiB 的记录流式进行，内存占用恒定；但上传时密文作为一个 Blob 发出，浏览器可能把它留在内存里，所以接近 1 GiB 的文件在内存小的设备上会比较吃力。下载时，Chromium 系浏览器把解密后的文件直接写入磁盘，其他浏览器先把它放在浏览器存储里，下载完成后再保存。服务器一旦被攻破，仍可以下发窃取密钥的 JavaScript，大多数网页端加密工具都有这个弱点；服务器也能看到每个文件的大小、上传和下载的时间，还能判断它有没有设密码。存放文件名的元数据补齐到整 KiB，所以只有名字超过约 900 字节时才看得出长度。监控和备份由运维者负责：健康检查覆盖数据库、存储和剩余磁盘空间，不检查数据库完整性，也没有告警和自动备份。"
     }
   ],
   "architecture": {
@@ -139,8 +139,8 @@
           "zh": "密码包装链接里的秘密值"
         },
         "body": {
-          "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and does not know whether a password exists. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
-          "zh": "设了密码时，链接里放的是包装过的 16 字节秘密值：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密这个秘密值。服务器端没有任何改动，也不知道文件有没有密码。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
+          "en": "With a password, the link carries the 16-byte secret wrapped with AES-256-GCM under a key that Argon2id derives from the password, at 64 MiB and 2 passes. The server is unchanged and never sees the password, though it can tell whether one exists: the download page asks for the metadata only after the right password is entered, and an entry kept in My files is 206 bytes with a password and 148 without. Firefox Send only re-keyed its server-side check with PBKDF2 at 100 iterations, so its link still carried the file key. Whoever holds the link can still guess offline, at Argon2id cost per guess, so a password needs at least 8 characters (F21).",
+          "zh": "设了密码时，链接里放的是包装过的 16 字节秘密值：Argon2id 以 64 MiB 内存、2 轮从密码派生出一把密钥，再用它以 AES-256-GCM 加密这个秘密值。服务器端没有任何改动，也看不到密码，但能判断文件有没有密码：下载页要等输入正确的密码后才请求元数据，账号里保存的文件记录有密码时是 206 字节，没有时是 148 字节。Firefox Send 只是用 100 轮 PBKDF2 换掉了服务端的验证密钥，链接里仍然带着文件密钥。拿到链接的人仍能离线猜密码，每猜一次付出一次 Argon2id 的代价，所以密码至少要 8 个字符（F21）。"
         }
       },
       {
@@ -166,7 +166,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/vault-share/blob/d5f69e6d8cd251412b3c7786f87216ca5bd5e066/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/vault-share/blob/bc14051f06413742b5696249c751feedf0c99afa/docs/DECISIONS.md"
   },
   "challenges": [
     {
@@ -185,8 +185,8 @@
         "zh": "先检查、后计数的限额"
       },
       "body": {
-        "en": "Lockouts were asked before an attempt was checked and told after it, so attempts sent at once all got through. In tests, 40 wrong second-step codes on one ticket had 7 to 20 checked where the ticket allows 5, and 20 bad download signatures at once had 11 to 14 checked where 5 lock the client out (F38, F39). Now a ticket gives up an attempt in the statement that checks its count, and a lockout admits an attempt before checking it, refusing one while the failures counted and the attempts in flight could reach the limit; afterwards at most 5 codes are checked, and exactly 5 signatures. That fix first answered an attempt refused only because others were in flight with a 15-minute lockout; such an attempt now gets 503 `busy` with `Retry-After: 5` (F42).",
-        "zh": "锁定机制原先在检查之前询问、检查之后才记账，同时到达的尝试会全部放行。测试中，在一张登录票据上同时提交 40 个错误的二次验证码，有 7 到 20 个被检查，而票据只允许 5 次；同时发出 20 个错误的下载签名，有 11 到 14 个被检查，而 5 次就该锁定该客户端（F38、F39）。现在票据在核对剩余次数的同一条语句里扣掉一次尝试，锁定机制也先登记尝试再检查，已记录的失败加上进行中的尝试可能达到上限时就直接拒绝；修复后验证码最多检查 5 个，签名正好 5 个。这次修复起初把只因有其他尝试在进行而被拒的请求答复成 15 分钟锁定，现在这类请求收到的是 503 `busy` 和 `Retry-After: 5`（F42）。"
+        "en": "Lockouts were asked before an attempt was checked and told after it, so attempts sent at once all got through. In tests, 40 wrong second-step codes on one ticket had 7 to 20 checked where the ticket allows 5, and 20 bad download signatures at once had 11 to 14 checked where 5 lock the client out (F38, F39). Now a ticket gives up an attempt in the statement that checks its count, and a lockout admits an attempt before checking it, refusing one while the failures counted and the attempts in flight could reach the limit; afterwards at most 5 codes are checked, and exactly 5 signatures. That fix first answered an attempt refused only because others were in flight with a 15-minute lockout; such an attempt now gets 503 `busy` with `Retry-After: 5` (F42). A later code review found the second step locked per account, so anyone who knew the password could shut the owner out of every sign-in and change. It is now counted per client, per known browser and for all other browsers together, and a change confirmed while signed in counts against that sign-in alone (F56).",
+        "zh": "锁定机制原先在检查之前询问、检查之后才记账，同时到达的尝试会全部放行。测试中，在一张登录票据上同时提交 40 个错误的二次验证码，有 7 到 20 个被检查，而票据只允许 5 次；同时发出 20 个错误的下载签名，有 11 到 14 个被检查，而 5 次就该锁定该客户端（F38、F39）。现在票据在核对剩余次数的同一条语句里扣掉一次尝试，锁定机制也先登记尝试再检查，已记录的失败加上进行中的尝试可能达到上限时就直接拒绝；修复后验证码最多检查 5 个，签名正好 5 个。这次修复起初把只因有其他尝试在进行而被拒的请求答复成 15 分钟锁定，现在这类请求收到的是 503 `busy` 和 `Retry-After: 5`（F42）。之后的代码评审发现，二次验证按账号整体锁定，知道密码的人就能让账号主人既登录不了，也改不了任何设置。现在它按客户端、按已知浏览器、按其余所有浏览器合计分别计数，登录后确认的修改只计入那一次登录（F56）。"
       }
     },
     {

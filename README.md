@@ -1,5 +1,7 @@
 # sHyanorn.github.io
 
+[![CI](https://github.com/sHyanorn/sHyanorn.github.io/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sHyanorn/sHyanorn.github.io/actions/workflows/ci.yml?query=branch%3Amain)
+
 Personal website of Aaron Yang. Built with Astro and TypeScript, with a hand-written WebGL2 and GLSL background.
 
 Live at [shyanorn.github.io](https://shyanorn.github.io/).

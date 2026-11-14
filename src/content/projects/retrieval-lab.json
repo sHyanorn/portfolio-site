@@ -2,8 +2,8 @@
   "title": "retrieval-lab",
   "order": 3,
   "summary": {
-    "en": "BM25 and dense retrieval in Go, where BM25, exact dense search and fusion are each accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0006 in nDCG@10 on all six, and within 0.0004 on all but TREC-COVID.",
-    "zh": "用 Go 实现的 BM25 和稠密检索，其中 BM25、用精确搜索的稠密检索和融合各自对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在六个数据集上的 nDCG@10 相差都不超过 0.0006，除 TREC-COVID 外不超过 0.0004。"
+    "en": "BM25 and dense retrieval in Go, where BM25, exact dense search and fusion are each accepted against a number that Pyserini publishes for BEIR. BM25 equals the published nDCG@10 and Recall@100 to four decimals on six datasets. BGE-base with exact search is within 0.0006 in nDCG@10 on all six, and within 0.0004 on all but TREC-COVID. A pre-registered study on it found that HNSW's loss in nDCG@10 depends on the model at equal ef, and not once each model is searched to the same neighbour recall of 0.95.",
+    "zh": "用 Go 实现的 BM25 和稠密检索，其中 BM25、用精确搜索的稠密检索和融合各自对照 Pyserini 为 BEIR 公布的数字验收。BM25 在六个数据集上的 nDCG@10 和 Recall@100 与公布值四位小数相同。BGE-base 加精确搜索在六个数据集上的 nDCG@10 相差都不超过 0.0006，除 TREC-COVID 外不超过 0.0004。在此基础上的一项预注册研究发现：ef 相同时，HNSW 造成的 nDCG@10 损失随模型而变；每个模型都搜索到相同的近邻召回率 0.95 时，就不再随模型而变。"
   },
   "tags": [
     {
@@ -119,7 +119,7 @@
         "en": "Benchmarks",
         "zh": "基准测试"
       },
-      "url": "https://github.com/sHyanorn/retrieval-lab/blob/323634b3942c357b97859804424d98745a6274ea/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/retrieval-lab/blob/3322c11b89bf309376490883dbbc576fcf3c3853/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -132,8 +132,12 @@
       "zh": "这个项目用 Go 实现检索的各个组件。BM25、用精确搜索的稠密检索和融合各自对照一个已公布的数字验收，第三方用公开的命令和数据就能复现：文档数少于 20 万的 BEIR 测试集，以及 Pyserini 的 BEIR 复现页面上的数字，融合用的是它的 BEIR 融合页面上的数字。超出容差的数据集不朝着锚点去调，要找到原因并记录下来。HNSW 对照同一批向量上的精确搜索来度量，不设通过阈值。"
     },
     {
-      "en": "Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion of the BM25 and BGE runs. Cross-encoder reranking is not built yet. A study of approximate search and the comparison of embedding models on BEIR is pre-registered; none of its hypotheses has a result yet.",
-      "zh": "目前做完的有：评测台、BM25，用精确搜索和用 recserve 的 HNSW 图做的稠密检索，以及 BM25 与 BGE 两路 run 的融合。交叉编码器重排还没有做。另有一项关于近似搜索与 BEIR 上嵌入模型比较的研究已经预注册，它的各项假设目前都还没有结果。"
+      "en": "Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion of the BM25 and BGE runs. Cross-encoder reranking is not built yet.",
+      "zh": "目前做完的有：评测台、BM25，用精确搜索和用 recserve 的 HNSW 图做的稠密检索，以及 BM25 与 BGE 两路 run 的融合。交叉编码器重排还没有做。"
+    },
+    {
+      "en": "On this harness a pre-registered study compared eight embedding models on seven BEIR datasets, searching four HNSW graphs per model and dataset. A model's loss is its nDCG@10 under exact search minus that under HNSW, and a difference below 0.005 counts as negligible. At equal search parameters, ef 40, the loss depends on the model (H1 supported): averaged over the datasets it runs from 0.0040 to 0.0193, and the registered test separates 19 of the 28 pairs of models, 8 of them by more than 0.005. With each graph searched at the smallest ef that finds 0.95 of the exact top 10, it does not (H2 supported): on the six datasets where every model can be matched to that recall within 0.01, the test separates no pair and the 90% interval of the spread between models ends at 0.0047, while each model loses 0.0101 to 0.0120. There HNSW keeps the exact-search order (H3 supported): of the 21 pairs that exact search orders, none is reversed and one is left unordered. At the recall-0.95 setting the build alone moves a model's nDCG@10 on a dataset by 0.005 or more in 15 of 49 cases, by up to 0.0203 across four builds (H4 not supported). Fusing with BM25 by RRF at ef 100 removes 0.24 of the loss, with a 95% interval of 0.16 to 0.33, short of the half that H5 required (not supported).",
+      "zh": "在这套评测台上，一项预注册研究比较了 8 个嵌入模型在 7 个 BEIR 数据集上的表现，每个模型和数据集各搜索 4 张 HNSW 图。模型的损失是精确搜索的 nDCG@10 减去 HNSW 的 nDCG@10，差距小于 0.005 视为可以忽略。搜索参数相同（ef 都是 40）时，损失随模型而变（H1 成立）：按数据集平均，从 0.0040 到 0.0193；登记的检验在 28 对模型中分出了 19 对，其中 8 对相差超过 0.005。每张图都用能找回精确前 10 名中 0.95 的最小 ef 搜索时，损失不再随模型而变（H2 成立）：在每个模型的召回率都能对齐到 0.95（相差不超过 0.01）的 6 个数据集上，检验分不出任何一对模型，模型间极差的 90% 区间上端是 0.0047，而每个模型的损失在 0.0101 到 0.0120 之间。在这一召回率下，HNSW 保持精确搜索给出的模型顺序（H3 成立）：精确搜索分得出先后的 21 对里，没有一对颠倒，有一对分不出先后。在召回率 0.95 的设置下，单是建图这一项，就让某个模型在某个数据集上的 nDCG@10 在 49 种情形中的 15 种里变动 0.005 或更多，4 次建图之间最多相差 0.0203（H4 不成立）。在 ef 为 100 时用 RRF 与 BM25 融合，消除了损失中的 0.24，95% 区间 0.16 到 0.33，不到 H5 要求的一半（不成立）。"
     }
   ],
   "architecture": {
@@ -274,7 +278,7 @@
         }
       }
     ],
-    "source": "https://github.com/sHyanorn/retrieval-lab/blob/323634b3942c357b97859804424d98745a6274ea/docs/DECISIONS.md"
+    "source": "https://github.com/sHyanorn/retrieval-lab/blob/3322c11b89bf309376490883dbbc576fcf3c3853/docs/DECISIONS.md"
   },
   "challenges": [
     {
@@ -312,6 +316,23 @@
       "body": {
         "en": "With the document encoding settled, 28 documents of SciFact and ArguAna still had a cosine below 0.9999 to Pyserini's vector, and every one held soft hyphens, zero-width spaces or left-to-right marks. Hugging Face's BERT normalizer, which Pyserini's encoder uses, removes such characters; the Go tokenizer library removes only control characters. Documents now lose every character of Unicode category C but tab, newline and carriage return before encoding. Queries keep format characters, as the anchor's query tokenizer does.",
         "zh": "文档的编码方式定下之后，SciFact 和 ArguAna 仍有 28 篇与 Pyserini 向量的余弦低于 0.9999，每一篇都含有软连字符、零宽空格或从左到右标记。Pyserini 的编码器用的 Hugging Face BERT 规范化器会删掉这类字符；Go 的分词库只删控制字符。现在文档在编码前先删掉 Unicode C 类的所有字符，制表符、换行和回车除外。查询保留格式字符，和锚点的查询分词器一样。"
+      }
+    },
+    {
+      "title": {
+        "en": "What the study leaves out",
+        "zh": "研究没有覆盖的"
+      },
+      "body": {
+        "en": "The study covers one HNSW implementation, corpora of up to 2.7 million documents, English text and these eight models. It does not report latency: equal ef means equal search parameters, not equal cost. The spread of four builds understates that of all builds. The vectors are not archived, so a rerun encodes again and its graphs and runs differ in detail. BEIR's judgements are sparse, and a document nobody judged counts as not relevant.",
+        "zh": "研究只涉及一种 HNSW 实现、文档数不超过 270 万的语料、英文文本和这 8 个模型。它不报告延迟：ef 相同只是搜索参数相同，并不意味着开销相同。4 次建图之间的差距会低估所有可能建图之间的差距。向量没有存档，重跑需要重新编码，建出的图和 run 在细节上会不同。BEIR 的相关性标注是稀疏的，没人标注过的文档按不相关计。"
+      },
+      "link": {
+        "label": {
+          "en": "Study results",
+          "zh": "研究结果"
+        },
+        "url": "https://github.com/sHyanorn/retrieval-lab/blob/3322c11b89bf309376490883dbbc576fcf3c3853/docs/STUDY.md"
       }
     }
   ],

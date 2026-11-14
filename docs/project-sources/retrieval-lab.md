@@ -2,11 +2,11 @@
 
 Content: `src/content/projects/retrieval-lab.json`. Figures: `scripts/figures.ts`.
 
-All paths are in github.com/sHyanorn/retrieval-lab at commit 323634b.
+All paths are in github.com/sHyanorn/retrieval-lab at commit 3322c11.
 
 | Number or claim | Source |
 |---|---|
-| Summary: BM25 and dense retrieval in Go, where BM25, exact dense search and fusion are each accepted against a number that … | README.md:3, 5; docs/SPEC.md:5, 10, 62; docs/BENCHMARKS.md:53-58, 102-107 |
+| Summary: BM25 and dense retrieval in Go, where BM25, exact dense search and fusion are each accepted against a number that … | README.md:3, 5; docs/SPEC.md:5, 10, 62; docs/BENCHMARKS.md:53-58, 102-107; docs/STUDY.md:12-13 (the study sentence: H1 at ef 40, H2 at recall 0.95) |
 | Tags: Go / Information retrieval / BM25 / Dense retrieval / BEIR | README.md:3, 5 |
 | Demo, first figure, description: Dot chart of nDCG@10 on six BEIR test sets: Pyserini's published BM25, this project's BM25 and Bleve's own … | docs/BENCHMARKS.md:53-58, 83-88 |
 | Demo, first figure, caption: nDCG@10 on six BEIR test sets. This project's BM25, Lucene's scoring computed from a Bleve index, equals … | README.md:5; docs/BENCHMARKS.md:40, 53-58, 78, 83-88 |
@@ -23,7 +23,8 @@ All paths are in github.com/sHyanorn/retrieval-lab at commit 323634b.
 | Metrics, report link: Benchmarks | docs/BENCHMARKS.md (the file's title) |
 | Problem: Two implementations of one BM25 configuration still differ in details of tokenization and stemming, and can … | docs/DECISIONS.md:28 (D004); docs/SPEC.md:31 |
 | Problem: This project builds its retrieval components in Go. BM25, exact dense search and fusion are each accepted against … | README.md:3; docs/SPEC.md:5, 9-10, 21, 31, 49 (HNSW: no pass threshold), 62 (fusion: its BEIR fusion page) |
-| Problem: Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion … | README.md:5; docs/TASKS.md:9-31; README.md:3 (cross-encoder reranking not implemented); docs/SPEC.md:5 (a pre-registered study); docs/PREREGISTRATION.md:1, 3; docs/STUDY.md:8, 14 (no results yet) |
+| Problem: Done so far: the evaluation harness, BM25, dense retrieval with exact search and with recserve's HNSW graph, and fusion … | README.md:5; docs/TASKS.md:9-31; README.md:3 (cross-encoder reranking not implemented) |
+| Problem: On this harness a pre-registered study compared eight embedding models on seven BEIR datasets, searching four HNSW … | docs/STUDY.md:8 (models, datasets), 12 (H1, 19 of 28), 35-62 (8 of the 19 with \|Ē\| > 0.005: lines 37, 41, 43, 48, 53-56, counted), 22-29 (0.0040 to 0.0193; 0.0101 to 0.0120), 13 (H2, S_0.95, 0.0047), 164 (0 of 28), 14 and 68-95 (H3: 21, 0, 1; the unordered pair at 80), 15, 97 and 101-149 (H4: 15 of 49 counted, ≥ and > 0.005 alike; largest 0.0203 at 113), 16 (H5); docs/PREREGISTRATION.md:45, 183 (loss, δ), 51, 164 (four builds), 65-66 (operating points, matched), 85-86 (H4 at seed 1's ef for 0.95), 89, 167 (H5: RRF, 100 dense and 1,000 BM25 hits) |
 | Architecture, labels: data: BEIR data / dataSub: six test sets, by SHA-256 / bm25: BM25 / bm25Sub: Bleve index, Lucene's scoring / … | README.md:5, 15; docs/BENCHMARKS.md:7, 36, 40, 93, 112; docs/DECISIONS.md:33 (D005), 78 (D011); docs/SPEC.md:17 (TREC run files) |
 | Architecture, description: `scripts/data.sh` downloads the six BEIR datasets and checks them by SHA-256. `cmd/bm25` indexes the title … | README.md:5, 15; docs/BENCHMARKS.md:36, 40, 93, 112, 117-119; docs/DECISIONS.md:13 (D002), 20 (D003), 78 (D011); docs/SPEC.md:17; cmd/table/dense.go:51-63 |
 | Decision: The anchors and the tolerance come first | docs/DECISIONS.md:27-28 (D004); docs/SPEC.md:28, 30 |
@@ -35,3 +36,5 @@ All paths are in github.com/sHyanorn/retrieval-lab at commit 323634b.
 | Challenge, link: Reported to Bleve: blevesearch/bleve#2415 / url: https://github.com/blevesearch/bleve/issues/2415 | the issue itself, opened by the owner (not in the repository) |
 | Challenge: A logarithm one unit in the last place lower | docs/DECISIONS.md:21, 23 (D003) |
 | Challenge: Twenty-eight documents with characters nobody sees | docs/DECISIONS.md:72-73 (D010), 68 (D009 limits) |
+| Challenge: What the study leaves out | docs/PREREGISTRATION.md:214-220 (Section 10), 86 (four builds understate the spread); docs/STUDY.md (no time column) |
+| Challenge, link: Study results / url: …/blob/3322c11…/docs/STUDY.md | docs/STUDY.md |

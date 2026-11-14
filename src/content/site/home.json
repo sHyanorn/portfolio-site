@@ -34,8 +34,8 @@
         "zh": "后端系统"
       },
       "body": {
-        "en": "Go limit order book with a write-ahead command log and open-loop load testing: 5.05M–6.95M commands/s in the core, p99 1.76 ms at 10k requests/s; 50k requests/s is near saturation, at 41 ms.",
-        "zh": "用 Go 写的限价订单簿，带预写命令日志和开环压测：撮合核心每秒 505 万–695 万条命令，每秒 1 万个请求时 p99 为 1.76 ms；每秒 5 万个请求时接近饱和，p99 为 41 ms。"
+        "en": "Go limit order book with a write-ahead command log and open-loop load testing: 6.25M–8.88M commands/s in the core (measured on a noisy VM, ± up to 36%), p99 1.76 ms at 10k requests/s; 50k requests/s is near saturation, at 41 ms.",
+        "zh": "用 Go 写的限价订单簿，带预写命令日志和开环压测：撮合核心每秒 625 万–888 万条命令（在一台噪声较大的虚拟机上测得，± 最高 36%），每秒 1 万个请求时 p99 为 1.76 ms；每秒 5 万个请求时接近饱和，p99 为 41 ms。"
       }
     }
   ]

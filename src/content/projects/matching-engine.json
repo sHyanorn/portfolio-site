@@ -23,10 +23,10 @@
   "metrics": {
     "items": [
       {
-        "value": { "en": "5.05M–6.95M", "zh": "505 万–695 万" },
+        "value": { "en": "6.25M–8.88M", "zh": "625 万–888 万" },
         "label": {
-          "en": "commands per second through the matching core",
-          "zh": "撮合核心每秒处理的命令数"
+          "en": "commands per second through the matching core on one symbol, measured on a noisy VM (± up to 36%)",
+          "zh": "撮合核心在单个交易对上每秒处理的命令数，在一台噪声较大的虚拟机上测得（± 最高 36%）"
         }
       },
       {
@@ -37,7 +37,7 @@
         }
       },
       {
-        "value": { "en": "128 MiB", "zh": "128 MiB" },
+        "value": { "en": "124 MiB", "zh": "124 MiB" },
         "label": {
           "en": "matching core heap with 1M resting orders",
           "zh": "挂单 100 万笔时撮合核心的堆内存"
@@ -52,12 +52,12 @@
       }
     ],
     "note": {
-      "en": "The throughput, latency and memory figures were measured on one 4 vCPU cloud VM with Go 1.24.7, at earlier commits; in the end-to-end runs the engine shares it with the load generator. The project now builds with Go 1.27.4, and the end-to-end runs predate later changes to the API code; the repository holds no end-to-end run on that VM after them.",
-      "zh": "吞吐、延迟和内存的数字都在一台 4 vCPU 的云虚拟机上、用 Go 1.24.7 在较早的提交上测得；端到端测试时，引擎和压测程序共用这台机器。项目现在用 Go 1.27.4 构建；端到端测试早于接口代码后来的修改，仓库里没有这些修改之后在这台机器上做的端到端测试。"
+      "en": "The latency figure was measured on one 4 vCPU cloud VM with Go 1.24.7, and the throughput and memory figures on a second 4 vCPU cloud VM with Go 1.27.4, at earlier commits; in the end-to-end runs the engine shares the first VM with the load generator. The project now builds with Go 1.27.4, and the end-to-end runs predate later changes to the engine, including its API code and matching core; the repository holds no end-to-end run on the first VM after them.",
+      "zh": "延迟的数字在一台 4 vCPU 的云虚拟机上、用 Go 1.24.7 测得，吞吐和内存的数字在第二台 4 vCPU 的云虚拟机上、用 Go 1.27.4 测得，都是在较早的提交上；端到端测试时，引擎和压测程序共用第一台机器。项目现在用 Go 1.27.4 构建；端到端测试早于引擎后来的修改（包括接口代码和撮合核心），仓库里没有这些修改之后在第一台机器上做的端到端测试。"
     },
     "source": {
       "label": { "en": "Benchmark report", "zh": "基准测试报告" },
-      "url": "https://github.com/sHyanorn/matching-engine/blob/d13e727475f2311ddc20fa5b5e9911722cc72158/docs/BENCHMARKS.md"
+      "url": "https://github.com/sHyanorn/matching-engine/blob/7de38f01f92154e861bc62858c6a6eac1e6bf7b6/docs/BENCHMARKS.md"
     }
   },
   "problem": [
@@ -70,8 +70,8 @@
       "zh": "项目定了三个目标：撮合核心在单个交易对上每秒超过 100 万次操作；每秒 5 万笔订单时，从 REST 下单到收到成交推送的 p99 延迟低于 5 ms；测出挂单 100 万笔时的内存占用。"
     },
     {
-      "en": "The core meets its target 5 to 7 times over. The end-to-end target, about 71k requests/s in this order flow, is out of reach on the 4 vCPU test machine, where the p99 stays under 5 ms up to 15k requests/s. At 50k requests/s, near saturation, the p99 was 41 ms, a figure that depends on the machine.",
-      "zh": "撮合核心的吞吐是目标的 5 到 7 倍。端到端目标折合这套订单流约每秒 7.1 万个请求，在这台 4 vCPU 的测试机上达不到；每秒 1.5 万个请求以内，p99 延迟都低于 5 ms。每秒 5 万个请求时接近饱和，p99 为 41 ms，这个数因机器而异。"
+      "en": "The core meets its target 6 to 9 times over. The end-to-end target, about 71k requests/s in this order flow, is out of reach on the first 4 vCPU VM, where the p99 stays under 5 ms up to 15k requests/s. At 50k requests/s, near saturation, the p99 was 41 ms, a figure that depends on the machine.",
+      "zh": "撮合核心的吞吐是目标的 6 到 9 倍。端到端目标折合这套订单流约每秒 7.1 万个请求，在第一台 4 vCPU 的测试机上达不到；每秒 1.5 万个请求以内，p99 延迟都低于 5 ms。每秒 5 万个请求时接近饱和，p99 为 41 ms，这个数因机器而异。"
     }
   ],
   "architecture": {
@@ -151,8 +151,8 @@
         "zh": "瓶颈不在订单簿"
       },
       "body": {
-        "en": "A CPU profile at 25k requests/s put the matching goroutine, book included, at about 10%, against about 19% for HTTP system calls and 14% for decoding request bodies, 9 points of which went to checking their keys. Checking the keys in one scan instead of through a `json.Decoder` took the check from 5.79 µs and 79 allocations to 0.51 µs and none, and cut the engine's CPU per request by 5% to 8%. `Book.Apply` is 1.4% to 2% of the engine's CPU, so its nodes are not pooled.",
-        "zh": "在每秒 2.5 万个请求下做 CPU 剖析，撮合 goroutine 连同订单簿只占约 10%，HTTP 的系统调用约占 19%，解析请求体占 14%，其中检查字段名就占了 9 个百分点。改为一次扫描检查字段名，不再经过 `json.Decoder`，这项检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配，引擎处理每个请求的 CPU 时间减少 5% 到 8%。`Book.Apply` 只占引擎 CPU 的 1.4% 到 2%，所以没有给它的节点做对象池。"
+        "en": "A CPU profile at 25k requests/s put the matching goroutine, book included, at about 10%, against about 19% for HTTP system calls and 14% for decoding request bodies, 9 points of which went to checking their keys. Checking the keys in one scan instead of through a `json.Decoder` took the check from 5.79 µs and 79 allocations to 0.51 µs and none, and cut the engine's CPU per request by 5% to 8%. In the profiles before and after the optimizations, `Book.Apply` is 1.4% to 2% of the engine's CPU. The book has since gained its own order index and now reuses the nodes of orders that leave it; the end-to-end figures were measured before that and have not been measured again.",
+        "zh": "在每秒 2.5 万个请求下做 CPU 剖析，撮合 goroutine 连同订单簿只占约 10%，HTTP 的系统调用约占 19%，解析请求体占 14%，其中检查字段名就占了 9 个百分点。改为一次扫描检查字段名，不再经过 `json.Decoder`，这项检查从 5.79 µs、79 次内存分配降到 0.51 µs、零分配，引擎处理每个请求的 CPU 时间减少 5% 到 8%。在优化前后的 CPU 剖析里，`Book.Apply` 都只占引擎 CPU 的 1.4% 到 2%。订单簿后来改用自己的订单索引，并复用离开订单簿的订单节点；端到端的数字都在这之前测得，之后没有重测。"
       }
     },
     {
@@ -161,8 +161,8 @@
         "zh": "一次 fsync 拖住所有命令"
       },
       "body": {
-        "en": "Every 10 ms the symbol's goroutine stopped for its fsync, 0.8 ms on average and tens of milliseconds at times, and every command waited. A helper goroutine now runs the fsync, as Redis, Kafka and PostgreSQL flush their logs on a background thread (D031). The median p99 at 10k requests/s fell from 5.32 to 3.82 ms, and the three runs at 25k/s went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. These sweeps ran at earlier commits on a slower VM of the same type, so they compare with each other, not with the metrics above.",
-        "zh": "原先交易对的 goroutine 每 10 ms 停下来 fsync 一次，平均 0.8 ms，有时几十毫秒，所有命令都得等着。现在 fsync 交给一个辅助 goroutine，Redis、Kafka 和 PostgreSQL 也都在后台线程刷日志（D031）。每秒 1 万个请求时，三次运行的 p99 延迟中位数从 5.32 ms 降到 3.82 ms；每秒 2.5 万个请求的三次运行从 20.0、36.4、215 ms 降到 19.6、19.8、28.7 ms。这几轮测试跑在更早的提交上，用的是同型号但更慢的一台虚拟机，只能互相比较，不能和上面的指标对比。"
+        "en": "Every 10 ms the symbol's goroutine stopped for its fsync, 0.8 ms on average and tens of milliseconds at times, and every command waited. A helper goroutine now runs the fsync, as Redis, Kafka and PostgreSQL flush their logs on a background thread (D031). The median p99 at 10k requests/s fell from 5.32 to 3.82 ms, and the three runs at 25k/s went from 20.0, 36.4 and 215 ms to 19.6, 19.8 and 28.7 ms. These sweeps ran at earlier commits on a slower VM of the first VM's type, so they compare only with each other.",
+        "zh": "原先交易对的 goroutine 每 10 ms 停下来 fsync 一次，平均 0.8 ms，有时几十毫秒，所有命令都得等着。现在 fsync 交给一个辅助 goroutine，Redis、Kafka 和 PostgreSQL 也都在后台线程刷日志（D031）。每秒 1 万个请求时，三次运行的 p99 延迟中位数从 5.32 ms 降到 3.82 ms；每秒 2.5 万个请求的三次运行从 20.0、36.4、215 ms 降到 19.6、19.8、28.7 ms。这几轮测试跑在更早的提交上，用的是和第一台同型号但更慢的一台虚拟机，只能互相比较。"
       }
     },
     {
@@ -173,6 +173,16 @@
       "body": {
         "en": "A run counts only if every trade reaches the client once and in order. `loadgen` checks that the trade stream's sequence numbers run without gaps, that the pushes, the trades in REST replies and the engine's trade counter agree in number, and that the pushes and replies agree in content by a sum of 64-bit hashes (D036). The run must also send 99% of the target rate with no failed request.",
         "zh": "每笔成交都按顺序、恰好一次送到客户端，这次压测才算数。`loadgen` 检查成交推送的序号没有缺口，核对推送、REST 回复里的成交和引擎的成交计数器三者数量一致，再用 64 位哈希之和比对推送和回复的内容（D036）。此外，一次运行至少要发出目标速率的 99%，并且没有失败的请求。"
+      }
+    },
+    {
+      "title": {
+        "en": "Compared with other engines on one VM",
+        "zh": "在同一台虚拟机上和其他引擎比较"
+      },
+      "body": {
+        "en": "The flash1-dev matching engine benchmark ran the matching core, Liquibook, CppTrader and geseq on one 4 vCPU VM in ten rounds, one engine after another, and checked every run's reports against a published hash. The core was faster than CppTrader, the fastest of the three there, in 46 of 50 paired runs, with a median ratio of 1.28 to 1.60 per scenario. One engine's runs of a scenario vary by up to 2.09 times, so this ranks the engines on that VM and makes no claim about absolute throughput. The core takes messages in runs, while CppTrader's adapter takes one per call. No geseq run passes the benchmark's rule on probe time.",
+        "zh": "flash1-dev 撮合引擎基准测试在一台 4 vCPU 的虚拟机上运行撮合核心、Liquibook、CppTrader 和 geseq，共 10 轮，各引擎依次运行，每次运行的回报都和公布的哈希值核对。成对比较的 50 次运行里，撮合核心有 46 次快于 CppTrader，后者是另外三个引擎里在这台机器上最快的；各场景比值的中位数为 1.28 到 1.60。同一引擎在同一场景下的各次运行相差最多 2.09 倍，所以结果只用来给这台虚拟机上的引擎排名，对绝对吞吐不作结论。撮合核心成批接收消息，CppTrader 的适配器每次调用只接收一条；geseq 没有一次运行满足基准测试关于探测耗时的规则。"
       }
     }
   ],

@@ -33,7 +33,7 @@ The intro's two sentences, then the three areas.
 | Backend: Go limit order book | matching-engine README.md:3; docs/DECISIONS.md:5-8 (D001) |
 | Backend: write-ahead command log | matching-engine README.md:3, 42; docs/DECISIONS.md:101-103 (D017) |
 | Backend: open-loop load testing | matching-engine docs/DECISIONS.md:179-181 (D030); docs/BENCHMARKS.md:28 |
-| Backend: 5.05M to 6.95M commands/s in the matching core | matching-engine docs/BENCHMARKS.md:13-18 (README.md:13 rounds these to 5.0M to 6.9M) |
+| Backend: 6.25M to 8.88M commands/s in the matching core, measured on a noisy VM (± up to 36%) | matching-engine at 7de38f0: docs/BENCHMARKS.md:15-20, 22; README.md:15 |
 | Backend: p99 1.76 ms at 10k requests/s, from order to trade push | matching-engine docs/BENCHMARKS.md:29, 38 |
 | Backend: 50k requests/s is near saturation, at 41 ms | matching-engine at d13e727: README.md:14; docs/BENCHMARKS.md:44, 58 |
 
@@ -173,7 +173,6 @@ All paths are in matching-engine.
 | A run is valid only if every trade is pushed once and in order | docs/BENCHMARKS.md:30; docs/DECISIONS.md:181 (D030) |
 | Checked by gap-free `seq` and by summing a 64-bit hash of each trade | docs/DECISIONS.md:217 (D036) |
 | CPU profile: HTTP and decoding take most of the time; the matching goroutine, book included, takes about 10% | docs/BENCHMARKS.md:76, 80 |
-| `Book.Apply` is 1.4% to 2% of engine CPU, so its nodes are not pooled | docs/BENCHMARKS.md:113 |
 | JSON key check: 5.79 µs and 79 allocations before, 0.51 µs and 0 after | docs/BENCHMARKS.md:97, 99 |
 
 ### Earlier projects

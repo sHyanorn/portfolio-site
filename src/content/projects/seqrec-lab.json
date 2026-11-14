@@ -1,0 +1,319 @@
+{
+  "title": "seqrec-lab",
+  "order": 4,
+  "summary": {
+    "en": "A pre-registered study of Transformer sequential recommenders, SASRec, BERT4Rec and gSASRec, with equal tuning budgets, five to ten seeds per arm and full-ranking evaluation on one rented consumer GPU. On MovieLens-1M and Video_Games, SASRec with full cross-entropy is ahead of BERT4Rec and gSASRec, and SASRec with BCE and one negative trails it by more than 2%. MovieLens-1M's test targets had been read for anchor checks before its final runs. Steam and MovieLens-20M have no results yet.",
+    "zh": "对 Transformer 序列推荐模型 SASRec、BERT4Rec 和 gSASRec 的预注册研究：各组调参预算相同，每组 5 到 10 个种子，在全部物品上排序评测，在一块租用的消费级 GPU 上进行。在 MovieLens-1M 和 Video_Games 上，用完整交叉熵训练的 SASRec 领先 BERT4Rec 和 gSASRec，用 BCE 加一个负样本训练的 SASRec 比它低 2% 以上。MovieLens-1M 的测试目标在正式运行之前已被锚点检查读过。Steam 和 MovieLens-20M 还没有结果。"
+  },
+  "tags": [
+    {
+      "en": "Python",
+      "zh": "Python"
+    },
+    {
+      "en": "PyTorch",
+      "zh": "PyTorch"
+    },
+    {
+      "en": "Sequential recommendation",
+      "zh": "序列推荐"
+    },
+    {
+      "en": "Pre-registration",
+      "zh": "预注册"
+    },
+    {
+      "en": "Equivalence testing",
+      "zh": "等价性检验"
+    }
+  ],
+  "demo": {
+    "images": [
+      {
+        "src": "./seqrec-lab/objectives-light.png",
+        "dark": "./seqrec-lab/objectives-dark.png",
+        "alt": {
+          "en": "Interval chart of the relative difference in test NDCG@10 from SASRec with full cross-entropy, with ±2% shaded. MovieLens-1M: sampled softmax −4.1% (−5.2% to −3.1%), gBCE −4.1% (−5.0% to −3.1%). Video_Games: sampled softmax −4.8% (−5.7% to −4.0%), gBCE −8.0% (−8.4% to −7.5%).",
+          "zh": "区间图，相对完整交叉熵训练的 SASRec，测试 NDCG@10 的相对差，阴影为 ±2%。MovieLens-1M：sampled softmax −4.1%（−5.2% 到 −3.1%），gBCE −4.1%（−5.0% 到 −3.1%）。Video_Games：sampled softmax −4.8%（−5.7% 到 −4.0%），gBCE −8.0%（−8.4% 到 −7.5%）。"
+        },
+        "caption": {
+          "en": "Sampled softmax and gBCE on the SASRec backbone against full cross-entropy, as relative differences in test NDCG@10 with 95% intervals. H2b expected both within ±2%; on both datasets every interval lies below −2%, and equivalence is not shown. On MovieLens-1M the equivalence tests are underpowered.",
+          "zh": "在 SASRec 主干上，sampled softmax 和 gBCE 相对完整交叉熵的测试 NDCG@10 相对差及 95% 区间。H2b 预期两者都在 ±2% 以内；两个数据集上所有区间都在 −2% 以下，等价性没有得到证明。MovieLens-1M 上的等价性检验功效不足。"
+        }
+      },
+      {
+        "src": "./seqrec-lab/arms-light.png",
+        "dark": "./seqrec-lab/arms-dark.png",
+        "alt": {
+          "en": "Bar chart of mean test NDCG@10 per arm on leave-one-out. MovieLens-1M: SASRec-CE 0.1913, SASRec-SS 0.1834, gSASRec 0.1836, BERT4Rec 0.1611, SASRec-BCE 0.1425, Transition 0.1259, MostPop 0.0180. Video_Games, in the same order: 0.0615, 0.0585, 0.0566, 0.0501, 0.0440, 0.0405, 0.0126.",
+          "zh": "柱状图，留一法下各组测试 NDCG@10 的均值。MovieLens-1M：SASRec-CE 0.1913，SASRec-SS 0.1834，gSASRec 0.1836，BERT4Rec 0.1611，SASRec-BCE 0.1425，Transition 0.1259，MostPop 0.0180。Video_Games 按同样顺序：0.0615、0.0585、0.0566、0.0501、0.0440、0.0405、0.0126。"
+        },
+        "caption": {
+          "en": "Test NDCG@10 on the leave-one-out split: for the five neural arms the mean over ten seeds on MovieLens-1M and six on Video_Games; the two floor baselines run once. BERT4Rec's ten runs on MovieLens-1M range from 0.1138 to 0.1695.",
+          "zh": "留一法划分上的测试 NDCG@10：神经网络各组在 MovieLens-1M 上取 10 个种子的均值，在 Video_Games 上取 6 个；两个下限基线各跑一次。BERT4Rec 在 MovieLens-1M 上的 10 次运行从 0.1138 到 0.1695。"
+        }
+      },
+      {
+        "src": "./seqrec-lab/time-light.png",
+        "dark": "./seqrec-lab/time-dark.png",
+        "alt": {
+          "en": "Dot chart of the seconds of training each run took to reach the target quality, seeds 1 to 5. MovieLens-1M: SASRec-CE 30.9, 34.0, 34.5, 36.6 and 38.2; gSASRec one run at 63.5; no run of SASRec-SS or SASRec-BCE. Video_Games: SASRec-CE 26.9, 27.7, 29.7, 30.9 and 31.8; SASRec-SS 25.5, 28.0, 33.9 and 36.7; no run of gSASRec or SASRec-BCE.",
+          "zh": "点图，每次运行达到目标质量所用的训练秒数，种子 1 到 5。MovieLens-1M：SASRec-CE 30.9、34.0、34.5、36.6 和 38.2；gSASRec 一次 63.5；SASRec-SS 和 SASRec-BCE 没有一次达到。Video_Games：SASRec-CE 26.9、27.7、29.7、30.9 和 31.8；SASRec-SS 25.5、28.0、33.9 和 36.7；gSASRec 和 SASRec-BCE 没有一次达到。"
+        },
+        "caption": {
+          "en": "Training time to the target quality, 0.95 of SASRec-CE's mean best validation NDCG@10, for seeds 1 to 5 of each arm, each dataset's runs on one rented RTX 4090 with a Ryzen 9 7950X host. On MovieLens-1M full cross-entropy is first against each of the other three objectives, and H2a is supported on this kind of host. On Video_Games four sampled-softmax runs reach the target in 25.5 to 36.7 s against 26.9 to 31.8 s for full cross-entropy, so H2a is not supported.",
+          "zh": "达到目标质量（SASRec-CE 最佳验证 NDCG@10 均值的 0.95）所用的训练时间，每组种子 1 到 5；每个数据集的运行都在同一台租用的 RTX 4090（Ryzen 9 7950X 主机）上训练。在 MovieLens-1M 上，完整交叉熵对其余三种目标都领先，在这类主机上 H2a 成立。在 Video_Games 上，sampled softmax 有四次运行用 25.5 到 36.7 秒达到目标，完整交叉熵是 26.9 到 31.8 秒，所以 H2a 不成立。"
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "items": [
+      {
+        "value": {
+          "en": "+34.3%, +39.7%",
+          "zh": "+34.3%、+39.7%"
+        },
+        "label": {
+          "en": "test NDCG@10 of SASRec with full cross-entropy over SASRec with BCE and one negative, on MovieLens-1M and Video_Games. On both, a minimum-effect test shows the gap above 2%",
+          "zh": "用完整交叉熵训练的 SASRec 相对用 BCE 加一个负样本训练的 SASRec，在 MovieLens-1M 和 Video_Games 上测试 NDCG@10 的提升。两处的最小效应检验都显示差距超过 2%"
+        }
+      },
+      {
+        "value": {
+          "en": "+19.5%, +22.8%",
+          "zh": "+19.5%、+22.8%"
+        },
+        "label": {
+          "en": "SASRec with full cross-entropy over BERT4Rec on the same two datasets. On MovieLens-1M this confirms the published gap and shows SASRec non-inferior (H1a)",
+          "zh": "同样两个数据集上，用完整交叉熵训练的 SASRec 相对 BERT4Rec 的提升。在 MovieLens-1M 上，它证实了已发表的差距，也表明 SASRec 不劣于 BERT4Rec（H1a）"
+        }
+      },
+      {
+        "value": {
+          "en": "−4.1% to −8.0%",
+          "zh": "−4.1% 到 −8.0%"
+        },
+        "label": {
+          "en": "sampled softmax and gBCE against full cross-entropy on the same backbone. On neither dataset is equivalence within 2% shown (H2b), and every 95% interval lies below −2%",
+          "zh": "同一主干上 sampled softmax 和 gBCE 相对完整交叉熵的差。两个数据集上都没能证明它们在 2% 以内等价（H2b），所有 95% 区间都在 −2% 以下"
+        }
+      },
+      {
+        "value": {
+          "en": "164",
+          "zh": "164"
+        },
+        "label": {
+          "en": "final runs, each of which read the test data once, in 31.4 GPU hours on an RTX 4090; the 200 tuning runs read it zero times",
+          "zh": "正式运行的次数，每次只读一次测试数据，在 RTX 4090 上共用 31.4 GPU 小时；200 次调参运行一次也没读"
+        }
+      }
+    ],
+    "note": {
+      "en": "Differences are between the means over seeds of log test NDCG@10, shown as relative differences with 95% Welch intervals, on leave-one-out with ten seeds per arm on MovieLens-1M and six on Video_Games. Holm's correction runs over each family's registered size across all four datasets, so a comparison that the missing datasets could still change is pending, and nothing pending is reported as a result. On MovieLens-1M one BERT4Rec seed sets the seed variance, so every directional and equivalence comparison there is labelled underpowered; its test targets were also read twice for each of four arms in the anchor checks before these runs. Steam and MovieLens-20M have no results yet.",
+      "zh": "差值是各种子 log 测试 NDCG@10 均值之差，换算成相对差，区间是 95% Welch 区间；留一法，MovieLens-1M 每组 10 个种子，Video_Games 每组 6 个。Holm 校正按每个检验族在四个数据集上登记的总数计算，所以剩下的数据集还可能改变的比较记为待定，待定的都不作为结果报告。MovieLens-1M 上一个 BERT4Rec 种子决定了种子方差，所以那里的方向性和等价性比较都标为功效不足；在这批运行之前，锚点检查还给其中四个组各读过两次它的测试目标。Steam 和 MovieLens-20M 还没有结果。"
+    },
+    "source": {
+      "label": {
+        "en": "Results",
+        "zh": "结果"
+      },
+      "url": "https://github.com/sHyanorn/seqrec-lab/blob/45bf026aaa5158c8ef124d14cb8d5a88159aae5c/docs/RESULTS.md"
+    }
+  },
+  "problem": [
+    {
+      "en": "BERT4Rec was reported to beat SASRec. Later work traced most of that gap to SASRec's training objective, binary cross-entropy with one sampled negative, and to training length, and found SASRec with full cross-entropy ahead on most datasets. Those studies mostly report single runs, tune with unequal or unstated budgets and use leave-one-out splits, while differences of 1 to 2% between SASRec runs can change winner with the seed.",
+      "zh": "曾有研究报告 BERT4Rec 胜过 SASRec。后来的工作把这个差距的大部分归因于 SASRec 的训练目标（只用一个采样负样本的二元交叉熵）和训练时长，并发现用完整交叉熵训练的 SASRec 在多数数据集上领先。这些研究大多只报告单次训练、调参预算不等或没有说明，并采用留一法划分；而 SASRec 不同运行之间 1% 到 2% 的差别，换个种子就可能分出不同的胜者。"
+    },
+    {
+      "en": "seqrec-lab reimplements SASRec, BERT4Rec and gSASRec in plain PyTorch and compares five arms on four datasets: SASRec trained with BCE, full cross-entropy, sampled softmax or gBCE, and BERT4Rec, with two floor baselines. Every arm gets the same tuning budget, items are ranked against the full catalogue, and the number of seeds follows a power rule. The study asks which published gaps survive, and what each training objective costs in time to a target quality. Its hypotheses, tests and the 2% smallest effect of interest were frozen before any model was trained on real data.",
+      "zh": "seqrec-lab 用纯 PyTorch 重新实现 SASRec、BERT4Rec 和 gSASRec，在四个数据集上比较五个组：分别用 BCE、完整交叉熵、sampled softmax 和 gBCE 训练的 SASRec，以及 BERT4Rec，另有两个下限基线。各组调参预算相同，在全部物品上排序，种子数按功效规则决定。研究要回答：已发表的差距有哪些站得住，每种训练目标达到目标质量要花多少时间。假设、检验和 2% 的最小关注效应在任何模型用真实数据训练之前就冻结了。"
+    },
+    {
+      "en": "On the two datasets with results, H1a, that SASRec with full cross-entropy is non-inferior to BERT4Rec, is supported on MovieLens-1M; it is registered on the two MovieLens datasets only. H1b, that SASRec with BCE is more than 2% below the other three, is supported on Video_Games and pending on MovieLens-1M, where its test against BERT4Rec waits on the remaining datasets. H2a, that full cross-entropy reaches the target quality first, is supported on MovieLens-1M and not on Video_Games, where sampled softmax is not separated from it. Of H2b, the clause on BCE is supported on both, and the clauses expecting sampled softmax and gBCE to match full cross-entropy are not.",
+      "zh": "在已有结果的两个数据集上，H1a（用完整交叉熵训练的 SASRec 不劣于 BERT4Rec）在 MovieLens-1M 上成立，它只在两个 MovieLens 数据集上登记。H1b（用 BCE 训练的 SASRec 比其余三组都低 2% 以上）在 Video_Games 上成立，在 MovieLens-1M 上待定，那里与 BERT4Rec 的检验要等其余数据集。H2a（完整交叉熵最先达到目标质量）在 MovieLens-1M 上成立，在 Video_Games 上不成立，那里 sampled softmax 和它分不出先后。H2b 中关于 BCE 的部分在两个数据集上都成立，预期 sampled softmax 和 gBCE 与完整交叉熵等价的部分都不成立。"
+    },
+    {
+      "en": "MovieLens-1M and Video_Games have their final runs and confirmatory analysis. Steam and MovieLens-20M have none yet, and every comparison on them is pending. The efficiency study of where training time goes, and the conditional question on approximate retrieval, have not run.",
+      "zh": "MovieLens-1M 和 Video_Games 已有正式运行和确认性分析。Steam 和 MovieLens-20M 还没有，它们上面的每个比较都待定。关于训练时间花在哪里的效率研究，以及视条件而定的近似检索问题，都还没有做。"
+    }
+  ],
+  "architecture": {
+    "labels": {
+      "data": {
+        "en": "datasets",
+        "zh": "数据集"
+      },
+      "dataSub": {
+        "en": "four, checked by SHA-256",
+        "zh": "四个，按 SHA-256 校验"
+      },
+      "models": {
+        "en": "models",
+        "zh": "模型"
+      },
+      "modelsSub": {
+        "en": "five arms in PyTorch",
+        "zh": "PyTorch 实现的五个组"
+      },
+      "tune": {
+        "en": "tuning",
+        "zh": "调参"
+      },
+      "tuneSub": {
+        "en": "Optuna, the same budget per arm",
+        "zh": "Optuna，各组预算相同"
+      },
+      "pod": {
+        "en": "rented GPU",
+        "zh": "租用的 GPU"
+      },
+      "podSub": {
+        "en": "RTX 4090, Ryzen 9 7950X",
+        "zh": "RTX 4090，Ryzen 9 7950X"
+      },
+      "runs": {
+        "en": "final runs",
+        "zh": "正式运行"
+      },
+      "runsSub": {
+        "en": "seeds from the power rule",
+        "zh": "种子数按功效规则定"
+      },
+      "test": {
+        "en": "test reads",
+        "zh": "测试读取"
+      },
+      "testSub": {
+        "en": "once per run, logged",
+        "zh": "每次运行一次，留有记录"
+      },
+      "export": {
+        "en": "export",
+        "zh": "导出"
+      },
+      "exportSub": {
+        "en": "batch files, read counts",
+        "zh": "批次文件和读取次数"
+      },
+      "methods": {
+        "en": "registration",
+        "zh": "预注册"
+      },
+      "methodsSub": {
+        "en": "METHODS, frozen before training",
+        "zh": "METHODS，训练前冻结"
+      },
+      "analysis": {
+        "en": "analysis",
+        "zh": "分析"
+      },
+      "analysisSub": {
+        "en": "Welch, Holm, TOST",
+        "zh": "Welch、Holm、TOST"
+      }
+    },
+    "description": {
+      "en": "`seqrec data prepare` downloads the four datasets, checks each file by SHA-256 and preprocesses them, and `src/seqrec/data` builds the leave-one-out and temporal splits. The five arms are PyTorch models in `src/seqrec/models`. Batches run on a rented RTX 4090 on a Ryzen 9 7950X host: `seqrec tune` runs one Optuna study per arm and dataset on validation data, and `seqrec run` trains the final runs with the seeds the power rule gives. `seqrec test` reads the test data once per final run, through the one reader that logs every read. `seqrec export` writes the batch files with the count of reads, and `seqrec analyze` applies the tests of the frozen METHODS to them and writes the tables behind `docs/RESULTS.md`.",
+      "zh": "`seqrec data prepare` 下载四个数据集，按 SHA-256 校验每个文件并做预处理，`src/seqrec/data` 再生成留一法和时间划分。五个组是 `src/seqrec/models` 里的 PyTorch 模型。每批运行都在一台 Ryzen 9 7950X 主机上的租用 RTX 4090 上进行：`seqrec tune` 在验证数据上为每个组和数据集各做一次 Optuna 调参，`seqrec run` 按功效规则给出的种子数训练正式运行。`seqrec test` 通过唯一一个记录每次读取的函数，为每次正式运行读一次测试数据。`seqrec export` 写出批次文件和读取次数，`seqrec analyze` 对它们执行冻结的 METHODS 里的检验，写出 `docs/RESULTS.md` 依据的表格。"
+    }
+  },
+  "decisions": {
+    "items": [
+      {
+        "id": "§7",
+        "title": {
+          "en": "A 2% effect, tested across runs",
+          "zh": "2% 的效应，在运行之间检验"
+        },
+        "body": {
+          "en": "The unit is one training run, scored by the log of its test NDCG@10, and two arms are compared by Welch t-tests over their seeds, with Holm's correction within each family. Tests over users would be overconfident, and differences of 1 to 2% between runs can change winner with the seed, so the smallest effect of interest is 2%; equivalence is two one-sided tests against ±2%. The number of seeds is the smallest from 5 to 10 at which both kinds of test reach a power of 0.8 at 2%, or 10 if none does, from the variance of the first five: six on Video_Games, and ten on MovieLens-1M, where none does.",
+          "zh": "分析单位是一次训练运行，以它测试 NDCG@10 的对数计分；两组之间用各自的种子做 Welch t 检验，每个检验族内做 Holm 校正。按用户做检验会过于自信，而运行之间 1% 到 2% 的差别换个种子就可能分出不同胜者，所以最小关注效应定为 2%；等价性用对 ±2% 的双单侧检验。种子数取 5 到 10 中使两类检验在 2% 处功效都达到 0.8 的最小值，都达不到时取 10，方差来自前 5 个种子：Video_Games 是 6 个；MovieLens-1M 是 10 个，那里都达不到。"
+        }
+      },
+      {
+        "id": "§5",
+        "title": {
+          "en": "One tuning budget for every arm",
+          "zh": "每组同样的调参预算"
+        },
+        "body": {
+          "en": "Each arm gets one Optuna study of 20 trials per dataset (10 on MovieLens-20M), all on training seed 0 and under caps fixed in advance: 300 epochs for the SASRec arms, 1,000 for BERT4Rec and 8 hours a run. The best trial is rerun with every seed. An equal wall-clock budget would favour the fast arms and mix the question of quality with that of cost. An arm with more than 20% of its trials stopped by a cap has every limit doubled in its final runs.",
+          "zh": "每个组在每个数据集上做一次 20 次试验的 Optuna 调参（MovieLens-20M 为 10 次），都用训练种子 0，上限事先定好：SASRec 各组最多训练 300 轮，BERT4Rec 1,000 轮，每次运行最长 8 小时。最好的一次试验再用每个种子重跑。如果按相同的墙钟时间分配预算，快的组会占便宜，质量问题也会和开销问题混在一起。某组超过 20% 的调参试验被上限截断时，它的正式运行把所有上限加倍。"
+        }
+      },
+      {
+        "id": "§11",
+        "title": {
+          "en": "Test data read once",
+          "zh": "测试数据只读一次"
+        },
+        "body": {
+          "en": "The test split is sealed. Only one reader opens it for scores; it requires a phase, final or anchor, and logs each read with the run, the commit and a hash of the checkpoint, and a tuning run that tries to read it fails. The export recounts the reads: each of the 164 final runs read its test data once.",
+          "zh": "测试划分是封存的。取分数时只有一个读取函数能打开它，调用时必须注明阶段（final 或 anchor），每次读取都记下运行、提交和检查点的哈希；调参运行一碰就会失败。导出时重新清点读取次数：164 次正式运行都只读了一次测试数据。"
+        }
+      },
+      {
+        "id": "§3",
+        "title": {
+          "en": "Shuffled order as a control",
+          "zh": "打乱顺序作对照"
+        },
+        "body": {
+          "en": "With each user's items shuffled in training and evaluation, a sequential model should lose more than 2%; without that drop on MovieLens, the order handling and evaluation would be audited before any other result. The unshuffled SASRec-CE is ahead by 428.2% on MovieLens-1M and 67.8% on Video_Games, and BERT4Rec by 390.4% on MovieLens-1M.",
+          "zh": "训练和评测时都把每个用户的物品顺序打乱，序列模型应当损失 2% 以上；如果在 MovieLens 上看不到这样的下降，就要先审查顺序处理和评测，再报告其他结果。没打乱的 SASRec-CE 在 MovieLens-1M 上高出 428.2%，在 Video_Games 上高出 67.8%，BERT4Rec 在 MovieLens-1M 上高出 390.4%。"
+        }
+      }
+    ],
+    "source": "https://github.com/sHyanorn/seqrec-lab/blob/45bf026aaa5158c8ef124d14cb8d5a88159aae5c/docs/METHODS.md"
+  },
+  "challenges": [
+    {
+      "title": {
+        "en": "One seed set the power on MovieLens-1M",
+        "zh": "MovieLens-1M 上一个种子决定了功效"
+      },
+      "body": {
+        "en": "One BERT4Rec seed reached a validation NDCG@10 of 0.1174, against 0.1692 to 0.1740 for the other four, and BERT4Rec holds 98.9% of the pooled seed variance. The registered rule then gave ten seeds and a directional power of 0.005 at 2%, so every directional and equivalence comparison on MovieLens-1M is labelled underpowered, those between arms whose seeds agree closely included. The run finished normally and stays in every analysis; a power computed from the two arms compared is reported beside each directional and equivalence test and decides nothing.",
+        "zh": "一个 BERT4Rec 种子的验证 NDCG@10 只有 0.1174，其余四个在 0.1692 到 0.1740 之间，BERT4Rec 一组就占了合并种子方差的 98.9%。按登记的规则，种子数因此取 10，方向性检验在 2% 处的功效只有 0.005，所以 MovieLens-1M 上的方向性和等价性比较都标为功效不足，种子之间非常一致的组之间的比较也一样。这次运行正常结束，留在所有分析里；每个方向性和等价性检验旁另报一个只用所比两组算出的功效，它不参与任何判定。"
+      }
+    },
+    {
+      "title": {
+        "en": "MovieLens-1M's test targets were read before",
+        "zh": "MovieLens-1M 的测试目标之前被读过"
+      },
+      "body": {
+        "en": "To check four of the arms against published values, the anchor runs read the MovieLens-1M test targets twice for each of them before the final runs, once on the laptop and once on the rented machine. All four landed inside their bands, and every conclusion on MovieLens-1M about which gaps survive carries this note.",
+        "zh": "为了把其中四个组和已发表的数值对照，锚点运行在正式运行之前给这四个组各读过两次 MovieLens-1M 的测试目标，一次在笔记本上，一次在租用的机器上。四个组都落在各自的范围内，MovieLens-1M 上关于差距是否站得住的每条结论都附带这一说明。"
+      }
+    },
+    {
+      "title": {
+        "en": "Times hold for one kind of host",
+        "zh": "时间只对一类主机成立"
+      },
+      "body": {
+        "en": "Times to target come from an RTX 4090 on a Ryzen 9 7950X host. On small configurations a training step is bound by kernel launches, and time to target there mostly measures launch overhead. On MovieLens-1M, H2a rests on runs that never reached the target: 14 of the 15 runs of the other three arms.",
+        "zh": "到达目标的时间来自 Ryzen 9 7950X 主机上的 RTX 4090。在小配置上，训练一步的时间受 kernel 启动次数限制，那里的到达时间主要反映启动开销。MovieLens-1M 上的 H2a 依赖从未达到目标的运行：其余三组的 15 次运行里有 14 次没达到。"
+      }
+    }
+  ],
+  "repo": "https://github.com/sHyanorn/seqrec-lab",
+  "headings": {
+    "decisions": {
+      "en": "Registered rules",
+      "zh": "登记的规则"
+    },
+    "decisionLog": {
+      "en": "Pre-registration",
+      "zh": "预注册文件"
+    },
+    "challenges": {
+      "en": "Limits",
+      "zh": "局限"
+    }
+  }
+}

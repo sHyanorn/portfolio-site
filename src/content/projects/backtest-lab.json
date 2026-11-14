@@ -1,6 +1,6 @@
 {
   "title": "backtest-lab",
-  "order": 7,
+  "order": 8,
   "early": true,
   "summary": {
     "en": "A backtesting platform that tests whether a strategy is probably overfit: it runs a parameter search, then judges the winner with walk-forward analysis, purged cross-validation, the probability of backtest overfitting and the deflated Sharpe ratio.",

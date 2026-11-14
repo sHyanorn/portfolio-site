@@ -112,19 +112,20 @@ for (const path of [BASE, `${BASE}zh/`])
     await expect(page.locator('.areas dd a')).toHaveCount(0)
   })
 
-// Two cards a row under the first, so five projects fill three rows.
-test('five cards: the first takes a row, the others pair up', async ({
+// Two cards a row under the first, so six projects fill four rows, the
+// last card alone.
+test('six cards: the first takes a row, the others pair up', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto(BASE)
   const cards = page.locator('#projects .card')
-  await expect(cards).toHaveCount(5)
+  await expect(cards).toHaveCount(6)
   await expect(cards.first()).toHaveClass(/featured/)
   const tops = await cards.evaluateAll((els) =>
     els.map((el) => Math.round(el.getBoundingClientRect().top)),
   )
   expect(tops[1]).toBe(tops[2])
   expect(tops[3]).toBe(tops[4])
-  expect(new Set(tops).size).toBe(3)
+  expect(new Set(tops).size).toBe(4)
 })

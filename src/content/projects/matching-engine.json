@@ -1,6 +1,6 @@
 {
   "title": "matching-engine",
-  "order": 5,
+  "order": 6,
   "summary": {
     "en": "A limit order book matching engine in Go: price-time priority, REST and WebSocket APIs, and a command log that replays to the same book.",
     "zh": "用 Go 写的限价订单簿撮合引擎：价格优先、时间优先，提供 REST 和 WebSocket 接口，重放命令日志能还原出同一本订单簿。"

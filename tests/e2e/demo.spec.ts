@@ -191,6 +191,7 @@ for (const [project, columns] of [
   ['ope-checks', 2],
   ['recserve', 2],
   ['retrieval-lab', 2],
+  ['seqrec-lab', 1],
 ] as const)
   test(`${project}: later screenshots in ${columns} column(s)`, async ({
     page,

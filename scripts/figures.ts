@@ -120,6 +120,57 @@ const cosine: Scale = {
   label: 'lowest cosine, on a log scale of 1 − cosine',
 }
 
+/** One arm's mean test NDCG@10 on leave-one-out, from seqrec-lab's tables. */
+const arm = (label: string, value: number, baseline = false): Row => ({
+  label,
+  marks: [{ bar: value, color: baseline ? 'orange' : 'blue' }],
+  note: value.toFixed(4),
+})
+
+/** A relative difference from SASRec-CE in %, with its 95% interval. */
+const versus = (
+  label: string,
+  value: number,
+  low: number,
+  high: number,
+): Row => ({
+  label,
+  marks: [
+    { from: low, to: high, color: 'orange' },
+    { dot: value, color: 'orange' },
+  ],
+})
+
+/** The seconds each run took to reach the target, and how many did. */
+const times = (label: string, seconds: number[], note: string): Row => ({
+  label,
+  ...(seconds.length > 0 && {
+    marks: seconds.map((s) => ({
+      dot: s,
+      color: label === 'SASRec-CE' ? ('blue' as const) : ('orange' as const),
+    })),
+  }),
+  note,
+})
+
+const percent: Scale = {
+  min: -10,
+  max: 4,
+  ticks: [-10, -8, -6, -4, -2, 0, 2, 4],
+  format: (tick) => `${tick > 0 ? '+' : ''}${fixed(0)(tick)}%`,
+  label: '',
+  line: 0,
+  band: [-2, 2],
+}
+
+const seconds: Scale = {
+  min: 0,
+  max: 80,
+  ticks: [0, 20, 40, 60, 80],
+  format: fixed(0),
+  label: '',
+}
+
 export const FIGURES: Figure[] = [
   {
     file: 'recserve/kind-check',
@@ -354,6 +405,100 @@ export const FIGURES: Figure[] = [
             marks: [{ dot: 0.999978, color: 'blue' }],
             note: '0.999978',
           },
+        ],
+      },
+    ],
+  },
+  {
+    file: 'seqrec-lab/arms',
+    title: 'Test NDCG@10, leave-one-out, mean over seeds',
+    gutter: 300,
+    panels: [
+      {
+        title: 'MovieLens-1M',
+        scale: {
+          min: 0,
+          max: 0.22,
+          ticks: [0, 0.05, 0.1, 0.15, 0.2],
+          format: fixed(2),
+          label: '',
+        },
+        rows: [
+          arm('SASRec-CE', 0.1913),
+          arm('SASRec-SS', 0.1834),
+          arm('gSASRec', 0.1836),
+          arm('BERT4Rec', 0.1611),
+          arm('SASRec-BCE', 0.1425),
+          arm('Transition', 0.1259, true),
+          arm('MostPop', 0.018, true),
+        ],
+      },
+      {
+        title: 'Video_Games',
+        scale: {
+          min: 0,
+          max: 0.07,
+          ticks: [0, 0.02, 0.04, 0.06],
+          format: fixed(2),
+          label: '',
+        },
+        rows: [
+          arm('SASRec-CE', 0.0615),
+          arm('SASRec-SS', 0.0585),
+          arm('gSASRec', 0.0566),
+          arm('BERT4Rec', 0.0501),
+          arm('SASRec-BCE', 0.044),
+          arm('Transition', 0.0405, true),
+          arm('MostPop', 0.0126, true),
+        ],
+      },
+    ],
+  },
+  {
+    file: 'seqrec-lab/objectives',
+    title: 'Against full cross-entropy, relative difference in test NDCG@10',
+    legend: [{ label: '±2%', color: 'aqua' }],
+    gutter: 330,
+    scale: percent,
+    panels: [
+      {
+        title: 'MovieLens-1M',
+        rows: [
+          versus('sampled softmax', -4.1, -5.2, -3.1),
+          versus('gBCE', -4.1, -5.0, -3.1),
+        ],
+      },
+      {
+        title: 'Video_Games',
+        rows: [
+          versus('sampled softmax', -4.8, -5.7, -4.0),
+          versus('gBCE', -8.0, -8.4, -7.5),
+        ],
+      },
+    ],
+  },
+  {
+    file: 'seqrec-lab/time',
+    title: 'Seconds of training to the target quality, seeds 1 to 5',
+    gutter: 300,
+    scale: seconds,
+    panels: [
+      {
+        title: 'MovieLens-1M',
+        rows: [
+          times('SASRec-CE', [30.9, 34.0, 34.5, 36.6, 38.2], '5 of 5'),
+          times('SASRec-SS', [], '0 of 5 reach it'),
+          times('gSASRec', [63.5], '1 of 5'),
+          times('SASRec-BCE', [], '0 of 5 reach it'),
+        ],
+      },
+      {
+        title: 'Video_Games',
+        rows: [
+          times('SASRec-CE', [26.9, 27.7, 29.7, 30.9, 31.8], '5 of 5'),
+          times('SASRec-SS', [25.5, 28.0, 33.9, 36.7], '4 of 5'),
+          times('gSASRec', [], '0 of 5 reach it'),
+          times('SASRec-BCE', [], '0 of 5 reach it'),
         ],
       },
     ],

@@ -1,6 +1,6 @@
 {
   "title": "recserve",
-  "order": 4,
+  "order": 5,
   "summary": {
     "en": "A recommendation serving system in Go: retrieval, features, ranking and rerank behind one HTTP API, with the item vectors on gRPC shard replicas. In kind at 100 requests/s, through rolling restarts of the gateways and of the replicas and a bundle swap, 15,000 of 15,000 responses were neither failed nor degraded, with stage budgets of 100 ms.",
     "zh": "用 Go 写的推荐服务系统：召回、特征、排序和重排在同一个 HTTP 接口后面，物品向量分片放在 gRPC 副本上。在 kind 集群里每秒 100 个请求下，经过网关滚动重启、副本滚动重启和一次换包，15,000 个响应里没有一个失败或降级；各阶段的时间预算设为 100 ms。"

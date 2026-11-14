@@ -1,6 +1,6 @@
 {
   "title": "local-ledger",
-  "order": 8,
+  "order": 9,
   "early": true,
   "summary": {
     "en": "A personal finance desktop app for macOS and Windows that keeps everything in an encrypted database on your computer and makes no network requests.",

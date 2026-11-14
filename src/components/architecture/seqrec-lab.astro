@@ -1,0 +1,49 @@
+---
+// Architecture of seqrec-lab: what goes in along the first row, the runs on
+// the rented GPU along the second, and how they are read along the third.
+import GridDiagram from '../GridDiagram.astro'
+
+interface Props {
+  labels: Record<string, string>
+  /** Prefix for the arrowhead marker ids, unique on the page. */
+  id: string
+}
+
+const { labels, id } = Astro.props
+---
+
+<GridDiagram
+  {labels}
+  {id}
+  core="methods"
+  parts={[
+    { key: 'pod', path: 'scripts/cloud', at: [2, 0] },
+    { key: 'data', path: 'src/seqrec/data', at: [0, 0] },
+    { key: 'models', path: 'src/seqrec/models', at: [1, 0] },
+    { key: 'tune', path: 'src/seqrec/runner/tune.py', at: [0, 1] },
+    { key: 'runs', path: 'src/seqrec/runner/run.py', at: [1, 1] },
+    { key: 'test', path: 'src/seqrec/eval', at: [2, 1] },
+    { key: 'export', path: 'results/runs', at: [2, 2] },
+    { key: 'analysis', path: 'src/seqrec/analysis', at: [1, 2] },
+    { key: 'methods', path: 'docs/METHODS.md', at: [0, 2] },
+  ]}
+  wide={[
+    'M112.5 80V128',
+    // The models go into tuning, and the batches run on the rented GPU.
+    'M320.5 80V104.5H152.5V128',
+    'M608.5 80V104.5H400.5V128',
+    'M224 168.5H248',
+    'M472 168.5H496',
+    'M608.5 208V256',
+    'M496 296.5H472',
+    'M224 296.5H248',
+  ]}
+  narrow={{
+    unlinked: ['pod', 'data', 'analysis'],
+    lines: [
+      'M12 110.5H3.5V270.5H12',
+      'M346 30.5H354.5V350.5H346',
+      'M346 670.5H354.5V590.5H346',
+    ],
+  }}
+/>
